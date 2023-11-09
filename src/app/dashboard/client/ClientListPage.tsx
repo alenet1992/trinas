@@ -13,7 +13,6 @@ import { delete_a_product, get_all_clientes } from "@/Services/Admin/product";
 import Link from "next/link";
 import { IoIosAddCircle } from "react-icons/io";
 import { ClientModel } from "@/model/Client";
-import { Button } from "bosch-react-ui";
 
 type ProductData = {
   _id: string;
