@@ -2,7 +2,7 @@
 export const register_me = async (formData: any) => {
 
     try {
-        const res = await fetch(`https://trinas.vercel.app/api/auth/register`, {
+        const res = await fetch(`/api/auth/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ export const register_me = async (formData: any) => {
 export const login_me = async (formData: any) => {
 
     try {
-        const res = await fetch(`https://trinas.vercel.app/api/auth/login`, {
+        const res = await fetch(`/api/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ export const login_me = async (formData: any) => {
 
 export const forget_password = async (formData: any) => {
     try {
-        const res = await fetch(`https://trinas.vercel.app/api/auth/forgetPassword`, {
+        const res = await fetch(`/api/auth/forgetPassword`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
