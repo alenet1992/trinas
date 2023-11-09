@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 
 import useSWR, { useSWRConfig } from "swr";
-import { toast } from "react-toastify";
 import DataTable, { TableColumn } from "react-data-table-component";
 import Loading from "@/app/loading";
 import { useSelector } from "react-redux";
