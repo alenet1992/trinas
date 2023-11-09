@@ -1,0 +1,312 @@
+"use client";
+
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { storage } from "@/utils/Firebase";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { ToastContainer, toast } from "react-toastify";
+import { TailSpin } from "react-loader-spinner";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import { add_new_client } from "@/Services/Admin/cliente";
+import { ClientModel } from "@/model/Client";
+
+type Inputs = {
+  name: String;
+  number: Number;
+  street: String;
+  city: String;
+  location: String;
+  postalCode: String;
+  nif: String;
+};
+
+interface loaderType {
+  loader: Boolean;
+}
+
+const uploadImages = async (file: File) => {
+  const createFileName = () => {
+    const timestamp = Date.now();
+    const randomString = Math.random().toString(36).substring(2, 8);
+    return `${file?.name}-${timestamp}-${randomString}`;
+  };
+
+  const fileName = createFileName();
+  const storageRef = ref(storage, `ecommerce/category/${fileName}`);
+  const uploadTask = uploadBytesResumable(storageRef, file);
+
+  return new Promise((resolve, reject) => {
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {},
+      (error) => {
+        console.log(error);
+        reject(error);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref)
+          .then((downloadURL) => {
+            resolve(downloadURL);
+          })
+          .catch((error) => {
+            console.log(error);
+            reject(error);
+          });
+      }
+    );
+  });
+};
+
+const maxSize = (value: File) => {
+  const fileSize = value.size / 1024 / 1024;
+  return fileSize < 1 ? false : true;
+};
+
+interface userData {
+  email: String;
+  role: String;
+  _id: String;
+  name: String;
+}
+
+export default function AddCategory() {
+  const [loader, setLoader] = useState(false);
+  const Router = useRouter();
+
+  useEffect(() => {
+    const user: userData | null = JSON.parse(
+      localStorage.getItem("user") || "{}"
+    );
+    if (!Cookies.get("token") || user?.role !== "admin") {
+      Router.push("/");
+    }
+  }, [Router]);
+
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<Inputs>({
+    criteriaMode: "all",
+  });
+
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    setLoader(true);
+
+    const finalData: ClientModel = {
+      name: data.name,
+      number: data.number,
+      street: data.street,
+      city: data.city,
+      location: data.location,
+      postalCode: data.postalCode,
+      nif: data.nif,
+    };
+
+    const res = await add_new_client(finalData);
+    if (res.success) {
+      toast.success(res?.message);
+      setTimeout(() => {
+        Router.push("/dashboard");
+      }, 2000);
+      setLoader(false);
+    } else {
+      toast.error(res?.message);
+      setLoader(false);
+    }
+  };
+
+  return (
+    <div className="w-full  p-4 min-h-screen  bg-gray-50 flex flex-col ">
+      <div className="text-sm breadcrumbs  border-b-2 border-b-orange-600">
+        <ul className="dark:text-black">
+          <li>
+            <Link href={"/dashboard"}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                className="w-4 h-4 mr-2 stroke-current"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+                ></path>
+              </svg>
+              Home
+            </Link>
+          </li>
+          <li>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              className="w-4 h-4 mr-2 stroke-current"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              ></path>
+            </svg>
+            Adicionar Cliente
+          </li>
+        </ul>
+      </div>
+      <div className="w-full h-20 my-2 text-center">
+        <h1 className="text-2xl py-2 dark:text-black">Adicionar Cliente</h1>
+      </div>
+      {loader ? (
+        <div className="w-full  flex-col h-96 flex items-center justify-center ">
+          <TailSpin
+            height="50"
+            width="50"
+            color="orange"
+            ariaLabel="tail-spin-loading"
+            radius="1"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+          />
+          <p className="text-sm mt-2 font-semibold text-orange-500">
+            Adicionar cliente ....
+          </p>
+        </div>
+      ) : (
+        <div className="w-full h-full flex items-start justify-center">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-full max-w-lg  py-2 flex-col "
+          >
+            <div className="form-control w-full mb-2">
+              <label className="label">
+                <span className="label-text">Nome</span>
+              </label>
+              <input
+                {...register("name", { required: true })}
+                type="text"
+                placeholder="Type here"
+                className="input input-bordered w-full"
+              />
+              {errors.name && (
+                <span className="text-red-500 text-xs mt-2">
+                  This field is required
+                </span>
+              )}
+            </div>
+            <div className="form-control w-full mb-2">
+              <label className="label">
+                <span className="label-text">Numero</span>
+              </label>
+              <input
+                {...register("number", { required: true })}
+                type="number"
+                placeholder="Type here"
+                className="input input-bordered w-full"
+              />
+              {errors.number && (
+                <span className="text-red-500 text-xs mt-2">
+                  This field is required
+                </span>
+              )}
+            </div>
+
+            <div className="form-control w-full mb-2">
+              <label className="label">
+                <span className="label-text">Rua</span>
+              </label>
+              <input
+                {...register("street", { required: true })}
+                type="text"
+                placeholder="Type here"
+                className="input input-bordered w-full"
+              />
+              {errors.street && (
+                <span className="text-red-500 text-xs mt-2">
+                  This field is required
+                </span>
+              )}
+            </div>
+
+            <div className="form-control w-full mb-2">
+              <label className="label">
+                <span className="label-text">Cidade</span>
+              </label>
+              <input
+                {...register("city", { required: true })}
+                type="string"
+                placeholder="Type here"
+                className="input input-bordered w-full"
+              />
+              {errors.city && (
+                <span className="text-red-500 text-xs mt-2">
+                  This field is required
+                </span>
+              )}
+            </div>
+
+            <div className="form-control w-full mb-2">
+              <label className="label">
+                <span className="label-text">Localização</span>
+              </label>
+              <input
+                {...register("location", { required: true })}
+                type="text"
+                placeholder="Type here"
+                className="input input-bordered w-full"
+              />
+              {errors.location && (
+                <span className="text-red-500 text-xs mt-2">
+                  This field is required
+                </span>
+              )}
+            </div>
+
+            <div className="form-control w-full mb-2">
+              <label className="label">
+                <span className="label-text">Codigo postal</span>
+              </label>
+              <input
+                {...register("postalCode", { required: true })}
+                type="text"
+                placeholder="Type here"
+                className="input input-bordered w-full"
+              />
+              {errors.postalCode && (
+                <span className="text-red-500 text-xs mt-2">
+                  This field is required
+                </span>
+              )}
+            </div>
+
+            <div className="form-control w-full mb-2">
+              <label className="label">
+                <span className="label-text">Nif</span>
+              </label>
+              <input
+                {...register("nif", { required: true })}
+                type="text"
+                placeholder="Type here"
+                className="input input-bordered w-full"
+              />
+              {errors.nif && (
+                <span className="text-red-500 text-xs mt-2">
+                  This field is required
+                </span>
+              )}
+            </div>
+
+            <button className="btn btn-block mt-3">Done !</button>
+          </form>
+        </div>
+      )}
+
+      <ToastContainer />
+    </div>
+  );
+}
