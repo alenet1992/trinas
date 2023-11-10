@@ -19,7 +19,7 @@ export default function AdminNavbar() {
   };
 
   return (
-    <div className="fixed w-full z-30">
+    <div className="fixed z-30" style={{ width: "calc(100% - 16rem);" }}>
       <div className="dark:text-black backdrop-blur-xl">
         <div className="flex-1">
           <div className="dropdown md:hidden">
@@ -63,32 +63,16 @@ export default function AdminNavbar() {
             </ul>
           </div>
         </div>
-        <div className="flex-none">
+        <div className="flex-none text-right mr-10">
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-              <div className="w-10 relative rounded-full">
-                <Image
-                  className="rounded-full"
-                  fill
-                  alt="none"
-                  src="/profile.jpg"
-                />
-              </div>
+              <button
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
             </label>
-            <ul
-              tabIndex={0}
-              className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-gray-50 rounded-box w-52"
-            >
-              <li>
-                <Link href={"/dashboard"} className="justify-between">
-                  Profile
-                  <span className="badge">New</span>
-                </Link>
-              </li>
-              <li onClick={handleLogout}>
-                <button> Logout </button>
-              </li>
-            </ul>
           </div>
         </div>
       </div>

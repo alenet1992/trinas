@@ -40,7 +40,7 @@ export default function AdminSidebar() {
         </ul>
 
         <hr className="my-4 md:min-w-full" />
-        <ul>
+        <ul style={{ opacity: 0.5, pointerEvents: "none" }}>
           <ul>
             <li style={{ padding: "10px 0px 5px 0px" }}>Gestão de pratos</li>
             <li

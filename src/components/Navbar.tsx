@@ -6,9 +6,6 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { RootState } from "@/Store/store";
 import { useSelector } from "react-redux";
-import { FaCartArrowDown } from "react-icons/fa";
-import { CiDeliveryTruck } from "react-icons/ci";
-import { MdFavorite } from "react-icons/md";
 
 export default function Navbar() {
   const router = useRouter();
@@ -72,7 +69,7 @@ export default function Navbar() {
         </div>
       </div>
       <div className="navbar-end">
-        <div className="flex-none">
+        <div className="flex-none text-right mr">
           {user ? (
             <div className="flex items-center justify-center  min-h-full">
               <button onClick={handleLogout} className="btn text-white mx-2">
