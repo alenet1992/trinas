@@ -21,13 +21,13 @@ body {
 }
 
 .bg-grey{
-  background-color: #363b4b !important;
+  background-color: #373a4e!important;
 }
 
-.bg-
+
 
 .text-orange-600{
-  color: #363b4b;
+  color: black !important;
 }
 
 .border-orange-600{
@@ -47,4 +47,17 @@ body {
   .rdt_Pagination{
       border-radius: 0px 0px 10px 10px;
   }
+}
+
+.border-b-orange-600{
+      border-bottom-color: #363b4b !important;
+}
+
+.input, .textarea{
+  background-color: white !important;
+  color: black !important;
+}
+
+.custom-header{
+      width: calc(100% - 3rem) !important;
 }

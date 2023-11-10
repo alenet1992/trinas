@@ -3,21 +3,17 @@ import mongoose from 'mongoose';
 export interface ClientModel {
     _id?: String,
     name: String,
-    number: Number,
-    street: String,
-    city: String,
-    location: String,
-    postalCode: String,
-    nif: String,
+    contact: Number,
+    address: String,
+    note?: String,
+    nif: String
 };
 
 const ClientSchema = new mongoose.Schema({
     name: String,
-    number: Number,
-    street: String,
-    city: String,
-    location: String,
-    postalCode: String,
+    contact: Number,
+    address: String,
+    note: String,
     nif: String,
 });
 

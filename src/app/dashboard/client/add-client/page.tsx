@@ -14,17 +14,11 @@ import { ClientModel } from "@/model/Client";
 
 type Inputs = {
   name: String;
-  number: Number;
-  street: String;
-  city: String;
-  location: String;
-  postalCode: String;
+  contact: Number;
+  address: String;
+  note?: String;
   nif: String;
 };
-
-interface loaderType {
-  loader: Boolean;
-}
 
 const uploadImages = async (file: File) => {
   const createFileName = () => {
@@ -97,11 +91,9 @@ export default function AddCategory() {
 
     const finalData: ClientModel = {
       name: data.name,
-      number: data.number,
-      street: data.street,
-      city: data.city,
-      location: data.location,
-      postalCode: data.postalCode,
+      contact: data.contact,
+      address: data.address,
+      note: data?.note,
       nif: data.nif,
     };
 
@@ -158,7 +150,7 @@ export default function AddCategory() {
           </li>
         </ul>
       </div>
-      <div className="w-full h-20 my-2 text-center">
+      <div className="w-full my-2 text-center">
         <h1 className="text-2xl py-2 dark:text-black">Adicionar Cliente</h1>
       </div>
       {loader ? (
@@ -190,118 +182,79 @@ export default function AddCategory() {
               <input
                 {...register("name", { required: true })}
                 type="text"
-                placeholder="Type here"
+                placeholder="Nome do cliente"
                 className="input input-bordered w-full"
               />
               {errors.name && (
                 <span className="text-red-500 text-xs mt-2">
-                  This field is required
+                  Este campo é obrigatorio
                 </span>
               )}
             </div>
+
             <div className="form-control w-full mb-2">
               <label className="label">
-                <span className="label-text">Numero</span>
+                <span className="label-text">Contacto</span>
               </label>
               <input
-                {...register("number", { required: true })}
+                {...register("contact", { required: true })}
                 type="number"
-                placeholder="Type here"
+                placeholder="Contacto do cliente"
                 className="input input-bordered w-full"
               />
-              {errors.number && (
+              {errors.contact && (
                 <span className="text-red-500 text-xs mt-2">
-                  This field is required
+                  Este campo é obrigatorio
                 </span>
               )}
             </div>
 
             <div className="form-control w-full mb-2">
               <label className="label">
-                <span className="label-text">Rua</span>
+                <span className="label-text">Morada</span>
               </label>
               <input
-                {...register("street", { required: true })}
+                {...register("address", { required: true })}
                 type="text"
-                placeholder="Type here"
+                placeholder="Escrever aqui a morada do cliente"
                 className="input input-bordered w-full"
               />
-              {errors.street && (
+              {errors.address && (
                 <span className="text-red-500 text-xs mt-2">
-                  This field is required
+                  Este campo é obrigatorio
                 </span>
               )}
             </div>
 
             <div className="form-control w-full mb-2">
               <label className="label">
-                <span className="label-text">Cidade</span>
+                <span className="label-text">Observações</span>
               </label>
-              <input
-                {...register("city", { required: true })}
-                type="string"
-                placeholder="Type here"
-                className="input input-bordered w-full"
+              <textarea
+                {...register("note", { required: true })}
+                placeholder="Escrever aqui uma observação"
+                className="textarea textarea-bordered h-24"
               />
-              {errors.city && (
-                <span className="text-red-500 text-xs mt-2">
-                  This field is required
-                </span>
-              )}
             </div>
 
             <div className="form-control w-full mb-2">
               <label className="label">
-                <span className="label-text">Localização</span>
-              </label>
-              <input
-                {...register("location", { required: true })}
-                type="text"
-                placeholder="Type here"
-                className="input input-bordered w-full"
-              />
-              {errors.location && (
-                <span className="text-red-500 text-xs mt-2">
-                  This field is required
-                </span>
-              )}
-            </div>
-
-            <div className="form-control w-full mb-2">
-              <label className="label">
-                <span className="label-text">Codigo postal</span>
-              </label>
-              <input
-                {...register("postalCode", { required: true })}
-                type="text"
-                placeholder="Type here"
-                className="input input-bordered w-full"
-              />
-              {errors.postalCode && (
-                <span className="text-red-500 text-xs mt-2">
-                  This field is required
-                </span>
-              )}
-            </div>
-
-            <div className="form-control w-full mb-2">
-              <label className="label">
-                <span className="label-text">Nif</span>
+                <span className="label-text">Nif (numero de contribuinte)</span>
               </label>
               <input
                 {...register("nif", { required: true })}
                 type="text"
-                placeholder="Type here"
+                placeholder="Escrever aqui o numero de contribuinte"
                 className="input input-bordered w-full"
               />
               {errors.nif && (
                 <span className="text-red-500 text-xs mt-2">
-                  This field is required
+                  Este campo é obrigatorio
                 </span>
               )}
             </div>
 
-            <button className="btn btn-block mt-3">Done !</button>
+            <button className="btn btn-block mt-3">Guardar</button>
           </form>
         </div>
       )}

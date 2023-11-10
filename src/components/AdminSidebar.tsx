@@ -97,6 +97,55 @@ export default function AdminSidebar() {
             </li>
           </ul>
 
+          <hr className="my-4 md:min-w-full" />
+          <ul>
+            <li style={{ padding: "10px 0px 5px 0px" }}>
+              Gestão de facturação
+            </li>
+            <li
+              onClick={() => dispatch(setNavActive("activeCategories"))}
+              className="py-3 px-1 "
+            >
+              <button className="flex items-center justify-center">
+                <BiCategory className="mx-2" /> Facturação
+              </button>
+            </li>
+          </ul>
+
+          <hr className="my-4 md:min-w-full" />
+          <ul>
+            <li style={{ padding: "10px 0px 5px 0px" }}>Gestão de stock</li>
+            {/* <li
+              onClick={() => dispatch(setNavActive("activeCategories"))}
+              className="py-3 px-1 "
+            >
+              <button className="flex items-center justify-center">
+                <BiCategory className="mx-2" /> Entradas
+              </button>
+            </li> */}
+          </ul>
+          {/* 
+          <hr className="my-4 md:min-w-full" />
+          <ul>
+            <li style={{ padding: "10px 0px 5px 0px" }}>Gestão de produção</li>
+            <li
+              onClick={() => dispatch(setNavActive("activeCategories"))}
+              className="py-3 px-1 "
+            >
+              <button className="flex items-center justify-center">
+                <BiCategory className="mx-2" /> Entrada de produções
+              </button>
+            </li>
+            <li
+              onClick={() => dispatch(setNavActive("activeCategories"))}
+              className="py-3 px-1 "
+            >
+              <button className="flex items-center justify-center">
+                <BiCategory className="mx-2" /> Evolução da produção
+              </button>
+            </li>
+          </ul> */}
+
           {/* <li
             className="py-3 px-1 "
             onClick={() => dispatch(setNavActive("activePendingOrder"))}

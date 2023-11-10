@@ -7,11 +7,8 @@ import Joi from "joi";
 
 const AddClientSchema = Joi.object({
   name: Joi.string().required(),
-  number: Joi.number().required(),
-  street: Joi.string().required(),
-  city: Joi.string().required(),
-  location: Joi.string().required(),
-  postalCode: Joi.string().required(),
+  contact: Joi.number().required(),
+  address: Joi.string().required(),
   nif: Joi.number().required()
 })
 
@@ -26,9 +23,9 @@ export async function POST(req: Request) {
 
       const data: ClientModel = await req.json();
 
-      const { name, number, street, city, location, postalCode, nif } = data;
+      const { name, contact, address, note = '', nif } = data;
 
-      const { error } = AddClientSchema.validate({ name, number, street, city, location, postalCode, nif });
+      const { error } = AddClientSchema.validate({ name, contact, address, nif });
 
       if (error) return NextResponse.json({ success: false, message: error.details[0].message.replace(/['"]+/g, '') });
 

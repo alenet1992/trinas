@@ -2,8 +2,6 @@
 
 import { setNavActive } from "@/utils/AdminNavSlice";
 import Cookies from "js-cookie";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch } from "react-redux";
@@ -63,7 +61,7 @@ export default function AdminNavbar() {
             </ul>
           </div>
         </div>
-        <div className="flex-none text-right mr-10">
+        <div className=" flex-none text-right mr-10 custom-header">
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <button

@@ -150,7 +150,7 @@ export default function AddQuantity() {
           </li>
         </ul>
       </div>
-      <div className="w-full h-20 my-2 text-center">
+      <div className="w-full my-2 text-center">
         <h1 className="text-2xl py-2 dark:text-black">Tipo de quantidade</h1>
       </div>
       {loader ? (

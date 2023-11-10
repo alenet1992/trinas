@@ -77,7 +77,7 @@ export default function Login() {
                     htmlFor="email"
                     className="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                    O seu email
+                    Email
                   </label>
                   <input
                     onChange={(e) =>

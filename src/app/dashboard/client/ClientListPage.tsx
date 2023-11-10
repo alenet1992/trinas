@@ -12,6 +12,8 @@ import { delete_a_product, get_all_clientes } from "@/Services/Admin/product";
 import Link from "next/link";
 import { IoIosAddCircle } from "react-icons/io";
 import { ClientModel } from "@/model/Client";
+import { delete_a_client } from "@/Services/Admin/cliente";
+import { toast } from "react-toastify";
 
 type ProductData = {
   _id: string;
@@ -52,57 +54,86 @@ export default function ClientListPage() {
 
   const columns = [
     {
-      name: "Name",
+      name: "Nome",
       selector: (row: ClientModel) => row?.name,
       sortable: true,
     },
     {
-      name: "Street",
-      selector: (row: ClientModel) => row?.street,
+      name: "Morada",
+      selector: (row: ClientModel) => row?.address,
       sortable: true,
     },
     {
-      name: "Action",
+      name: "Contacto",
+      selector: (row: ClientModel) => row?.contact,
+      sortable: true,
+    },
+    {
+      name: "Observações",
+      selector: (row: ClientModel) => row?.note,
+      sortable: true,
+    },
+    {
+      name: "Ações",
       cell: (row: ClientModel) => (
         <div className="flex items-center justify-start px-2 h-20">
-          <button
+          {/* <button
             onClick={() => router.push(`/product/update-product/${row?._id}`)}
             className=" w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700"
           >
-            Update
-          </button>
+            Atualizar
+          </button> */}
           <button
-            onClick={() => handleDeleteCliente(row?._id)}
+            onClick={() => handleDeleteCliente(row?._id as string)}
             className=" w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded transition-all duration-700"
           >
-            Delete
+            Apagar
           </button>
         </div>
       ),
     },
   ];
 
-  const handleDeleteCliente = async (id: String = "") => {
-    // const res = await delete_a_product(id);
-    // if (res?.success) {
-    //   toast.success(res?.message);
-    //   mutate("/gettingAllProductsFOrAdmin");
-    // } else {
-    //   toast.error(res?.message);
-    // }
+  const handleDeleteCliente = async (id: string = "") => {
+    const res = await delete_a_client(id);
+    if (res?.success) {
+      toast.success(res?.message);
+      mutate("/gettingAllClientesFOrAdmin");
+    } else {
+      toast.error(res?.message);
+    }
   };
 
   useEffect(() => {
     if (search === "") {
-      //setFilteredData(prodData);
+      setFilteredData(clientData?.data);
     } else {
-      // setFilteredData(
-      //   prodData?.filter((item) => {
-      //     const itemData = item?.productCategory?.categoryName.toUpperCase();
-      //     const textData = search.toUpperCase();
-      //     return itemData.indexOf(textData) > -1;
-      //   })
-      // );
+      setFilteredData(
+        clientData.data?.filter((item: ClientModel) => {
+          let itemData = item?.name?.toUpperCase();
+          const textData = search.toUpperCase();
+          // search on name
+          if (itemData.indexOf(textData) > -1) {
+            return itemData.indexOf(textData) > -1;
+          }
+          // search on nif
+          itemData = item?.nif?.toUpperCase();
+          if (itemData.indexOf(textData) > -1) {
+            return itemData.indexOf(textData) > -1;
+          }
+
+          // search on contact
+          itemData = item?.contact.toString();
+          if (itemData.indexOf(textData) > -1) {
+            return itemData.indexOf(textData) > -1;
+          }
+
+          itemData = item?.address.toLowerCase();
+          if (itemData.indexOf(textData) > -1) {
+            return itemData.indexOf(textData) > -1;
+          }
+        })
+      );
     }
   }, [search, prodData]);
 
@@ -111,7 +142,7 @@ export default function ClientListPage() {
       <div className="text-right m-2 mr-0">
         <Link href={"/dashboard/client/add-client"}>
           <button className="mb-4 sm:mb-0 inline-flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-4 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-            <IoIosAddCircle className="mx-2" /> Add Cliente
+            <IoIosAddCircle className="mx-2" /> Adicionar cliente
           </button>
         </Link>
       </div>
@@ -132,13 +163,18 @@ export default function ClientListPage() {
           progressComponent={<Loading />}
           subHeader
           subHeaderComponent={
-            <input
-              className="w-60 dark:bg-transparent py-2 px-2  outline-none  border-b-2 border-orange-600"
-              type={"search"}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={"Procurar"}
-            />
+            <>
+              <div className="relative w-full">
+                <input
+                  id="simple-search"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5   dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Porcurar cliente"
+                  type={"search"}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+            </>
           }
           className="bg-white px-4 "
         />
