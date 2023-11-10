@@ -263,13 +263,14 @@ export default function Page() {
                       title="product.name"
                     >
                       <img
-                        src="https://www.emsifa.com/tailwind-pos/img/beef-burger.png"
+                        src="https://media.timeout.com/images/105749903/750/562/image.jpg"
                         alt="product.name"
                       />
                       <div className="flex pb-3 px-3 text-sm -mt-3">
                         <p
                           className="flex-grow truncate mr-1"
                           x-text="product.name"
+                          style={{ color: "black" }}
                         ></p>
                         <p
                           className="nowrap font-semibold"
@@ -285,13 +286,14 @@ export default function Page() {
                     title="product.name"
                   >
                     <img
-                      src="https://www.emsifa.com/tailwind-pos/img/beef-burger.png"
+                      src="https://media.timeout.com/images/105749903/750/562/image.jpg"
                       alt="product.name"
                     />
                     <div className="flex pb-3 px-3 text-sm -mt-3">
                       <p
                         className="flex-grow truncate mr-1"
                         x-text="product.name"
+                        style={{ color: "black" }}
                       >
                         Beef Burger
                       </p>
@@ -310,13 +312,14 @@ export default function Page() {
                     title="product.name"
                   >
                     <img
-                      src="https://www.emsifa.com/tailwind-pos/img/beef-burger.png"
+                      src="https://media.timeout.com/images/105749903/750/562/image.jpg"
                       alt="product.name"
                     />
                     <div className="flex pb-3 px-3 text-sm -mt-3">
                       <p
                         className="flex-grow truncate mr-1"
                         x-text="product.name"
+                        style={{ color: "black" }}
                       >
                         Sandwich
                       </p>
@@ -335,13 +338,14 @@ export default function Page() {
                     title="product.name"
                   >
                     <img
-                      src="https://www.emsifa.com/tailwind-pos/img/beef-burger.png"
+                      src="https://media.timeout.com/images/105749903/750/562/image.jpg"
                       alt="product.name"
                     />
                     <div className="flex pb-3 px-3 text-sm -mt-3">
                       <p
                         className="flex-grow truncate mr-1"
                         x-text="product.name"
+                        style={{ color: "black" }}
                       >
                         Sawarma
                       </p>
@@ -360,13 +364,14 @@ export default function Page() {
                     title="product.name"
                   >
                     <img
-                      src="https://www.emsifa.com/tailwind-pos/img/beef-burger.png"
+                      src="https://media.timeout.com/images/105749903/750/562/image.jpg"
                       alt="product.name"
                     />
                     <div className="flex pb-3 px-3 text-sm -mt-3">
                       <p
                         className="flex-grow truncate mr-1"
                         x-text="product.name"
+                        style={{ color: "black" }}
                       >
                         Croissant
                       </p>
@@ -385,13 +390,14 @@ export default function Page() {
                     title="product.name"
                   >
                     <img
-                      src="https://www.emsifa.com/tailwind-pos/img/beef-burger.png"
+                      src="https://media.timeout.com/images/105749903/750/562/image.jpg"
                       alt="product.name"
                     />
                     <div className="flex pb-3 px-3 text-sm -mt-3">
                       <p
                         className="flex-grow truncate mr-1"
                         x-text="product.name"
+                        style={{ color: "black" }}
                       >
                         Cinnamon Roll
                       </p>
@@ -410,13 +416,14 @@ export default function Page() {
                     title="product.name"
                   >
                     <img
-                      src="https://www.emsifa.com/tailwind-pos/img/beef-burger.png"
+                      src="https://media.timeout.com/images/105749903/750/562/image.jpg"
                       alt="product.name"
                     />
                     <div className="flex pb-3 px-3 text-sm -mt-3">
                       <p
                         className="flex-grow truncate mr-1"
                         x-text="product.name"
+                        style={{ color: "black" }}
                       >
                         Choco Glaze Donut with Peanut
                       </p>
@@ -435,13 +442,14 @@ export default function Page() {
                     title="product.name"
                   >
                     <img
-                      src="https://www.emsifa.com/tailwind-pos/img/beef-burger.png"
+                      src="https://media.timeout.com/images/105749903/750/562/image.jpg"
                       alt="product.name"
                     />
                     <div className="flex pb-3 px-3 text-sm -mt-3">
                       <p
                         className="flex-grow truncate mr-1"
                         x-text="product.name"
+                        style={{ color: "black" }}
                       >
                         Choco Glazed Donut
                       </p>
@@ -460,13 +468,14 @@ export default function Page() {
                     title="product.name"
                   >
                     <img
-                      src="https://www.emsifa.com/tailwind-pos/img/beef-burger.png"
+                      src="https://media.timeout.com/images/105749903/750/562/image.jpg"
                       alt="product.name"
                     />
                     <div className="flex pb-3 px-3 text-sm -mt-3">
                       <p
                         className="flex-grow truncate mr-1"
                         x-text="product.name"
+                        style={{ color: "black" }}
                       >
                         Red Glazed Donut
                       </p>
@@ -489,6 +498,7 @@ export default function Page() {
                       <p
                         className="flex-grow truncate mr-1"
                         x-text="product.name"
+                        style={{ color: "black" }}
                       >
                         Iced Coffee Latte
                       </p>
@@ -507,13 +517,14 @@ export default function Page() {
                     title="product.name"
                   >
                     <img
-                      src="https://www.emsifa.com/tailwind-pos/img/beef-burger.png"
+                      src="https://media.timeout.com/images/105749903/750/562/image.jpg"
                       alt="product.name"
                     />
                     <div className="flex pb-3 px-3 text-sm -mt-3">
                       <p
                         className="flex-grow truncate mr-1"
                         x-text="product.name"
+                        style={{ color: "black" }}
                       >
                         Iced Chocolate
                       </p>
@@ -532,13 +543,14 @@ export default function Page() {
                     title="product.name"
                   >
                     <img
-                      src="https://www.emsifa.com/tailwind-pos/img/beef-burger.png"
+                      src="https://media.timeout.com/images/105749903/750/562/image.jpg"
                       alt="product.name"
                     />
                     <div className="flex pb-3 px-3 text-sm -mt-3">
                       <p
                         className="flex-grow truncate mr-1"
                         x-text="product.name"
+                        style={{ color: "black" }}
                       >
                         Iced Tea
                       </p>
@@ -557,13 +569,14 @@ export default function Page() {
                     title="product.name"
                   >
                     <img
-                      src="https://www.emsifa.com/tailwind-pos/img/beef-burger.png"
+                      src="https://media.timeout.com/images/105749903/750/562/image.jpg"
                       alt="product.name"
                     />
                     <div className="flex pb-3 px-3 text-sm -mt-3">
                       <p
                         className="flex-grow truncate mr-1"
                         x-text="product.name"
+                        style={{ color: "black" }}
                       >
                         Iced Matcha Latte
                       </p>
