@@ -3,8 +3,6 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { storage } from "@/utils/Firebase";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { ToastContainer, toast } from "react-toastify";
 import { TailSpin } from "react-loader-spinner";
 import { useRouter } from "next/navigation";
@@ -20,60 +18,12 @@ type Inputs = {
   nif: String;
 };
 
-const uploadImages = async (file: File) => {
-  const createFileName = () => {
-    const timestamp = Date.now();
-    const randomString = Math.random().toString(36).substring(2, 8);
-    return `${file?.name}-${timestamp}-${randomString}`;
-  };
-
-  const fileName = createFileName();
-  const storageRef = ref(storage, `ecommerce/category/${fileName}`);
-  const uploadTask = uploadBytesResumable(storageRef, file);
-
-  return new Promise((resolve, reject) => {
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {},
-      (error) => {
-        console.log(error);
-        reject(error);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref)
-          .then((downloadURL) => {
-            resolve(downloadURL);
-          })
-          .catch((error) => {
-            console.log(error);
-            reject(error);
-          });
-      }
-    );
-  });
-};
-
-const maxSize = (value: File) => {
-  const fileSize = value.size / 1024 / 1024;
-  return fileSize < 1 ? false : true;
-};
-
-interface userData {
-  email: String;
-  role: String;
-  _id: String;
-  name: String;
-}
-
-export default function AddCategory() {
+export default function CreatClient() {
   const [loader, setLoader] = useState(false);
   const Router = useRouter();
 
   useEffect(() => {
-    const user: userData | null = JSON.parse(
-      localStorage.getItem("user") || "{}"
-    );
-    if (!Cookies.get("token") || user?.role !== "admin") {
+    if (!Cookies.get("token")) {
       Router.push("/");
     }
   }, [Router]);
@@ -231,7 +181,6 @@ export default function AddCategory() {
                 <span className="label-text">Observações</span>
               </label>
               <textarea
-                {...register("note", { required: true })}
                 placeholder="Escrever aqui uma observação"
                 className="textarea textarea-bordered h-24"
               />
@@ -242,7 +191,6 @@ export default function AddCategory() {
                 <span className="label-text">Nif (numero de contribuinte)</span>
               </label>
               <input
-                {...register("nif", { required: true })}
                 type="text"
                 placeholder="Escrever aqui o numero de contribuinte"
                 className="input input-bordered w-full"

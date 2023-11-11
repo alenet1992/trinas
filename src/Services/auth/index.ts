@@ -34,7 +34,6 @@ export const login_me = async (formData: any) => {
 }
 
 
-
 export const forget_password = async (formData: any) => {
     try {
         const res = await fetch(`/api/auth/forgetPassword`, {

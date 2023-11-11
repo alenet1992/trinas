@@ -1,4 +1,4 @@
-"use Client";
+"use client";
 
 import React, { useEffect, useState } from "react";
 
@@ -8,12 +8,13 @@ import Loading from "@/app/loading";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Store/store";
 import { useRouter } from "next/navigation";
-import { delete_a_product, get_all_clientes } from "@/Services/Admin/product";
+import { get_all_clientes } from "@/Services/Admin/product";
 import Link from "next/link";
 import { IoIosAddCircle } from "react-icons/io";
 import { ClientModel } from "@/model/Client";
 import { delete_a_client } from "@/Services/Admin/cliente";
 import { toast } from "react-toastify";
+import { userAutenticated } from "@/Services/auth/UserAutenticated";
 
 type ProductData = {
   _id: string;
@@ -35,7 +36,7 @@ type ProductData = {
 
 export default function ClientListPage() {
   const { mutate } = useSWRConfig();
-  const router = useRouter();
+  const withPadding = !userAutenticated.isAdmin();
   const [prodData, setprodData] = useState<ProductData[] | []>([]);
   const isLoading = useSelector(
     (state: RootState) => state.Admin.productLoading
@@ -43,7 +44,7 @@ export default function ClientListPage() {
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState<ClientModel[] | []>([]);
 
-  const { data: clientData, isLoading: clientLoading } = useSWR(
+  const { data: clientData } = useSWR(
     "/gettingAllClientesFOrAdmin",
     get_all_clientes
   );
@@ -73,25 +74,27 @@ export default function ClientListPage() {
       selector: (row: ClientModel) => row?.note,
       sortable: true,
     },
-    {
-      name: "Ações",
-      cell: (row: ClientModel) => (
-        <div className="flex items-center justify-start px-2 h-20">
-          {/* <button
+    userAutenticated.isAdmin()
+      ? {
+          name: "Ações",
+          cell: (row: ClientModel) => (
+            <div className="flex items-center justify-start px-2 h-20">
+              {/* <button
             onClick={() => router.push(`/product/update-product/${row?._id}`)}
             className=" w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700"
           >
             Atualizar
           </button> */}
-          <button
-            onClick={() => handleDeleteCliente(row?._id as string)}
-            className=" w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded transition-all duration-700"
-          >
-            Apagar
-          </button>
-        </div>
-      ),
-    },
+              <button
+                onClick={() => handleDeleteCliente(row?._id as string)}
+                className=" w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded transition-all duration-700"
+              >
+                Apagar
+              </button>
+            </div>
+          ),
+        }
+      : {},
   ];
 
   const handleDeleteCliente = async (id: string = "") => {
@@ -138,7 +141,7 @@ export default function ClientListPage() {
   }, [search, prodData]);
 
   return (
-    <div className="w-full h-full">
+    <div className={`w-full h-full ${withPadding ? " p-12" : ""}`}>
       <div className="text-right m-2 mr-0">
         <Link href={"/dashboard/client/add-client"}>
           <button className="mb-4 sm:mb-0 inline-flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-4 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">

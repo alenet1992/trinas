@@ -17,7 +17,10 @@ export default function AdminNavbar() {
   };
 
   return (
-    <div className="fixed z-30" style={{ width: "calc(100% - 16rem);" }}>
+    <div
+      className="fixed z-30 custom-header"
+      style={{ width: "calc(100% - 16rem);" }}
+    >
       <div className="dark:text-black backdrop-blur-xl">
         <div className="flex-1">
           <div className="dropdown md:hidden">

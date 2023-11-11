@@ -1,15 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import StatsTiles from "@/components/StatsTiles";
 import GettingDatasLength from "@/app/tilesDatas/Tiles";
-
-interface tile {
-  icon: string;
-  color: string;
-  title: string;
-  count: number;
-}
 
 export default function TileContainer() {
   const [data, setData] = useState(GettingDatasLength());

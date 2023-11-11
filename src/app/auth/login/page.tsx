@@ -42,6 +42,8 @@ export default function Login() {
       dispatch(setUserData(JSON.parse(userDataString)));
       if (res?.finalData?.user?.role === "admin") {
         Router.push("/dashboard");
+      } else if (res?.finalData?.user?.role === "user") {
+        Router.push("/dashboard/client/list");
       } else {
         Router.push("/");
       }

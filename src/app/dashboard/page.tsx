@@ -16,10 +16,8 @@ import {
   setProdLoading,
   setProductData,
 } from "@/utils/AdminSlice";
-import Loading from "../loading";
 import { setNavActive } from "@/utils/AdminNavSlice";
-import { get_all_clientes, get_all_products } from "@/Services/Admin/product";
-import { get_all_orders } from "@/Services/Admin/order";
+import { get_all_products } from "@/Services/Admin/product";
 
 interface userData {
   email: String;
@@ -33,10 +31,7 @@ export default function Dashboard() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const user: userData | null = JSON.parse(
-      localStorage.getItem("user") || "{}"
-    );
-    if (!Cookies.get("token") || user?.role !== "admin") {
+    if (!Cookies.get("token")) {
       Router.push("/");
     }
     dispatch(setNavActive("Base"));
@@ -52,36 +47,12 @@ export default function Dashboard() {
     get_all_products
   );
 
-  // const { data: clientData, isLoading: clientLoading } = useSWR(
-  //   "/gettingAllClientesFOrAdmin",
-  //   get_all_clientes
-  // );
-
-  // if (productData?.success !== true) toast.error(productData?.message);
-  // const { data: orderData, isLoading: orderLoading } = useSWR(
-  //   "/gettingAllOrdersForAdmin",
-  //   get_all_orders
-  // );
-  // if (orderData?.success !== true) toast.error(orderData?.message);
-
   useEffect(() => {
     dispatch(setCategoryData(categoryData?.data));
     dispatch(setCatLoading(categoryLoading));
     dispatch(setProductData(productData?.data));
     dispatch(setProdLoading(productLoading));
-    // dispatch(setOrderData(orderData?.data));
-    // dispatch(setCatLoading(orderLoading));
-  }, [
-    categoryData,
-    //  dispatch,
-    categoryLoading,
-    productData,
-    productLoading,
-    // orderData,
-    // orderLoading,
-  ]);
-
-  //<Loading /> :
+  }, [categoryData, categoryLoading, productData, productLoading]);
 
   return (
     <div className="w-full">

@@ -34,7 +34,7 @@ export default function AdminSidebar() {
             className="py-3 px-1 "
           >
             <button className="flex items-center justify-center">
-              <GiLoincloth className="mx-2" /> Cliente
+              <GiLoincloth className="mx-2" /> Lista de clientes
             </button>
           </li>
         </ul>
@@ -57,14 +57,6 @@ export default function AdminSidebar() {
             >
               <button className="flex items-center justify-center">
                 <BiCategory className="mx-2" /> Quantidade
-              </button>
-            </li>
-            <li
-              onClick={() => dispatch(setNavActive("activeProducts"))}
-              className="py-3 px-1 "
-            >
-              <button className="flex items-center justify-center">
-                <GiLoincloth className="mx-2" /> Products
               </button>
             </li>
           </ul>

@@ -8,8 +8,7 @@ import Joi from "joi";
 const AddClientSchema = Joi.object({
   name: Joi.string().required(),
   contact: Joi.number().required(),
-  address: Joi.string().required(),
-  nif: Joi.number().required()
+  address: Joi.string().required()
 })
 
 export const dynamic = 'force-dynamic'
@@ -18,14 +17,13 @@ export async function POST(req: Request) {
   try {
     await connectDB();
     const isAuthenticated = await AuthCheck(req);
-
-    if (isAuthenticated === 'admin') {
+    if (isAuthenticated === 'admin' || isAuthenticated === 'user') {
 
       const data: ClientModel = await req.json();
 
-      const { name, contact, address, note = '', nif } = data;
+      const { name, contact, address, note, nif } = data;
 
-      const { error } = AddClientSchema.validate({ name, contact, address, nif });
+      const { error } = AddClientSchema.validate({ name, contact, address });
 
       if (error) return NextResponse.json({ success: false, message: error.details[0].message.replace(/['"]+/g, '') });
 

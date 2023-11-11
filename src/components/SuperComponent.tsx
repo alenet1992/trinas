@@ -6,7 +6,7 @@ import ProductDataTable from "../app/dashboard/Product/ProductDataTable";
 import CategoryDataTable from "../app/dashboard/Category/CategoryDataTable";
 import PendingOrdersDataTable from "./PendingOrdersDataTable";
 import CompletedOrderDataTable from "./CompletedOrderDataTable";
-import ClientListPage from "@/app/dashboard/client/ClientListPage";
+import ClientListPage from "@/app/dashboard/client/list/page";
 import QuantityDataTable from "@/app/dashboard/quantity/QuantityDataTable";
 
 export default function SuperComponent() {
