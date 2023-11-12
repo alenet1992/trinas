@@ -9,8 +9,11 @@ interface userData {
 
 class UserAutenticated {
     checkUser = (): userData | null => {
+        if (typeof window === 'undefined') {
+            return null
+        }
         const user: userData | null = JSON.parse(
-            localStorage.getItem("user") || "{}"
+            localStorage?.getItem("user") || "{}"
         );
         return user;
     }

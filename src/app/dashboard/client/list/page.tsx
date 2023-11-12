@@ -3,11 +3,10 @@
 import React, { useEffect, useState } from "react";
 
 import useSWR, { useSWRConfig } from "swr";
-import DataTable, { TableColumn } from "react-data-table-component";
+import DataTable from "react-data-table-component";
 import Loading from "@/app/loading";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Store/store";
-import { useRouter } from "next/navigation";
 import { get_all_clientes } from "@/Services/Admin/product";
 import Link from "next/link";
 import { IoIosAddCircle } from "react-icons/io";
@@ -36,7 +35,7 @@ type ProductData = {
 
 export default function ClientListPage() {
   const { mutate } = useSWRConfig();
-  const withPadding = !userAutenticated.isAdmin();
+  const withPadding = false;
   const [prodData, setprodData] = useState<ProductData[] | []>([]);
   const isLoading = useSelector(
     (state: RootState) => state.Admin.productLoading
