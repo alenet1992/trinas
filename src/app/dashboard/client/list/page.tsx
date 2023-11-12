@@ -35,7 +35,7 @@ type ProductData = {
 
 export default function ClientListPage() {
   const { mutate } = useSWRConfig();
-  const withPadding = false;
+  const withPadding = !userAutenticated.isAdmin();
   const [prodData, setprodData] = useState<ProductData[] | []>([]);
   const isLoading = useSelector(
     (state: RootState) => state.Admin.productLoading
