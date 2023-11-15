@@ -120,18 +120,18 @@ export default function ClientListPage() {
           }
           // search on nif
           itemData = item?.nif?.toUpperCase();
-          if (itemData.indexOf(textData) > -1) {
+          if (itemData?.indexOf(textData) > -1) {
             return itemData.indexOf(textData) > -1;
           }
 
           // search on contact
           itemData = item?.contact.toString();
-          if (itemData.indexOf(textData) > -1) {
+          if (itemData?.indexOf(textData) > -1) {
             return itemData.indexOf(textData) > -1;
           }
 
           itemData = item?.address.toLowerCase();
-          if (itemData.indexOf(textData) > -1) {
+          if (itemData?.indexOf(textData) > -1) {
             return itemData.indexOf(textData) > -1;
           }
         })
