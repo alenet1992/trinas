@@ -61,3 +61,18 @@ body {
 .custom-header{
       width: calc(100% - 9rem) !important;
 }
+
+.react-calendar__month-view__days__day{
+  color: black;
+}
+
+.react-calendar__month-view__days__day--weekend{
+  background-color: red;
+}
+
+.react-calendar__navigation{
+  color: black;
+}
+p{
+  color:black;
+}

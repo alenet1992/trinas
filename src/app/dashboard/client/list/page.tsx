@@ -14,6 +14,7 @@ import { ClientModel } from "@/model/Client";
 import { delete_a_client } from "@/Services/Admin/cliente";
 import { toast } from "react-toastify";
 import { userAutenticated } from "@/Services/auth/UserAutenticated";
+import { Dialog } from "@/components/Dialog";
 
 type ProductData = {
   _id: string;
@@ -42,15 +43,13 @@ export default function ClientListPage() {
   );
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState<ClientModel[] | []>([]);
+  const [userInfo, setUserInfo] = useState<ClientModel>();
+  const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const { data: clientData } = useSWR(
     "/gettingAllClientesFOrAdmin",
     get_all_clientes
   );
-
-  useEffect(() => {
-    clientData?.data && setFilteredData(clientData.data);
-  }, [clientData]);
 
   const columns = [
     {
@@ -139,6 +138,15 @@ export default function ClientListPage() {
     }
   }, [search, prodData]);
 
+  useEffect(() => {
+    clientData?.data && setFilteredData(clientData.data);
+  }, [clientData]);
+
+  const handleHideDialog = () => {
+    console.log("handleHideDialog");
+    setIsVisible(false);
+  };
+
   return (
     <div className={`w-full h-full ${withPadding ? " p-12" : ""}`}>
       <div className="text-right m-2 mr-0">
@@ -178,9 +186,18 @@ export default function ClientListPage() {
               </div>
             </>
           }
-          className="bg-white px-4 "
+          className="bg-white px-4"
+          onRowClicked={(e) => {
+            setUserInfo(e);
+            setIsVisible(true);
+          }}
         />
       </div>
+      <Dialog
+        isVisible={isVisible}
+        info={userInfo}
+        handleHideDialog={handleHideDialog}
+      ></Dialog>
     </div>
   );
 }

@@ -40,8 +40,8 @@ export default function AdminSidebar() {
         </ul>
 
         <hr className="my-4 md:min-w-full" />
-        <ul style={{ opacity: 0.5, pointerEvents: "none" }}>
-          <ul>
+        <ul>
+          <ul style={{ opacity: 0.5, pointerEvents: "none" }}>
             <li style={{ padding: "10px 0px 5px 0px" }}>Gestão de pratos</li>
             <li
               onClick={() => dispatch(setNavActive("activeCategories"))}
@@ -64,33 +64,17 @@ export default function AdminSidebar() {
           <ul>
             <li style={{ padding: "10px 0px 5px 0px" }}>Gestão de take-away</li>
             <li
-              onClick={() => dispatch(setNavActive("activeCategories"))}
+              onClick={() => dispatch(setNavActive("activeMealPlanner"))}
               className="py-3 px-1 "
             >
               <button className="flex items-center justify-center">
-                <BiCategory className="mx-2" /> Novo Pedido
-              </button>
-            </li>
-            <li
-              onClick={() => dispatch(setNavActive("activeCategories"))}
-              className="py-3 px-1 "
-            >
-              <button className="flex items-center justify-center">
-                <BiCategory className="mx-2" /> Pedidos do dia
-              </button>
-            </li>
-            <li
-              onClick={() => dispatch(setNavActive("activeCategories"))}
-              className="py-3 px-1 "
-            >
-              <button className="flex items-center justify-center">
-                <BiCategory className="mx-2" /> Pedidos
+                <BiCategory className="mx-2" /> Gestão de ementa
               </button>
             </li>
           </ul>
 
           <hr className="my-4 md:min-w-full" />
-          <ul>
+          <ul style={{ opacity: 0.5, pointerEvents: "none" }}>
             <li style={{ padding: "10px 0px 5px 0px" }}>
               Gestão de facturação
             </li>
@@ -105,7 +89,7 @@ export default function AdminSidebar() {
           </ul>
 
           <hr className="my-4 md:min-w-full" />
-          <ul>
+          <ul style={{ opacity: 0.5, pointerEvents: "none" }}>
             <li style={{ padding: "10px 0px 5px 0px" }}>Gestão de stock</li>
             {/* <li
               onClick={() => dispatch(setNavActive("activeCategories"))}
