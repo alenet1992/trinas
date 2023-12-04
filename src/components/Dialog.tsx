@@ -2,7 +2,7 @@ import { ClientModel } from "@/model/Client";
 
 interface IDialog {
   isVisible: boolean;
-  info: ClientModel | null;
+  info?: ClientModel | null;
   handleHideDialog: (e: any) => void;
 }
 
