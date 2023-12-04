@@ -124,7 +124,7 @@ export default function MealPlannerList() {
           justifyContent: "center",
         }}
       >
-        <Calendar onChange={onChange} value={value} />
+        {/* <Calendar onChange={onChange} value={value} /> */}
       </div>
       <p>{value.toDateString()}</p>
       {/* <DataTable
