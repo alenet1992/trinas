@@ -9,6 +9,7 @@ import CompletedOrderDataTable from "./CompletedOrderDataTable";
 import ClientListPage from "@/app/dashboard/client/list/page";
 import QuantityDataTable from "@/app/dashboard/quantity/QuantityDataTable";
 import MealPlannerList from "@/app/dashboard/MealPlanner/MealPlannerList";
+import ClientCreatePage from "@/app/auth/register/page";
 
 export default function SuperComponent() {
   const navActive = useSelector((state: RootState) => state.AdminNav.ActiveNav);
@@ -24,16 +25,22 @@ export default function SuperComponent() {
     case "activeDeliveredOrder":
       return <CompletedOrderDataTable />;
     // For products
+    case "activeCreateUser":
+      return <ClientListPage />;
     case "activeClientList":
       return <ClientListPage />;
+    
+    case "activeCreatePage":
+      return <ClientCreatePage />;
     // For quantity
     case "activeQuantity":
       return <QuantityDataTable />;
     case "activeMealPlanner":
-      return <MealPlannerList />;
-
+      return <MealPlannerList />; 
+      
     default:
       return <TileContainer />;
+  
   }
 }
 

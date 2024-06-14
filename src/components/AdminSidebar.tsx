@@ -41,6 +41,18 @@ export default function AdminSidebar() {
 
         <hr className="my-4 md:min-w-full" />
         <ul>
+          <li style={{ padding: "10px 0px 5px 0px" }}>Gestão utilizadores</li>
+          <li
+            onClick={() => dispatch(setNavActive("activeCreatePage"))}
+            className="py-3 px-1 "
+          >
+            <button className="flex items-center justify-center">
+              <GiLoincloth className="mx-2" /> Adicionar 
+            </button>
+          </li>
+        </ul>
+        {  /* 
+        <ul>
           <ul style={{ opacity: 0.5, pointerEvents: "none" }}>
             <li style={{ padding: "10px 0px 5px 0px" }}>Gestão de pratos</li>
             <li
@@ -61,7 +73,7 @@ export default function AdminSidebar() {
             </li>
           </ul>
           <hr className="my-4 md:min-w-full" />
-          <ul>
+       <ul>
             <li style={{ padding: "10px 0px 5px 0px" }}>Gestão de take-away</li>
             <li
               onClick={() => dispatch(setNavActive("activeMealPlanner"))}
@@ -98,8 +110,8 @@ export default function AdminSidebar() {
               <button className="flex items-center justify-center">
                 <BiCategory className="mx-2" /> Entradas
               </button>
-            </li> */}
-          </ul>
+            </li> 
+          </ul>  
           {/* 
           <hr className="my-4 md:min-w-full" />
           <ul>
@@ -140,9 +152,9 @@ export default function AdminSidebar() {
             </button>
           </li> */}
 
-          {/* gestao do user */}
-        </ul>
-      </div>
-    </div>
+          {/* gestao do user 
+        </ul> */} 
+      </div> 
+    </div> 
   );
 }

@@ -13,12 +13,6 @@ import { TailSpin } from "react-loader-spinner";
 export default function Register() {
   const router = useRouter();
 
-  useEffect(() => {
-    if (Cookies.get("token")) {
-      router.push("/");
-    }
-  }, [router]);
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
