@@ -19,13 +19,6 @@ import {
 import { setNavActive } from "@/utils/AdminNavSlice";
 import { get_all_products } from "@/Services/Admin/product";
 
-interface userData {
-  email: String;
-  role: String;
-  _id: String;
-  name: String;
-}
-
 export default function Dashboard() {
   const Router = useRouter();
   const dispatch = useDispatch();

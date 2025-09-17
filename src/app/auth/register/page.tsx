@@ -1,14 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, FormEvent } from "react";
+import React, { useState, FormEvent } from "react";
 import Link from "next/link";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { register_me } from "@/Services/auth";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import Navbar from "@/components/Navbar";
-import { TailSpin } from "react-loader-spinner";
 
 export default function Register() {
   const router = useRouter();
@@ -24,16 +21,28 @@ export default function Register() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoding(true);
-    if (!formData.email) {
-      setError({ ...error, email: "Email Field is Required" });
-      return;
+    // Reset errors
+    setError({ email: "", password: "", name: "" });
+    
+    let hasError = false;
+    const newErrors = { email: "", password: "", name: "" };
+    
+    if (!formData.name.trim()) {
+      newErrors.name = "Campo de nome é obrigatório";
+      hasError = true;
     }
-    if (!formData.password) {
-      setError({ ...error, password: "Password Field is required" });
-      return;
+    if (!formData.email.trim()) {
+      newErrors.email = "Campo de email é obrigatório";
+      hasError = true;
     }
-    if (!formData.name) {
-      setError({ ...error, name: "Name Field is required" });
+    if (!formData.password.trim()) {
+      newErrors.password = "Campo de senha é obrigatório";
+      hasError = true;
+    }
+    
+    if (hasError) {
+      setError(newErrors);
+      setLoding(false);
       return;
     }
 
@@ -51,125 +60,99 @@ export default function Register() {
   };
 
   return (
-    <>
-      <Navbar />
-      <div className="w-full h-full">
-        <div className="flex flex-col text-center items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0 shadow-xl">
-          <div className="w-full bg-white rounded-lg shadow text-black md:mt-0 sm:max-w-md xl:p-0 ">
-            <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
-                Register your account
-              </h1>
-              <form
-                onSubmit={handleSubmit}
-                className="space-y-4 md:space-y-6"
-                action="#"
-              >
-                <div className="text-left">
-                  <label
-                    htmlFor="name"
-                    className="block mb-2 text-sm font-medium text-gray-900 "
-                  >
-                    Your Name
-                  </label>
-                  <input
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    type="text"
-                    name="name"
-                    id="namw"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-orange-600 focus:border-orange-600 block w-full p-2.5"
-                    placeholder="Name"
-                  />
-                  {error.name && (
-                    <p className="text-sm text-red-500">{error.name}</p>
-                  )}
-                </div>
-                <div className="text-left">
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 "
-                  >
-                    Your email
-                  </label>
-                  <input
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    type="email"
-                    name="email"
-                    id="email"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-orange-600 focus:border-orange-600 block w-full p-2.5"
-                    placeholder="name@company.com"
-                  />
-                  {error.email && (
-                    <p className="text-sm text-red-500">{error.email}</p>
-                  )}
-                </div>
-                <div className="text-left">
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-gray-900 "
-                  >
-                    Password
-                  </label>
-                  <input
-                    onChange={(e) =>
-                      setFormData({ ...formData, password: e.target.value })
-                    }
-                    type="password"
-                    name="password"
-                    id="password"
-                    placeholder="••••••••"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-orange-600 focus:border-orange-600 block w-full p-2.5"
-                  />
-                  {error.password && (
-                    <p className="text-sm text-red-500">{error.password}</p>
-                  )}
-                </div>
-
-                {loading ? (
-                  <button
-                    type="button"
-                    className="w-full flex items-center justify-center text-white bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                  >
-                    <TailSpin
-                      height="20"
-                      width="20"
-                      color="white"
-                      ariaLabel="tail-spin-loading"
-                      radius="1"
-                      wrapperStyle={{}}
-                      wrapperClass=""
-                      visible={true}
-                    />
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    className="w-full text-white bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                  >
-                    Sign up
-                  </button>
-                )}
-
-                <p className="text-sm  text-gray-500 ">
-                  Already have an account{" "}
-                  <Link
-                    href="/auth/login"
-                    className="font-medium text-orange-600 hover:underline "
-                  >
-                    Sign In
-                  </Link>
-                </p>
-              </form>
-            </div>
+    <div className="max-w-2xl mx-auto p-6">
+      <div className="bg-white rounded-xl shadow-lg border border-gray-200">
+        <div className="p-8">
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              Criar Nova Conta
+            </h1>
+            <p className="text-gray-600">Preencha os dados para criar sua conta</p>
           </div>
-        </div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                Nome Completo
+              </label>
+              <input
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                type="text"
+                name="name"
+                id="name"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                placeholder="Digite seu nome completo"
+              />
+              {error.name && (
+                <p className="text-sm text-red-500 mt-1">{error.name}</p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                Email
+              </label>
+              <input
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                type="email"
+                name="email"
+                id="email"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                placeholder="seu@email.com"
+              />
+              {error.email && (
+                <p className="text-sm text-red-500 mt-1">{error.email}</p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+                Senha
+              </label>
+              <input
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Digite sua senha"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+              />
+              {error.password && (
+                <p className="text-sm text-red-500 mt-1">{error.password}</p>
+              )}
+            </div>
 
-        <ToastContainer />
+            <div className="flex gap-4">
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-1 px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              >
+                {loading ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Criando...
+                  </>
+                ) : (
+                  "Criar Conta"
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+    </div>
   );
 }

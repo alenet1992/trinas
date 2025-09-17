@@ -52,34 +52,34 @@ export default function ProductDataTable() {
 
   const columns = [
     {
-      name: "Name",
+      name: "Nome",
       selector: (row: ProductData) => row?.name,
       sortable: true,
     },
     {
-      name: "Category",
+      name: "Categoria",
       selector: (row: ProductData) => row?.category?.name,
       sortable: true,
     },
     {
-      name: "Image",
+      name: "Imagem",
       cell: (row: ProductData) => <p>{row.createdAt}</p>,
     },
     {
-      name: "Action",
+      name: "Ação",
       cell: (row: ProductData) => (
         <div className="flex items-center justify-start px-2 h-20">
           <button
             onClick={() => router.push(`/product/update-product/${row?._id}`)}
             className=" w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700"
           >
-            Update
+            Atualizar
           </button>
           <button
             onClick={() => handleDeleteProduct(row?._id)}
             className=" w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded transition-all duration-700"
           >
-            Delete
+            Eliminar
           </button>
         </div>
       ),
@@ -126,7 +126,7 @@ export default function ProductDataTable() {
         key={"ThisProductData"}
         pagination
         keyField="id"
-        title={`Products list`}
+        title={`Lista de Pratos`}
         fixedHeader
         fixedHeaderScrollHeight="500px"
         selectableRows

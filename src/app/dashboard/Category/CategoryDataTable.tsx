@@ -43,29 +43,29 @@ export default function CategoryDataTable() {
 
   const columns = [
     {
-      name: "Name",
+      name: "Nome",
       selector: (row: ICategory) => row?.name,
       sortable: true,
     },
     // {
-    //   name: 'Image',
-    //   cell: (row: CategoryData) => <Image src={row?.categoryImage} alt='No Image Found' className='py-2' width={100} height={100} />
+    //   name: 'Imagem',
+    //   cell: (row: CategoryData) => <Image src={row?.categoryImage} alt='Nenhuma Imagem Encontrada' className='py-2' width={100} height={100} />
     // },
     {
-      name: "Action",
+      name: "Ação",
       cell: (row: CategoryData) => (
         <div className="flex items-center justify-start px-2 h-20">
           <button
             onClick={() => router.push(`/category/update-category/${row?._id}`)}
             className=" w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700"
           >
-            Update
+            Atualizar
           </button>
           <button
             onClick={() => handleDeleteCategory(row?._id)}
             className=" w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded transition-all duration-700"
           >
-            Delete
+            Eliminar
           </button>
         </div>
       ),
@@ -101,7 +101,7 @@ export default function CategoryDataTable() {
       <div className="text-right m-2 mr-0">
         <Link href={"/category/add-category"}>
           <button className="mb-4 sm:mb-0 inline-flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-4 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-            New category
+            Nova categoria
           </button>
         </Link>
       </div>
@@ -111,7 +111,7 @@ export default function CategoryDataTable() {
         key={"ThisisCategoryData"}
         pagination
         keyField="id"
-        title={`Categories list`}
+        title={`Lista de tipos de pratos`}
         fixedHeader
         fixedHeaderScrollHeight="500px"
         selectableRows
@@ -119,16 +119,6 @@ export default function CategoryDataTable() {
         persistTableHead
         progressPending={isLoading}
         progressComponent={<Loading />}
-        subHeader
-        subHeaderComponent={
-          <input
-            className="w-60 dark:bg-transparent py-2 px-2  outline-none  border-b-2 border-orange-600"
-            type={"search"}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={"Procurar"}
-          />
-        }
         className="bg-white px-4 h-4/6 "
       />
     </div>
