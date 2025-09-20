@@ -22,18 +22,29 @@ export async function POST(req: any, res: any) {
   try {
     await connectDB();
     const isAuthenticated = await AuthCheck(req);
-
-    console.log(await req.formData());
-
+  
+    console.log('aqui');
     if (isAuthenticated === 'admin') {
 
-      const data = await req.json();
+      const formData = await req.formData();
 
-      const { name, description, category } = data;
+      const name = formData.get('name');
+      const description = formData.get('description');
+      const categoryID = formData.get('categoryID');
+      const quantJson = formData.get('quant');
+      
+      // Criar objeto de dados para validação e criação
+      const data = {
+        name,
+        description,
+        category: categoryID,
+        quant: quantJson ? JSON.parse(quantJson) : []
+      };
 
-      const { error } = AddProductSchema.validate({ name, description, category });
+      console.log('formData processed', data);
+      const { error } = AddProductSchema.validate({ name, description, category: categoryID });
 
-      if (error) return NextResponse.json({ success: false, message: error.details[0].message.replace(/['"]+/g, '') });
+      if (error) return NextResponse.json({ success: false, message: error.details[0].message.replace(/['"`]+/g, '') });
 
       const saveData = await Product.create(data);
 
