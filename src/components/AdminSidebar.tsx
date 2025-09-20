@@ -34,7 +34,7 @@ export default function AdminSidebar() {
       category: "Gestão de Utilizadores",
       items: [
         {
-          label: "Adicionar Utilizador",
+          label: "Lista de Utilizadores",
           icon: FiUserPlus,
           action: "activeCreatePage",
         },

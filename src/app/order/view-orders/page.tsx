@@ -68,6 +68,7 @@ export default function Page() {
   const [orderName, setOrderName] = useState('');
   const [orderType, setOrderType] = useState<'takeaway' | 'delivery'>('takeaway'); // Tipo específico para orderType
   const [pickupTime, setPickupTime] = useState<string>('');
+  const [showOrderFormModal, setShowOrderFormModal] = useState<boolean>(false);
   
   // Função para carregar os produtos do menu do dia atual
   const loadProducts = async () => {
@@ -262,7 +263,6 @@ export default function Page() {
       temp.setHours(parseInt(hours[0]), parseInt(hours[1]))
     }
 
-
       // Preparar dados da encomenda para a API
       const orderData = {
         user: user._id,
@@ -433,7 +433,7 @@ export default function Page() {
               </div>
               <input
                 type="text"
-                className="bg-white rounded-3xl shadow text-lg full w-full h-16 py-4 pl-16 transition-shadow focus:shadow-2xl focus:outline-none"
+                className="bg-white rounded-3xl shadow text-lg full w-full h-16 py-4 pl-16 transition-all duration-300 focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-orange-500"
                 placeholder="Procurar prato"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
@@ -485,7 +485,7 @@ export default function Page() {
                        <div
                          key={product.id}
                          role="button"
-                         className="select-none cursor-pointer transition-shadow overflow-hidden rounded-2xl bg-white shadow hover:shadow-lg"
+                         className="select-none cursor-pointer overflow-hidden rounded-2xl bg-white shadow hover:shadow-lg transition-all duration-300"
                          title={product.name}
                          onClick={() => addToCart(product)}
                        >
@@ -535,8 +535,8 @@ export default function Page() {
           {/* Carrinho lateral */}
           <div className="flex flex-col bg-white shadow-lg" style={{width: '32rem'}}>
             <div className="p-4 border-b">
-              <h2 className="text-xl font-semibold text-gray-800">Encomenda</h2>
-              <p className="text-sm text-gray-600">{cart.length} itens</p>
+              <h2 className="text-xl font-semibold text-gray-800">Carrinho</h2>
+              <p className="text-sm bg-gray-100 px-2 py-1 rounded-full inline-block text-gray-600">{cart.length} {cart.length === 1 ? "item" : "itens"}</p>
             </div>
             
             <div className="flex-1 overflow-y-auto p-4">
@@ -575,7 +575,7 @@ export default function Page() {
                         </div>
                         <button
                           onClick={() => removeFromCart(item.product.id)}
-                          className="text-xs text-red-600 hover:text-red-700 font-medium flex items-center"
+                          className="text-xs text-red-600 hover:text-white hover:bg-red-500 font-medium flex items-center rounded-full px-2 py-1 transition-all duration-300"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -591,83 +591,15 @@ export default function Page() {
             
             {cart.length > 0 && (
               <div className="p-4 border-t">
-                <div className="space-y-4 mb-4">
-                  <div>
-                    <label htmlFor="orderName" className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
-                    <input
-                      type="text"
-                      id="orderName"
-                      value={orderName}
-                      onChange={(e) => setOrderName(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                      placeholder="Nome para a encomenda"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Encomenda</label>
-                    <div className="flex space-x-4">
-                      <div className="flex items-center">
-                        <input
-                          type="radio"
-                          id="takeaway"
-                          name="orderType"
-                          value="takeaway"
-                          checked={orderType === 'takeaway'}
-                          onChange={() => setOrderType('takeaway')}
-                          className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300"
-                        />
-                        <label htmlFor="takeaway" className="ml-2 block text-sm text-gray-700">Takeaway</label>
-                      </div>
-                      <div className="flex items-center">
-                        <input
-                          type="radio"
-                          id="delivery"
-                          name="orderType"
-                          value="delivery"
-                          checked={orderType === 'delivery'}
-                          onChange={() => setOrderType('delivery')}
-                          className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300"
-                        />
-                        <label htmlFor="delivery" className="ml-2 block text-sm text-gray-700">Delivery</label>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {orderType === 'takeaway' && (
-                    <div>
-                      <label htmlFor="pickupTime" className="block text-sm font-medium text-gray-700 mb-1">Data e Hora de Levantamento</label>
-                      <input
-                        type="time"
-                        id="pickupTime"
-                        value={pickupTime}
-                        onChange={(e) => setPickupTime(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                      />
-                    </div>
-                  )}
-                </div>
-                
                 <div className="flex justify-between items-center mb-4">
                   <span className="font-semibold">Total:</span>
                   <span className="font-bold text-lg text-orange-600">{formatPrice(getCartTotal())}</span>
                 </div>
                 <button
-                  onClick={createOrder}
-                  disabled={isCreatingOrder}
-                  className="w-full bg-orange-500 text-white py-3 rounded-lg font-medium hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  onClick={() => setShowOrderFormModal(true)}
+                  className="w-full bg-orange-500 text-white py-3 rounded-lg font-medium hover:bg-orange-600 flex items-center justify-center transition-all duration-300 shadow-sm hover:shadow"
                 >
-                  {isCreatingOrder ? (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Criando...
-                    </>
-                  ) : (
-                    'Criar Encomenda'
-                  )}
+                  Criar Encomenda
                 </button>
               </div>
             )}
@@ -690,13 +622,13 @@ export default function Page() {
       
       {/* Modal de seleção de quantidade */}
       {showQuantityModal && selectedProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-md shadow-md p-4 w-80 max-w-full">
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50" style={{ backdropFilter: "blur(4px)" }}>
+          <div className="bg-white rounded-lg shadow-lg p-4 w-80 max-w-full animate-fadeIn transition-all duration-300 transform scale-100 hover:scale-[1.01]">
             <div className="flex justify-between items-center mb-3">
               <h3 className="text-base font-medium">Selecionar quantidade</h3>
               <button 
                 onClick={closeQuantityModal}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 p-1 transition-all duration-300"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -714,9 +646,9 @@ export default function Page() {
                       addToCart(selectedProduct, price);
                       closeQuantityModal();
                     }}
-                    className="w-full flex justify-between items-center py-2 px-3 border border-gray-200 rounded bg-gray-50 hover:bg-gray-100 transition-colors"
+                    className="w-full flex justify-between items-center py-2 px-3 border border-gray-200 rounded-full bg-gray-50 hover:bg-gray-100 transition-all duration-300 shadow-sm hover:shadow"
                   >
-                    <span  className='text-black'>{index==0 ? '1 dose' : '1/2 dose'}</span>
+                    <span className='text-black'>{index==0 ? '1 dose' : '1/2 dose'}</span>
                     <span className="text-green-600 font-medium">{formatPrice(price.value)}</span>
                   </button>
                 ))}
@@ -726,9 +658,119 @@ export default function Page() {
             <div className="flex justify-end mt-2">
               <button
                 onClick={closeQuantityModal}
-                className="px-3 py-1.5 text-xs text-gray-500 hover:text-gray-700"
+                className="px-3 py-1.5 text-xs text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-all duration-300"
               >
                 Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Modal de formulário de encomenda */}
+      {showOrderFormModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50" style={{ backdropFilter: "blur(4px)" }}>
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto animate-fadeIn transition-all duration-300 transform scale-100 hover:scale-[1.01]">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-800">Configurar Encomenda</h3>
+              <button 
+                onClick={() => setShowOrderFormModal(false)}
+                className="text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 p-1 transition-all duration-300"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="space-y-4 mb-6">
+              <div>
+                <label htmlFor="orderName" className="block text-sm font-medium text-gray-700 mb-1">Nome do cliente</label>
+                <input
+                  type="text"
+                  id="orderName"
+                  value={orderName}
+                  onChange={(e) => setOrderName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 transition-all duration-300"
+                  placeholder="Nome para a encomenda"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Encomenda</label>
+                <div className="flex space-x-4">
+                  <div className="flex items-center transition-all duration-300 hover:bg-gray-50 p-2 rounded-full">
+                    <input
+                      type="radio"
+                      id="takeaway"
+                      name="orderType"
+                      value="takeaway"
+                      checked={orderType === 'takeaway'}
+                      onChange={() => setOrderType('takeaway')}
+                      className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300"
+                    />
+                    <label htmlFor="takeaway" className="ml-2 block text-sm text-gray-700">Takeaway</label>
+                  </div>
+                  <div className="flex items-center transition-all duration-300 hover:bg-gray-50 p-2 rounded-full">
+                    <input
+                      type="radio"
+                      id="delivery"
+                      name="orderType"
+                      value="delivery"
+                      checked={orderType === 'delivery'}
+                      onChange={() => setOrderType('delivery')}
+                      className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300"
+                    />
+                    <label htmlFor="delivery" className="ml-2 block text-sm text-gray-700">Delivery</label>
+                  </div>
+                </div>
+              </div>
+              
+              {orderType === 'takeaway' && (
+                <div>
+                  <label htmlFor="pickupTime" className="block text-sm font-medium text-gray-700 mb-1">Data e Hora de Levantamento</label>
+                  <input
+                    type="time"
+                    id="pickupTime"
+                    value={pickupTime}
+                    onChange={(e) => setPickupTime(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 transition-all duration-300"
+                  />
+                </div>
+              )}
+            </div>
+            
+            <div className="flex justify-between items-center mb-4">
+              <span className="font-semibold">Total:</span>
+              <span className="font-bold text-lg text-orange-600">{formatPrice(getCartTotal())}</span>
+            </div>
+            
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setShowOrderFormModal(false)}
+                className="flex-1 py-2 px-4 border border-gray-300 rounded-full text-gray-700 bg-white hover:bg-gray-50 shadow-sm hover:shadow transition-all duration-300"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  setShowOrderFormModal(false);
+                  createOrder();
+                }}
+                disabled={isCreatingOrder}
+                className="flex-1 bg-orange-500 text-white py-2 px-4 rounded-full font-medium hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-sm hover:shadow transition-all duration-300"
+              >
+                {isCreatingOrder ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Criando...
+                  </>
+                ) : (
+                  'Criar Encomenda'
+                )}
               </button>
             </div>
           </div>
