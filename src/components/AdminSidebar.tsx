@@ -51,6 +51,19 @@ export default function AdminSidebar() {
             </button>
           </li>
         </ul>
+
+        <hr className="my-4 md:min-w-full" />
+        <ul>
+          <li style={{ padding: "10px 0px 5px 0px" }}>Gestão de ementa</li>
+          <li
+            onClick={() => dispatch(setNavActive("activeWeeklyMenu"))}
+            className="py-3 px-1 "
+          >
+            <button className="flex items-center justify-center">
+              <BiCategory className="mx-2" /> Ementa Semanal
+            </button>
+          </li>
+        </ul>
         {  /* 
         <ul>
           <ul style={{ opacity: 0.5, pointerEvents: "none" }}>

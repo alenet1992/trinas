@@ -1,7 +1,5 @@
 import Cookies from "js-cookie";
 
-
-
 export const add_new_product = async (formData: any) => {
   try {
     console.log('productData', formData);
