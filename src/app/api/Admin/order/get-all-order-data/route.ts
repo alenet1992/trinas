@@ -11,7 +11,7 @@ export async function GET(req: Request) {
     const isAuthenticated = await AuthCheck(req);
 
     if (isAuthenticated === 'admin') {
-      const getData = await Order.find({}).populate("orderItems.product").populate('user');
+      const getData = await Order.find({}).populate("orderItems.product").sort({ pickupTime: -1 }); // Ordenar por pickupTime em ordem crescente
       if (getData) {
         return NextResponse.json({ success: true, data: getData });
       } else {

@@ -6,7 +6,7 @@ const ProductPriceSchema = new mongoose.Schema({
     value: String,
     product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
+        ref: 'Products',
         required: true
     },
     quantity: {

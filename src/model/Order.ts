@@ -41,6 +41,9 @@ const OrderSchema = new mongoose.Schema({
     paidAt: { type: Date },
     isDelivered: { type: Boolean, default: false },
     deliveredAt: { type: Date },
+    orderName: { type: String },
+    orderType: { type: String, enum: ['takeaway', 'delivery'], default: 'takeaway' },
+    pickupTime: { type: Date },
 }, { timestamps: true });
 
 const Order = mongoose.models.Order || mongoose.model("Order", OrderSchema);

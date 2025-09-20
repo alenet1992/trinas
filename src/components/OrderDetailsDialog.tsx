@@ -1,0 +1,185 @@
+import React from "react";
+import Image from "next/image";
+import { format } from "date-fns";
+import { pt } from "date-fns/locale";
+
+interface Order {
+  orderName: string;
+  orderType: 'takeaway' | 'delivery';
+  createdAt: string;
+  deliveredAt: string;
+  isDelivered: boolean;
+  isPaid: boolean;
+  itemsPrice: number;
+  orderItems: {
+    qty: number;
+    product: {
+      productImage: string;
+      productName: string;
+      productPrice: number;
+      _id: string;
+    };
+    _id: string;
+  }[];
+  paidAt: string;
+  paymentMethod: string;
+  shippingAddress?: {
+    address: string;
+    city: string;
+    country: string;
+    fullName: string;
+    postalCode: number;
+  };
+  shippingPrice: number;
+  taxPrice: number;
+  totalPrice: number;
+  user: {
+    email: string;
+    name: string;
+    _id: string;
+  };
+  _id: string;
+}
+
+interface IOrderDetailsDialog {
+  isVisible: boolean;
+  order?: Order | null;
+  handleHideDialog: () => void;
+}
+
+export const OrderDetailsDialog = (props: IOrderDetailsDialog) => {
+  const { isVisible, order, handleHideDialog } = props;
+
+  if (!order) {
+    return null;
+  }
+
+  return (
+    <div
+      id="order-details-modal"
+      data-modal-backdrop="static"
+      aria-hidden="true"
+      className={`${
+        !isVisible ? "hidden" : ""
+      } overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-screen`}
+      style={{ backgroundColor: "rgba(17, 24, 39, 0.7)", backdropFilter: "blur(4px)" }}
+    >
+      <div className="p-4 w-full max-w-4xl max-h-full mx-auto animate-fadeIn">
+        <div className="relative bg-white rounded-2xl shadow-lg border border-gray-100 overflow-y-auto max-h-[90vh]">
+          <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-100">
+            <h3 className="text-xl font-semibold text-gray-800">
+              Pedido #{order._id.substring(order._id.length - 6)}
+            </h3>
+            <button
+              type="button"
+              className="text-gray-400 bg-transparent hover:bg-gray-100 hover:text-gray-900 rounded-full text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-all duration-200"
+              data-modal-hide="order-details-modal"
+              onClick={handleHideDialog}
+            >
+              <svg
+                className="w-3 h-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 14"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                />
+              </svg>
+              <span className="sr-only">Fechar</span>
+            </button>
+          </div>
+
+          <div className="p-4 md:p-5 space-y-4 bg-gray-50 bg-opacity-50">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
+              <div>
+                <p className="text-sm text-gray-600">
+                  Criado em {order.createdAt ? format(new Date(order.createdAt), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: pt }) : "--"}
+                </p>
+                <p className="text-sm text-gray-600 mt-1">
+                  Tipo: <span className="font-medium">{order.orderType === 'takeaway' ? 'Takeaway' : 'Entrega'}</span>
+                </p>
+              </div>
+              <div className="flex items-center">
+                <span className="text-sm text-gray-600 mr-2">Estado da Entrega:</span>
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${order.isDelivered ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}>
+                  {order.isDelivered ? "Entregue" : "Pendente"}
+                </span>
+              </div>
+            </div>
+
+            <div className="border-t border-gray-200 pt-4">
+              <h4 className="text-lg font-medium text-gray-800 mb-3">Itens do Pedido</h4>
+              <div className="grid grid-cols-1 gap-4">
+                {order.orderItems.map((item) => (
+                  <div key={item._id} className="bg-white shadow-sm border border-gray-100 rounded-lg flex items-center overflow-hidden">
+                    <div className="flex flex-col p-3 flex-1">
+                      <h5 className="font-medium text-gray-800">{item.product.productName}</h5>
+                      {/* <p className="text-sm font-semibold text-blue-700">€{item.product.productPrice.toFixed(2)}</p> */}
+                      <p className="text-sm text-gray-600">
+                        Quantidade: <span className="font-semibold">{item.qty}</span>
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Total: <span className="font-semibold">€{(item.qty * item.product.productPrice).toFixed(2)}</span>
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-t border-gray-200 pt-4">
+              <h4 className="text-lg font-medium text-gray-800 mb-3">Resumo do Pedido</h4>
+              <div className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
+                <div className="flex justify-between py-2 mt-2 pt-2">
+                  <span className="text-gray-800 font-medium">Total:</span>
+                  <span className="font-bold text-blue-700">€{order.totalPrice.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+
+            {order.shippingAddress && (
+              <div className="border-t border-gray-200 pt-4">
+                <h4 className="text-lg font-medium text-gray-800 mb-3">Informações de Entrega</h4>
+                <div className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
+                  <p className="text-sm text-gray-600 mb-2">
+                    <span className="font-medium">Nome:</span> {order.shippingAddress.fullName}
+                  </p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    <span className="font-medium">Endereço:</span> {order.shippingAddress.address}
+                  </p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    <span className="font-medium">Cidade:</span> {order.shippingAddress.city}
+                  </p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    <span className="font-medium">Código Postal:</span> {order.shippingAddress.postalCode}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium">País:</span> {order.shippingAddress.country}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="border-t border-gray-200 pt-4">
+              <h4 className="text-lg font-medium text-gray-800 mb-3">Informações do Cliente</h4>
+              <div className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
+                <p className="text-sm text-gray-600 mb-2">
+                  <span className="font-medium">Nome:</span> {order.user.name}
+                </p>
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium">Email:</span> {order.user.email}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

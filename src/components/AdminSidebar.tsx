@@ -1,7 +1,8 @@
 import React from "react";
 import { AiFillHome } from "react-icons/ai";
-import { FiUsers, FiUserPlus, FiSettings, FiToggleLeft, FiUnderline } from "react-icons/fi";
+import { FiUsers, FiUserPlus, FiToggleLeft, FiUnderline } from "react-icons/fi";
 import { HiOutlineDocumentText } from "react-icons/hi";
+import { AiOutlineClockCircle } from "react-icons/ai";
 import { setNavActive } from "@/utils/AdminNavSlice";
 import { useDispatch } from "react-redux";
 
@@ -39,8 +40,7 @@ export default function AdminSidebar() {
         },
       ],
     },
-    {
-      category: "Gestão de take away",
+    {      category: "Gestão de take away",
       items: [
         {
           label: "Tipos de pratos",
@@ -56,6 +56,11 @@ export default function AdminSidebar() {
           label: "Ementa da semana",
           icon: FiUnderline,
           action: "activeWeeklyMenu",
+        },
+        {
+          label: "Encomendas do Dia",
+          icon: AiOutlineClockCircle,
+          action: "activeDailyOrders",
         },
       ],
     },  

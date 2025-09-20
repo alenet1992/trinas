@@ -156,7 +156,6 @@ export default function WeeklyMenu() {
     const newWeek = currentWeek - 1;
     setCurrentWeek(newWeek);
     initializeWeekIfNeeded(newWeek);
-    toast.info(`Navegando para ${newWeek === 0 ? 'semana atual' : 'semana anterior'}`);
   };
   
   // Função para navegar para a próxima semana
@@ -164,7 +163,6 @@ export default function WeeklyMenu() {
     const newWeek = currentWeek + 1;
     setCurrentWeek(newWeek);
     initializeWeekIfNeeded(newWeek);
-    toast.info(`Navegando para ${newWeek === 0 ? 'semana atual' : 'próxima semana'}`);
   };
   
   // Função para voltar para a semana atual
@@ -365,7 +363,7 @@ export default function WeeklyMenu() {
               <div className="block w-full overflow-x-auto">
                 {/* Seleção de dia da semana */}
                 <div className="flex flex-wrap mb-4 px-4 py-2">
-                  <div className="w-full mb-4">
+                  <div className="w-full mb-4 px-4">
                     <h4 className="font-semibold text-gray-700 mb-2">Selecione o dia da semana:</h4>
                     <div className="flex flex-wrap gap-2">
                       {weekDays.map((day, index) => {

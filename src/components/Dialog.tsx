@@ -24,18 +24,18 @@ export const Dialog = (props: IDialog) => {
         aria-hidden="true"
         className={`${
           !isVisible ? "hidden" : ""
-        }  overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full`}
-        style={{ backgroundColor: "#1f2937b5", height: "100%" }}
+        }  overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-screen`}
+        style={{ backgroundColor: "rgba(17, 24, 39, 0.7)", backdropFilter: "blur(4px)" }}
       >
-        <div className="fixed p-4 w-full max-w-2xl max-h-full m-auto left-0	 right-0">
-          <div className="relative bg-white rounded-lg shadow">
-            <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-              <h3 className="text-xl font-semibold text-gray-900 ">
+        <div className="p-4 w-full max-w-2xl max-h-full mx-auto animate-fadeIn">
+          <div className="relative bg-white rounded-2xl shadow-lg border border-gray-100">
+            <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-800">
                 Informações - {name}
               </h3>
               <button
                 type="button"
-                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                className="text-gray-400 bg-transparent hover:bg-gray-100 hover:text-gray-900 rounded-full text-sm w-8 h-8 ms-auto inline-flex justify-center items-center transition-all duration-200"
                 data-modal-hide="static-modal"
                 onClick={handleHideDialog}
               >
@@ -58,21 +58,25 @@ export const Dialog = (props: IDialog) => {
               </button>
             </div>
 
-            <div className="p-4 md:p-5 space-y-4">
-              <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                <label className="text-gray-900 block">Nome:</label> {name}
-              </p>
-              <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                <label className="text-gray-900 block">Morada:</label> {address}
-              </p>
-              <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                <label className="text-gray-900 block">Contacto:</label>{" "}
-                {contact.toString()}
-              </p>
-              <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                <label className="text-gray-900 block">Observações:</label>{" "}
-                {note}
-              </p>
+            <div className="p-4 md:p-5 space-y-4 bg-gray-50 bg-opacity-50 rounded-b-2xl">
+              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-2">
+                <p className="text-base leading-relaxed text-gray-700 mb-3">
+                  <label className="text-gray-900 font-medium block mb-1 text-sm">Nome:</label>
+                  <span className="pl-2">{name}</span>
+                </p>
+                <p className="text-base leading-relaxed text-gray-700 mb-3">
+                  <label className="text-gray-900 font-medium block mb-1 text-sm">Morada:</label>
+                  <span className="pl-2">{address}</span>
+                </p>
+                <p className="text-base leading-relaxed text-gray-700 mb-3">
+                  <label className="text-gray-900 font-medium block mb-1 text-sm">Contacto:</label>
+                  <span className="pl-2">{contact.toString()}</span>
+                </p>
+                <p className="text-base leading-relaxed text-gray-700">
+                  <label className="text-gray-900 font-medium block mb-1 text-sm">Observações:</label>
+                  <span className="pl-2">{note}</span>
+                </p>
+              </div>
             </div>
           </div>
         </div>

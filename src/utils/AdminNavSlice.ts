@@ -2,10 +2,12 @@ import { createSlice } from '@reduxjs/toolkit'
 
 interface NavState {
     ActiveNav : string,
+    activeWeeklyMenu: boolean,
 }
 
 const initialState : NavState = {
-    ActiveNav : 'Base'
+    ActiveNav : 'Base',
+    activeWeeklyMenu: false
 }
 
 export const AdminNav = createSlice({

@@ -1,13 +1,7 @@
 "use client";
-import { get_all_orders_of_user } from "@/Services/common/order";
 import { RootState } from "@/Store/store";
-import OrdersDetailsDataTable from "@/components/OrdersDetailsDataTable";
-import { setOrder } from "@/utils/OrderSlice";
-import Cookies from "js-cookie";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { GrDeliver } from "react-icons/gr";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -18,6 +12,17 @@ interface userData {
   name: String;
 }
 
+interface ProductPrice {
+  _id: string;
+  value: string;
+  product: string | { _id: string };
+  quantity: {
+    _id: string;
+    name: string;
+    value: string;
+  };
+}
+
 interface Product {
   id: string;
   name: string;
@@ -25,6 +30,8 @@ interface Product {
   image: string;
   category: string;
   description: string;
+  prices?: ProductPrice[];
+  selectedQuantity?: string;
 }
 
 interface CartItem {
@@ -38,46 +45,99 @@ interface Order {
   total: number;
   status: 'pending' | 'preparing' | 'ready' | 'delivered';
   createdAt: Date;
+  orderName?: string;
+  orderType?: 'takeaway' | 'delivery';
+  pickupTime?: string | Date | null;
 }
 
-// Importar o serviço para buscar produtos do MongoDB
+// Importar os serviços para buscar produtos
 import { get_all_products } from "@/Services/Admin/product";
-
+import { get_products_for_today, getCurrentDayOfWeek } from "@/Services/common/weeklyMenu";
+import { getProductPricesByProductId } from "@/Services/Admin/product/price";
+import Cookies from 'js-cookie';
 
 export default function Page() {
-  const Router = useRouter();
-  const dispatch = useDispatch();
-  const user = useSelector(
-    (state: RootState) => state.User.userData
-  ) as userData | null;
-
-  // Estados para a interface dinâmica
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+  const [isFromDailyMenu, setIsFromDailyMenu] = useState(false);
+  const [currentDay, setCurrentDay] = useState('');
+  const [orderName, setOrderName] = useState('');
+  const [orderType, setOrderType] = useState<'takeaway' | 'delivery'>('takeaway'); // Tipo específico para orderType
+  const [pickupTime, setPickupTime] = useState<string>('');
   
-  // Função para carregar os produtos do MongoDB
+  // Função para carregar os produtos do menu do dia atual
   const loadProducts = async () => {
     try {
-      const response = await get_all_products();
-      if (response.success) {
-        // Mapear os produtos do MongoDB para o formato esperado pela interface Product
-        const mappedProducts = response.data.map((product: any) => ({
-          id: product._id,
-          name: product.name,
-          price: product.price || 0, // Valor padrão caso não exista
-          image: product.productImage || 'https://media.timeout.com/images/105749903/750/562/image.jpg', // Imagem padrão
-          category: product.category?.name || 'Sem categoria',
-          description: product.description || 'Sem descrição'
-        }));
+      // Buscar produtos do menu do dia atual
+      const todayResponse = await get_products_for_today();
+      
+      if (todayResponse.length > 0) {
+        // Mapear os produtos do menu do dia para o formato esperado pela interface Product
+        const mappedProductsPromises = todayResponse.map(async (product: any) => {
+          // Buscar preços por quantidade para este produto
+          const pricesResponse = await getProductPricesByProductId(product._id);
+          const productPrices = pricesResponse.success ? pricesResponse.data : [];
+          
+
+
+          console.log('pricesResponse', pricesResponse, productPrices);
+
+
+          return {
+            id: product._id,
+            name: product.name,
+            price: product.price || 0, // Valor padrão caso não exista
+            image: 'https://media.timeout.com/images/105749903/750/562/image.jpg', // Imagem padrão
+            category: product.category?.name || 'Sem categoria',
+            description: product.description || 'Sem descrição',
+            prices: productPrices
+          };
+        });
+        
+        const mappedProducts = await Promise.all(mappedProductsPromises);
+        
+        const today = getCurrentDayOfWeek();
         setProducts(mappedProducts);
         setFilteredProducts(mappedProducts); // Atualizar também os produtos filtrados
+        setIsFromDailyMenu(true);
+        setCurrentDay(today);
       } else {
-        toast.error("Erro ao carregar produtos");
-        console.error("Erro ao carregar produtos:", response.error);
+        // Se não houver produtos no menu do dia, carregar todos os produtos como fallback
+        const response = await get_all_products();
+        if (response.success) {
+          // Mapear os produtos do MongoDB para o formato esperado pela interface Product
+          const mappedProductsPromises = response.data.map(async (product: any) => {
+            // Buscar preços por quantidade para este produto
+            const pricesResponse = await getProductPricesByProductId(product._id);
+            const productPrices = pricesResponse.success ? pricesResponse.data : [];
+            
+
+            return {
+              id: product._id,
+              name: product.name,
+              price: product.price || 0, // Valor padrão caso não exista
+              image: product.productImage || 'https://media.timeout.com/images/105749903/750/562/image.jpg', // Imagem padrão
+              category: product.category?.name || 'Sem categoria',
+              description: product.description || 'Sem descrição',
+              prices: productPrices
+            };
+          });
+          
+          const mappedProducts = await Promise.all(mappedProductsPromises);
+          
+          setProducts(mappedProducts);
+          setFilteredProducts(mappedProducts); // Atualizar também os produtos filtrados
+          setIsFromDailyMenu(false);
+          setCurrentDay('');
+          toast.info("Não há menu definido para hoje. Mostrando todos os produtos disponíveis.");
+        } else {
+          toast.error("Erro ao carregar produtos");
+          console.error("Erro ao carregar produtos:", response.error);
+        }
       }
     } catch (error) {
       toast.error("Erro ao carregar produtos");
@@ -103,21 +163,49 @@ export default function Page() {
     }
   };
 
+  // Estado para controlar o modal de seleção de quantidade
+  const [showQuantityModal, setShowQuantityModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedQuantityPrice, setSelectedQuantityPrice] = useState<ProductPrice | null>(null);
+
+  // Função para abrir o modal de seleção de quantidade
+  const openQuantityModal = (product: Product) => {
+    setSelectedProduct(product);
+    setSelectedQuantityPrice(null);
+    setShowQuantityModal(true);
+  };
+
+  // Função para fechar o modal de seleção de quantidade
+  const closeQuantityModal = () => {
+    setShowQuantityModal(false);
+    setSelectedProduct(null);
+    setSelectedQuantityPrice(null);
+  };
+
   // Função para adicionar produto ao carrinho
-  const addToCart = (product: Product) => {
+  const addToCart = (product: Product, quantityPrice?: ProductPrice) => {
+    // Se temos preços por quantidade e nenhum foi selecionado, abrir modal
+    if (product.prices && product.prices.length > 0 && !quantityPrice) {
+      openQuantityModal(product);
+      return;
+    }
+
+    debugger
+    // Determinar o preço a ser usado
+    const priceToUse = quantityPrice ? parseFloat(quantityPrice.value) : product.price;
+    const productToAdd = quantityPrice ? {
+      ...product,
+      price: priceToUse,
+      selectedQuantity: quantityPrice.quantity.name
+    } : product;
+    
     setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.product.id === product.id);
-      if (existingItem) {
-        return prevCart.map(item => 
-          item.product.id === product.id 
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        return [...prevCart, { product, quantity: 1 }];
-      }
+      return [...prevCart, { product: productToAdd, quantity: 1 }];
     });
-    toast.success(`${product.name} adicionado ao carrinho!`);
+
+    console.log(cart);
+    
+    closeQuantityModal();
   };
 
   // Função para remover produto do carrinho
@@ -142,7 +230,11 @@ export default function Page() {
 
   // Função para calcular total do carrinho
   const getCartTotal = () => {
-    return cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+    return cart.reduce((total, item) => {
+      // Usar o preço específico da quantidade selecionada, se disponível
+      const price = item.product.price;
+      return total + (price * item.quantity);
+    }, 0);
   };
 
   // Função para criar nova encomenda
@@ -154,29 +246,94 @@ export default function Page() {
 
     setIsCreatingOrder(true);
     
-    // Simular delay de API
-    setTimeout(() => {
-      const newOrder: Order = {
-        id: `order-${Date.now()}`,
-        items: [...cart],
-        total: getCartTotal(),
-        status: 'pending',
-        createdAt: new Date()
+    try {
+      // Obter dados do usuário autenticado
+      const user = JSON.parse(localStorage?.getItem("user") || "{}");
+      
+      if (!user || !user._id) {
+        toast.error('Usuário não autenticado!');
+        setIsCreatingOrder(false);
+        return;
+      }
+      
+      const temp = new Date(); 
+      if(pickupTime) {
+      const hours = pickupTime.split(':');
+      temp.setHours(parseInt(hours[0]), parseInt(hours[1]))
+    }
+
+
+      // Preparar dados da encomenda para a API
+      const orderData = {
+        user: user._id,
+        orderItems: cart.map(item => ({
+          qty: item.quantity,
+          product: item.product.id,
+        })),
+        shippingAddress: {
+          fullName: orderName,
+          address: 'Endereço de entrega',
+          city: 'Cidade',
+          postalCode: 1000,
+          country: 'Portugal',
+        },
+        paymentMethod: 'Dinheiro',
+        itemsPrice: getCartTotal(),
+        shippingPrice: 0,
+        taxPrice: 0,
+        totalPrice: getCartTotal(),
+        orderName: orderName,
+        orderType: orderType, // 'takeaway' ou 'delivery'
+        pickupTime: orderType === 'takeaway' ? temp : null, // Hora prevista para levantamento (apenas para takeaway)
       };
       
-      setOrders(prevOrders => [newOrder, ...prevOrders]);
-      setCart([]);
+      // Chamar a API para criar a encomenda
+      const response = await fetch('/api/common/order/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${Cookies.get('token')}`
+        },
+        body: JSON.stringify(orderData),
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        // Criar objeto de encomenda para exibição na interface
+        const newOrder: Order = {
+          id: `order-${Date.now()}`,
+          items: [...cart],
+          total: getCartTotal(),
+          status: 'pending',
+          createdAt: new Date(),
+          orderName: orderName || user.name || 'Cliente',
+          orderType: orderType,
+          pickupTime: orderType === 'takeaway' ? new Date(pickupTime) : null
+        };
+        
+        setOrders(prevOrders => [newOrder, ...prevOrders]);
+        setCart([]);
+        toast.success(result.message || 'Encomenda criada com sucesso!');
+      } else {
+        toast.error(result.message || 'Erro ao criar encomenda!');
+      }
+    } catch (error) {
+      console.error('Erro ao criar encomenda:', error);
+      toast.error('Erro ao criar encomenda. Por favor, tente novamente!');
+    } finally {
       setIsCreatingOrder(false);
-      toast.success('Encomenda criada com sucesso!');
-    }, 1500);
+    }
   };
 
   // Função para formatar preço
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: number | string) => {
+    if (price === undefined || price === null) return '€0,00';
+    const numericPrice = typeof price === 'string' ? parseFloat(price) : price;
     return new Intl.NumberFormat('pt-PT', {
       style: 'currency',
       currency: 'EUR'
-    }).format(price / 1000); // Assumindo que os preços estão em centavos
+    }).format(numericPrice); // Os preços já estão no formato correto
   };
 
   // Effect para filtrar produtos quando a busca muda
@@ -232,7 +389,7 @@ export default function Page() {
                 </a>
               </li>
               <li>
-                <a href="#" className="flex items-center">
+                <a href="/order/daily-orders"  className="flex items-center">
                   <span className="flex items-center justify-center text-cyan-100 hover:bg-cyan-400 h-12 w-12 rounded-2xl">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -251,52 +408,6 @@ export default function Page() {
                   </span>
                 </a>
               </li>
-              {/* <li>
-                <a href="#" className="flex items-center">
-                  <span className="flex items-center justify-center text-cyan-100 hover:bg-cyan-400 h-12 w-12 rounded-2xl">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                      ></path>
-                    </svg>
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a href="#" className="flex items-center">
-                  <span className="flex items-center justify-center text-cyan-100 hover:bg-cyan-400 h-12 w-12 rounded-2xl">
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                      ></path>
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      ></path>
-                    </svg>
-                  </span>
-                </a>
-              </li> */}
             </ul>
           </div>
         </div>
@@ -330,6 +441,19 @@ export default function Page() {
             </div>
 
             <div className="h-full overflow-hidden mt-4">
+              {isFromDailyMenu && (
+                <div className="mx-2 mb-4 p-3 bg-green-100 border border-green-200 rounded-xl shadow-sm">
+                  <div className="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <h3 className="font-medium text-green-800">Menu do dia: {currentDay}</h3>
+                      <p className="text-sm text-green-600">Mostrando produtos disponíveis no menu de hoje</p>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="h-full overflow-y-auto px-2">
                 {filteredProducts.length === 0 && searchKeyword.length > 0 ? (
                   <div className="select-none bg-blue-gray-100 rounded-3xl flex flex-wrap content-center justify-center h-full opacity-25">
@@ -366,21 +490,40 @@ export default function Page() {
                          onClick={() => addToCart(product)}
                        >
                          <img
-                          //  src={product.image}
+                           src={product.image}
                            alt={product.name}
                            className="w-full h-32 object-cover"
                          />
-                         <div className="flex pb-3 px-3 text-sm -mt-3">
+                         <div className="flex pb-3 px-3 text-sm -mt-3 mt-2">
                            <p
                              className="flex-grow truncate mr-1"
                              style={{ color: "black" }}
                            >
                              {product.name}
                            </p>
-                           <p className="nowrap font-semibold">
-                             {formatPrice(product.price)}
-                           </p>
                          </div>
+                         
+                         {product.prices && product.prices.length > 0 && (
+                           <div className="px-3 pb-3 text-sm">
+                             <div className="grid grid-cols-2 gap-2">
+                               {product.prices.map((price, index) => (
+                                 <div 
+                                   key={price._id} 
+                                   className="flex justify-between bg-gray-50 p-2 rounded hover:bg-gray-200 cursor-pointer"
+                                   onClick={(e) => {
+                                     e.stopPropagation();
+                                     addToCart(product, price);
+                                   }}
+                                 >
+                                    <div className='d-flex'>
+                                   <span className="text-gray-700 font-medium">{index == 0 ? '1 dose' : '1/2 dose'}</span>
+                                   <span className="text-green-600 font-semibold">  {formatPrice(price.value)}</span>
+                                   </div>
+                                 </div>
+                               ))}
+                             </div>
+                           </div>
+                         )}
                        </div>
                      ))}
                    </div>
@@ -390,48 +533,54 @@ export default function Page() {
           </div>
 
           {/* Carrinho lateral */}
-          <div className="flex flex-col w-80 bg-white shadow-lg">
+          <div className="flex flex-col bg-white shadow-lg" style={{width: '32rem'}}>
             <div className="p-4 border-b">
-              <h2 className="text-xl font-semibold text-gray-800">Carrinho</h2>
+              <h2 className="text-xl font-semibold text-gray-800">Encomenda</h2>
               <p className="text-sm text-gray-600">{cart.length} itens</p>
             </div>
             
             <div className="flex-1 overflow-y-auto p-4">
               {cart.length === 0 ? (
                 <div className="text-center text-gray-500 mt-8">
-                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 11-4 0v-6m4 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
-                  </svg>
                   <p className="mt-2">Carrinho vazio</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {cart.map((item) => (
-                    <div key={item.product.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <img src={item.product.image} alt={item.product.name} className="w-12 h-12 object-cover rounded" />
+                    <div key={item.product.id} className="flex items-center space-x-4 p-4 bg-white border border-gray-100 shadow-sm rounded-lg">
+                      <img src={item.product.image} alt={item.product.name} className="w-16 h-16 object-cover rounded-md" />
                       <div className="flex-1">
-                        <h4 className="font-medium text-sm">{item.product.name}</h4>
-                        <p className="text-xs text-gray-600">{formatPrice(item.product.price)}</p>
+                        <h4 className="font-semibold text-base text-gray-800 mb-1">{item.product.name}</h4>
+                        <p className="text-sm font-medium text-green-600">{formatPrice(item.product.price)}</p>
+                        
+                        {item.product.selectedQuantity && (
+                          <p className="text-sm text-gray-600 mt-1">Quantidade: <span className="font-medium">{item.product.selectedQuantity}</span></p>
+                        )}
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() => updateCartQuantity(item.product.id, item.quantity - 1)}
-                          className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-300"
-                        >
-                          -
-                        </button>
-                        <span className="text-sm font-medium">{item.quantity}</span>
-                        <button
-                          onClick={() => updateCartQuantity(item.product.id, item.quantity + 1)}
-                          className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-300"
-                        >
-                          +
-                        </button>
+                      <div className="flex flex-col items-end space-y-2">
+                        <div className="flex items-center bg-gray-100 rounded-lg p-1" style={{color: 'black'}}>
+                          <button
+                            onClick={() => updateCartQuantity(item.product.id, item.quantity - 1)}
+                            className="w-7 h-7 rounded-md bg-white border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-colors"
+                          >
+                            -
+                          </button>
+                          <span className="text-sm font-semibold mx-3 min-w-[20px] text-center">{item.quantity}</span>
+                          <button
+                            onClick={() => updateCartQuantity(item.product.id, item.quantity + 1)}
+                            className="w-7 h-7 rounded-md bg-white border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-colors"
+                          >
+                            +
+                          </button>
+                        </div>
                         <button
                           onClick={() => removeFromCart(item.product.id)}
-                          className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center text-red-600 hover:bg-red-200 ml-2"
+                          className="text-xs text-red-600 hover:text-red-700 font-medium flex items-center"
                         >
-                          ×
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          Remover
                         </button>
                       </div>
                     </div>
@@ -442,6 +591,63 @@ export default function Page() {
             
             {cart.length > 0 && (
               <div className="p-4 border-t">
+                <div className="space-y-4 mb-4">
+                  <div>
+                    <label htmlFor="orderName" className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+                    <input
+                      type="text"
+                      id="orderName"
+                      value={orderName}
+                      onChange={(e) => setOrderName(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                      placeholder="Nome para a encomenda"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Encomenda</label>
+                    <div className="flex space-x-4">
+                      <div className="flex items-center">
+                        <input
+                          type="radio"
+                          id="takeaway"
+                          name="orderType"
+                          value="takeaway"
+                          checked={orderType === 'takeaway'}
+                          onChange={() => setOrderType('takeaway')}
+                          className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300"
+                        />
+                        <label htmlFor="takeaway" className="ml-2 block text-sm text-gray-700">Takeaway</label>
+                      </div>
+                      <div className="flex items-center">
+                        <input
+                          type="radio"
+                          id="delivery"
+                          name="orderType"
+                          value="delivery"
+                          checked={orderType === 'delivery'}
+                          onChange={() => setOrderType('delivery')}
+                          className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300"
+                        />
+                        <label htmlFor="delivery" className="ml-2 block text-sm text-gray-700">Delivery</label>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {orderType === 'takeaway' && (
+                    <div>
+                      <label htmlFor="pickupTime" className="block text-sm font-medium text-gray-700 mb-1">Data e Hora de Levantamento</label>
+                      <input
+                        type="time"
+                        id="pickupTime"
+                        value={pickupTime}
+                        onChange={(e) => setPickupTime(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                      />
+                    </div>
+                  )}
+                </div>
+                
                 <div className="flex justify-between items-center mb-4">
                   <span className="font-semibold">Total:</span>
                   <span className="font-bold text-lg text-orange-600">{formatPrice(getCartTotal())}</span>
@@ -468,35 +674,6 @@ export default function Page() {
           </div>
         </div>
         
-        {/* Lista de encomendas */}
-        {orders.length > 0 && (
-          <div className="absolute bottom-4 right-4 w-80 bg-white rounded-lg shadow-lg p-4 max-h-60 overflow-y-auto">
-            <h3 className="font-semibold mb-3">Encomendas Recentes</h3>
-            <div className="space-y-2">
-              {orders.slice(0, 3).map((order) => (
-                <div key={order.id} className="p-2 bg-gray-50 rounded text-sm">
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">#{order.id.slice(-6)}</span>
-                    <span className={`px-2 py-1 rounded text-xs ${
-                      order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                      order.status === 'preparing' ? 'bg-blue-100 text-blue-800' :
-                      order.status === 'ready' ? 'bg-green-100 text-green-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {order.status === 'pending' ? 'Pendente' :
-                       order.status === 'preparing' ? 'Preparando' :
-                       order.status === 'ready' ? 'Pronto' : 'Entregue'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between mt-1">
-                    <span>{order.items.length} itens</span>
-                    <span className="font-medium">{formatPrice(order.total)}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
       
       <ToastContainer
@@ -510,6 +687,53 @@ export default function Page() {
         draggable
         pauseOnHover
       />
+      
+      {/* Modal de seleção de quantidade */}
+      {showQuantityModal && selectedProduct && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-md shadow-md p-4 w-80 max-w-full">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-base font-medium">Selecionar quantidade</h3>
+              <button 
+                onClick={closeQuantityModal}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="mb-3">
+              <p className="text-md font-medium mb-2 text-center">{selectedProduct.name}</p>
+              <div className="space-y-1.5">
+                {selectedProduct.prices && selectedProduct.prices.map((price, index) => (
+                  <button
+                    key={price._id}
+                    onClick={() => {
+                      addToCart(selectedProduct, price);
+                      closeQuantityModal();
+                    }}
+                    className="w-full flex justify-between items-center py-2 px-3 border border-gray-200 rounded bg-gray-50 hover:bg-gray-100 transition-colors"
+                  >
+                    <span  className='text-black'>{index==0 ? '1 dose' : '1/2 dose'}</span>
+                    <span className="text-green-600 font-medium">{formatPrice(price.value)}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            <div className="flex justify-end mt-2">
+              <button
+                onClick={closeQuantityModal}
+                className="px-3 py-1.5 text-xs text-gray-500 hover:text-gray-700"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

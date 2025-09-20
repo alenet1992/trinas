@@ -5,8 +5,7 @@ import StatsTiles from "@/components/StatsTiles";
 import GettingDatasLength from "@/app/tilesDatas/Tiles";
 
 export default function TileContainer() {
-  const [data, setData] = useState(GettingDatasLength());
-
+  const [data] = useState(GettingDatasLength());
   return (
     <>
       {data?.map((tile: any, index: number) => {

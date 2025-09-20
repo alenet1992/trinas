@@ -2,6 +2,7 @@ import connectDB from "@/DB/connectDB";
 import { NextResponse } from "next/server";
 import Order from "@/model/Order";
 import AuthCheck from "@/middleware/AuthCheck";
+import mongoose from "mongoose";
 
 
 export const dynamic = 'force-dynamic'
@@ -12,26 +13,29 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
     
-
-    if (!id) return NextResponse.json({ status: 400, success: false, message: 'Please Login !' });
+    if (!id) return NextResponse.json({ status: 400, success: false, message: 'ID do pedido não fornecido' });
     const isAuthenticated = await AuthCheck(req);
 
     if (isAuthenticated) {
-      const getData = await Order.findById(id).populate("orderItems.product").populate('user');
+      // Validar se o ID é um ObjectId válido do MongoDB
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return NextResponse.json({ status: 400, success: false, message: 'ID do pedido inválido' });
+      }
+      
+      const getData = await Order.findById(id).populate("orderItems.product");
       if (getData) {
-        console.log(getData)
         return NextResponse.json({ success: true, data: getData });
       } else {
-        return NextResponse.json({ status: 204, success: false, message: 'No Order Found .' });
+        return NextResponse.json({ status: 404, success: false, message: 'Pedido não encontrado' });
       }
 
     } else {
-      return NextResponse.json({ success: false, message: "You are not authorized Please login!" });
+      return NextResponse.json({ status: 401, success: false, message: "Não autorizado. Por favor, faça login!" });
     }
 
 
   } catch (error) {
-    console.log('Error in getting  Orders details Data :', error);
-    return NextResponse.json({ status: 500, success: false, message: 'Something went wrong. Please try again!' });
+    console.log('Erro ao obter detalhes do pedido:', error);
+    return NextResponse.json({ status: 500, success: false, message: 'Ocorreu um erro. Por favor, tente novamente!' });
   }
 }
