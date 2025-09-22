@@ -342,7 +342,7 @@ export default function UserList() {
             </div>
             <input
               id="simple-search"
-              className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 shadow-sm"
+              className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-sm"
               placeholder="Procurar usuário"
               type={"search"}
               value={search}

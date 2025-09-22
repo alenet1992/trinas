@@ -67,7 +67,14 @@ interface Order {
   _id: string;
 }
 
-export default function DailyOrdersPage() {
+interface DailyOrdersPageProps {
+  inner?: boolean
+}
+
+
+export default function DailyOrdersPage({
+  inner = true
+}: DailyOrdersPageProps) {
   const [loading, setLoading] = useState<boolean>(true);
   const [orderData, setOrderData] = useState<Order[]>([]);
   const [filteredData, setFilteredData] = useState<Order[]>([]);
@@ -78,8 +85,6 @@ export default function DailyOrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isLoadingOrderDetails, setIsLoadingOrderDetails] = useState(false);
   const [activeTab, setActiveTab] = useState<'all' | 'takeaway' | 'delivery'>('all');
-
-  const user = useSelector((state: RootState) => state.User.userData);
 
   const fetchOrders = async () => {
     try {
@@ -169,6 +174,7 @@ export default function DailyOrdersPage() {
       name: "Código",
       selector: (row: Order) => row?._id,
       sortable: true,
+      maxWidth: "50px",
       cell: (row: Order) => (
         <Link href={`/order/view-orders-details/${row._id}` as any} className="text-[#373a4e] hover:underline font-medium">
           #{row._id.substring(row._id.length - 6)}
@@ -179,6 +185,7 @@ export default function DailyOrdersPage() {
       name: "Cliente",
       selector: (row: Order) => row?.orderName,
       sortable: true,
+      maxWidth: "130px",
       cell: (row: Order) => (
         <span className="font-medium">{row?.orderName}</span>
       ),
@@ -187,6 +194,7 @@ export default function DailyOrdersPage() {
       name: "Tipo de Pedido",
       selector: (row: Order) => row?.orderType,
       sortable: true,
+      maxWidth: "130px",
       cell: (row: Order) => (
         <span className={`px-3 py-1 rounded-full text-xs font-medium ${row.orderType === 'delivery' ? "bg-[#373a4e]/10 text-[#373a4e]" : "bg-indigo-100 text-indigo-700"}`}>
           {row.orderType === 'delivery' ? "Delivery" : "Takeway"}
@@ -197,9 +205,10 @@ export default function DailyOrdersPage() {
       name: "Hora Takeway",
       selector: (row: Order) => row?.pickupTime ? new Date(row.pickupTime).toISOString() : "",
       sortable: true,
+      maxWidth: "100px",
       cell: (row: Order) => (
         <span className="text-gray-600">
-          {row?.pickupTime ? format(new Date(row.pickupTime), "dd/MM HH:mm") : "N/A"}
+          {row?.pickupTime ? format(new Date(row.pickupTime), "HH:mm") : "N/A"}
         </span>
       ),
     },
@@ -207,6 +216,7 @@ export default function DailyOrdersPage() {
       name: "Total",
       selector: (row: Order) => row?.totalPrice,
       sortable: true,
+      maxWidth: "80px",
       cell: (row: Order) => (
         <span className="font-semibold text-blue-700">
           €{row.totalPrice.toFixed(2)}
@@ -217,6 +227,7 @@ export default function DailyOrdersPage() {
       name: "Estado",
       selector: (row: Order) => (row?.isDelivered ? "Entregue" : "Pendente"),
       sortable: true,
+      maxWidth: "120px",
       cell: (row: Order) => (
         <span className={`px-3 py-1 rounded-full text-xs font-medium ${row.isDelivered ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}>
           {row.isDelivered ? "Entregue" : "Pendente"}
@@ -225,6 +236,8 @@ export default function DailyOrdersPage() {
     },
     {
       name: "Ações",
+      grow: 1,
+      minWidth: "200px",
       cell: (row: Order) => (
         <div className="flex space-x-2">
           <button 
@@ -276,15 +289,17 @@ export default function DailyOrdersPage() {
               Pedidos do Dia - <span className="text-[#373a4e]">{todayDate}</span>
             </h1>
             <div className="flex space-x-3">
-              <button 
-                onClick={() => window.history.back()}
-                className="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-700 hover:text-white rounded-lg transition-all duration-200 flex items-center"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               {inner && (
+                <button 
+                  onClick={() => window.history.back()}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-700 hover:text-white rounded-lg transition-all duration-200 flex items-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 Voltar
               </button>
+               )}
               <button 
                 onClick={handleRefresh} 
                 className={`px-4 py-2 bg-[#373a4e]/10 text-[#373a4e] hover:bg-[#373a4e] hover:text-white rounded-lg transition-all duration-200 flex items-center ${refreshing ? 'opacity-70 cursor-not-allowed' : ''}`}
@@ -293,6 +308,7 @@ export default function DailyOrdersPage() {
                 <FiRefreshCw className={`mr-2 ${refreshing ? 'animate-spin' : ''}`} />
                 Atualizar
               </button>
+              {inner && (
               <Link href={"/order/view-orders" as any}>
                 <button className="px-4 py-2 bg-[#373a4e] text-white rounded-lg hover:bg-[#2f3141] transition-all duration-200 flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -301,6 +317,7 @@ export default function DailyOrdersPage() {
                   Novo Pedido
                 </button>
               </Link>
+               )}
             </div>
           </div>
         )}
