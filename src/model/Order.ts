@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import User from "./User";
-import Product from "./Product";
 
 // Schema para o contador de pedidos
 const CounterSchema = new mongoose.Schema({

@@ -40,13 +40,14 @@ interface Order {
     _id: string;
   };
   _id: string;
+  status: 'new' | 'in_progress' | 'delivered';
 }
 
 interface IOrderDetailsDialog {
   isVisible: boolean;
   order?: Order | null;
   handleHideDialog: () => void;
-  onOrderStatusUpdate?: (orderId: string) => void;
+  onOrderStatusUpdate?: (orderId: string, status: string) => void;
 }
 
 export const OrderDetailsDialog = (props: IOrderDetailsDialog) => {
@@ -62,11 +63,11 @@ export const OrderDetailsDialog = (props: IOrderDetailsDialog) => {
     
     setIsUpdating(true);
     try {
-      const res = await update_order_status(order._id);
+      const res = await update_order_status(order._id, order.status);
       if (res?.success) {
         toast.success(res?.message || "Estado do pedido atualizado");
         if (onOrderStatusUpdate) {
-          onOrderStatusUpdate(order._id);
+          onOrderStatusUpdate(order._id, res?.status || '');
         }
       } else {
         toast.error(res?.message || "Erro ao atualizar estado do pedido");

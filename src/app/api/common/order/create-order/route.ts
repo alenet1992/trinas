@@ -27,6 +27,7 @@ const createOrderSchema = Joi.object({
     orderName: Joi.string(),
     orderType: Joi.string().valid('takeaway', 'delivery'),
     pickupTime: Joi.string().optional().allow('').allow(null),
+    status: Joi.string().valid('new', 'in_progress', 'delivered'),
 })
 
 export const dynamic = 'force-dynamic'

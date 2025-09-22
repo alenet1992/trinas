@@ -206,8 +206,6 @@ export default function Page() {
       return [...prevCart, { product: productToAdd, quantity: 1 }];
     });
 
-    console.log(cart);
-    
     closeQuantityModal();
   };
 
@@ -536,14 +534,13 @@ export default function Page() {
           {/* Carrinho lateral */}
           <div className="flex flex-col bg-white shadow-lg" style={{width: '32rem'}}>
             <div className="p-4 border-b">
-              <h2 className="text-xl font-semibold text-gray-800">Carrinho</h2>
+              <h2 className="text-xl font-semibold text-gray-800">Encomenda</h2>
               <p className="text-sm bg-gray-100 px-2 py-1 rounded-full inline-block text-gray-600">{cart.length} {cart.length === 1 ? "item" : "itens"}</p>
             </div>
             
             <div className="flex-1 overflow-y-auto p-4">
               {cart.length === 0 ? (
                 <div className="text-center text-gray-500 mt-8">
-                  <p className="mt-2">Carrinho vazio</p>
                 </div>
               ) : (
                 <div className="space-y-3">

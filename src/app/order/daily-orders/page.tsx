@@ -96,13 +96,19 @@ export default function DailyOrdersPage({
         const todayString = format(today, "yyyy-MM-dd");
         setTodayDate(format(today, "dd 'de' MMMM 'de' yyyy", { locale: pt }));
         
-        const todayOrders = response.data.filter((order: Order) => {
-          const orderDate = new Date(order.createdAt);
-          return format(orderDate, "yyyy-MM-dd") === todayString;
-        }).map((order: any) => ({
-          ...order,
-          status: order.isDelivered ? ('delivered' as const) : ('new' as const)
-        }));
+        const todayOrders = response.data
+          .filter((order: Order) => {
+            const orderDate = new Date(order.createdAt);
+            return format(orderDate, "yyyy-MM-dd") === todayString;
+          })
+          .sort((a: Order, b: Order) => {
+            const timeA = a.pickupTime ? new Date(a.pickupTime).getTime() : Infinity;
+            const timeB = b.pickupTime ? new Date(b.pickupTime).getTime() : Infinity;
+            return timeA - timeB;
+          })
+          .map((order: any) => ({
+            ...order       
+          }));
         
         setOrderData(todayOrders);
         setFilteredData(todayOrders);
@@ -147,8 +153,6 @@ export default function DailyOrdersPage({
     try {
       const res = await update_order_status(id, currentStatus);
       if (res?.success) {
-        toast.success(res?.message || "Estado do pedido atualizado");
-        
         // Update the list after the change
         const updatedOrders = orderData.map(order => {
           if (order._id === id) {
@@ -247,7 +251,7 @@ export default function DailyOrdersPage({
         const statusConfig = {
           new: { bg: "bg-red-200", text: "text-red-600", label: "Nova" },
           in_progress: { bg: "bg-yellow-200", text: "text-yellow-600", label: "Em Preparação" },
-          delivered: { bg: "bg-emerald-200", text: "text-emerald-600", label: "Pronta para Entrega" }
+          delivered: { bg: "bg-emerald-200", text: "text-emerald-600", label: "Entregue" }
         };
         const config = statusConfig[row.status];
         return (
@@ -274,7 +278,7 @@ export default function DailyOrdersPage({
               onClick={() => updateOrderStatus(row._id, row.status)}
               className={`px-3 py-1 text-xs rounded-full transition-all duration-200 ${row.status === 'new' ? 'bg-red-50 text-red-600 hover:bg-red-600' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-600'} hover:text-white`}
             >
-              {row.status === 'new' ? 'Iniciar Preparação' : 'Marcar como Pronta'}
+              {row.status === 'new' ? 'Iniciar Preparação' : 'Marcar como Entregue'}
             </button>
           )}
         </div>
