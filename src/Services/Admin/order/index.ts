@@ -21,22 +21,30 @@ export const get_all_orders = async () => {
 
 
 
-export const update_order_status = async (id : any) => {
-  console.log(id)
+export const update_order_status = async (id: string, currentStatus: 'new' | 'in_progress' | 'delivered') => {
   try {
+    let nextStatus = currentStatus;
+    
+    if (currentStatus === 'new') {
+      nextStatus = 'in_progress';
+    } else if (currentStatus === 'in_progress') {
+      nextStatus = 'delivered';
+    }
+
     const res = await fetch(`/api/Admin/order/update-order-status`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${Cookies.get('token')}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(id),
-    })
+      body: JSON.stringify({ id, status: nextStatus }),
+    });
 
     const data = await res.json();
     return data;
   } catch (error) {
-    console.log('Error in updating order status (service) =>', error)
+    console.log('Error in updating order status (service) =>', error);
+    throw error;
   }
 }
 

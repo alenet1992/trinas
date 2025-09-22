@@ -10,11 +10,22 @@ export async function PUT(req: Request) {
 
     if (isAuthenticated === 'admin') {
       const data = await req.json();
-      const id = data;
+      const { id, status } = data;
 
-      if(!id) return NextResponse.json({ success: false, message: "Please provide the order id!" });
+      if (!id || !status) {
+        return NextResponse.json({ success: false, message: "Please provide both order id and status!" });
+      }
 
-      const saveData = await Order.findOneAndUpdate({_id: id}, { isDelivered : true }, { new: true });
+      const updateData = {
+        status,
+        isDelivered: status === 'delivered'
+      };
+
+      const saveData = await Order.findOneAndUpdate(
+        { _id: id },
+        updateData,
+        { new: true }
+      );
 
       if (saveData) {
         return NextResponse.json({ success: true, message: "Order status updated successfully!" });

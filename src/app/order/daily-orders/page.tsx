@@ -5,8 +5,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DataTable from "react-data-table-component";
 import Loading from "@/app/loading";
-import { useSelector } from "react-redux";
-import { RootState } from "@/Store/store";
 import Link from "next/link";
 import { get_all_orders, update_order_status } from "@/Services/Admin/order";
 import { get_order_details } from "@/Services/common/order";
@@ -16,6 +14,7 @@ import { FiRefreshCw } from "react-icons/fi";
 import { OrderDetailsDialog } from "@/components/OrderDetailsDialog";
 
 interface Order {
+  orderNumber: number;
   orderName: string;
   orderType: 'takeaway' | 'delivery';
   createdAt: string;
@@ -24,6 +23,7 @@ interface Order {
   isPaid: boolean;
   itemsPrice: number;
   pickupTime?: string | Date;
+  status: 'new' | 'in_progress' | 'delivered';
   orderItems: {
     qty: number;
     product: {
@@ -99,7 +99,10 @@ export default function DailyOrdersPage({
         const todayOrders = response.data.filter((order: Order) => {
           const orderDate = new Date(order.createdAt);
           return format(orderDate, "yyyy-MM-dd") === todayString;
-        });
+        }).map((order: any) => ({
+          ...order,
+          status: order.isDelivered ? ('delivered' as const) : ('new' as const)
+        }));
         
         setOrderData(todayOrders);
         setFilteredData(todayOrders);
@@ -123,30 +126,6 @@ export default function DailyOrdersPage({
     fetchOrders();
   };
 
-  const updateOrderStatus = async (id: string): Promise<void> => {
-    try {
-      const res = await update_order_status(id);
-      if (res?.success) {
-        toast.success(res?.message || "Estado do pedido atualizado");
-        
-        // Update the list after the change
-        const updatedOrders = orderData.map(order => {
-          if (order._id === id) {
-            return { ...order, isDelivered: true };
-          }
-          return order;
-        });
-        
-        setOrderData(updatedOrders);
-        setFilteredData(updatedOrders);
-      } else {
-        toast.error(res?.message || "Erro ao atualizar estado do pedido");
-      }
-    } catch (error) {
-      toast.error("Erro ao atualizar estado do pedido");
-    }
-  };
-
   const handleViewOrderDetails = async (orderId: string) => {
     setIsLoadingOrderDetails(true);
     try {
@@ -163,6 +142,42 @@ export default function DailyOrdersPage({
       setIsLoadingOrderDetails(false);
     }
   };
+
+  const updateOrderStatus = async (id: string, currentStatus: 'new' | 'in_progress' | 'delivered'): Promise<void> => {
+    try {
+      const res = await update_order_status(id, currentStatus);
+      if (res?.success) {
+        toast.success(res?.message || "Estado do pedido atualizado");
+        
+        // Update the list after the change
+        const updatedOrders = orderData.map(order => {
+          if (order._id === id) {
+            let nextStatus;
+            if (order.status === 'new') {
+              nextStatus = 'in_progress' as const;
+            } else if (order.status === 'in_progress') {
+              nextStatus = 'delivered' as const;
+            } else {
+              return order; // Se já estiver entregue, não altera o status
+            }
+            return { 
+              ...order, 
+              status: nextStatus,
+              isDelivered: nextStatus === 'delivered'
+            };
+          }
+          return order;
+        });
+        
+        setOrderData(updatedOrders);
+        setFilteredData(updatedOrders);
+      } else {
+        toast.error(res?.message || "Erro ao atualizar estado do pedido");
+      }
+    } catch (error) {
+      toast.error("Erro ao atualizar estado do pedido");
+    }
+  };
   
   const handleHideOrderDetails = () => {
     setShowOrderDetails(false);
@@ -171,13 +186,13 @@ export default function DailyOrdersPage({
 
   const columns = [
     {
-      name: "Código",
-      selector: (row: Order) => row?._id,
+      name: "Senha",
+      selector: (row: Order) => row?.orderNumber,
       sortable: true,
       maxWidth: "50px",
       cell: (row: Order) => (
         <Link href={`/order/view-orders-details/${row._id}` as any} className="text-[#373a4e] hover:underline font-medium">
-          #{row._id.substring(row._id.length - 6)}
+          {row.orderNumber}
         </Link>
       ),
     },
@@ -225,14 +240,22 @@ export default function DailyOrdersPage({
     },
     {
       name: "Estado",
-      selector: (row: Order) => (row?.isDelivered ? "Entregue" : "Pendente"),
+      selector: (row: Order) => row?.status,
       sortable: true,
-      maxWidth: "120px",
-      cell: (row: Order) => (
-        <span className={`px-3 py-1 rounded-full text-xs font-medium ${row.isDelivered ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}>
-          {row.isDelivered ? "Entregue" : "Pendente"}
-        </span>
-      ),
+      maxWidth: "200px",
+      cell: (row: Order) => {
+        const statusConfig = {
+          new: { bg: "bg-red-200", text: "text-red-600", label: "Nova" },
+          in_progress: { bg: "bg-yellow-200", text: "text-yellow-600", label: "Em Preparação" },
+          delivered: { bg: "bg-emerald-200", text: "text-emerald-600", label: "Pronta para Entrega" }
+        };
+        const config = statusConfig[row.status];
+        return (
+          <span className={`px-3 py-1 rounded-full text-xs font-medium ${config.bg} ${config.text}`}>
+            {config.label}
+          </span>
+        );
+      },
     },
     {
       name: "Ações",
@@ -246,12 +269,12 @@ export default function DailyOrdersPage({
           >
             Detalhes
           </button>
-          {!row.isDelivered && (
+          {row.status !== 'delivered' && (
             <button
-              onClick={() => updateOrderStatus(row?._id)}
-              className="px-3 py-1 text-xs bg-green-50 text-green-600 hover:bg-green-600 hover:text-white rounded-full transition-all duration-200"
+              onClick={() => updateOrderStatus(row._id, row.status)}
+              className={`px-3 py-1 text-xs rounded-full transition-all duration-200 ${row.status === 'new' ? 'bg-red-50 text-red-600 hover:bg-red-600' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-600'} hover:text-white`}
             >
-              Entregar
+              {row.status === 'new' ? 'Iniciar Preparação' : 'Marcar como Pronta'}
             </button>
           )}
         </div>

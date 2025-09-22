@@ -57,11 +57,20 @@ const OrderSchema = new mongoose.Schema({
     orderName: { type: String },
     orderType: { type: String, enum: ['takeaway', 'delivery'], default: 'takeaway' },
     pickupTime: { type: Date },
+    status: { type: String, enum: ['new', 'in_progress', 'delivered'], default: 'new' },
 }, { timestamps: true });
 
-// Middleware pre-save para incrementar automaticamente o orderNumber
+// Middleware pre-save para incrementar automaticamente o orderNumber e sincronizar status
 OrderSchema.pre('save', async function(next) {
     const doc = this;
+    
+    // Sincroniza o status com isDelivered
+    if (doc.isDelivered && doc.status !== 'delivered') {
+        doc.status = 'delivered';
+    } else if (!doc.isDelivered && doc.status === 'delivered') {
+        doc.status = 'in_progress';
+    }
+    
     if (doc.isNew) {
         try {
             const counter = await Counter.findByIdAndUpdate(
@@ -70,6 +79,7 @@ OrderSchema.pre('save', async function(next) {
                 { new: true, upsert: true }
             );
             doc.orderNumber = counter.seq;
+            doc.status = 'new';
             next();
         } catch (error) {
             // Corrigindo o tipo do erro para ser compatível com CallbackError
