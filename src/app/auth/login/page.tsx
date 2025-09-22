@@ -41,9 +41,9 @@ export default function Login() {
       const userDataString = typeof userData === "string" ? userData : "";
       dispatch(setUserData(JSON.parse(userDataString)));
       if (res?.finalData?.user?.role === "admin") {
-        Router.push("/dashboard");
+        Router.push("/dashboard" as any);
       } else if (res?.finalData?.user?.role === "user") {
-        Router.push("/dashboard/client/list");
+        Router.push("/dashboard/client/list" as any);
       } else {
         Router.push("/");
       }
@@ -62,11 +62,11 @@ export default function Login() {
   return (
     <>
       <Navbar />
-      <div className="w-full h-screen bg-gray-50 text-black h-full">
-        <div className="flex flex-col items-center  text-center justify-center px-6 py-8 mx-auto h-screen lg:py-0 bg-grey">
-          <div className="w-full bg-white text-black rounded-lg shadow  md:mt-0 sm:max-w-md xl:p-0 ">
-            <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
+      <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 text-black">
+        <div className="flex flex-col items-center text-center justify-center px-6 py-12 mx-auto min-h-screen">
+          <div className="w-full bg-white/80 backdrop-blur-sm text-black rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 md:mt-0 sm:max-w-md xl:p-0">
+            <div className="p-8 space-y-4 md:space-y-6">
+              <h1 className="text-2xl font-bold leading-tight tracking-tight text-[#373a4e] md:text-3xl">
                 Login
               </h1>
               <form
@@ -88,7 +88,7 @@ export default function Login() {
                     type="email"
                     name="email"
                     id="email"
-                    className="bg-gray-50  border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-orange-600 focus:border-orange-600 block w-full p-2.5 "
+                    className="bg-gray-50/50 backdrop-blur-sm border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#373a4e] focus:border-[#373a4e] block w-full p-2.5 transition-all duration-200"
                     placeholder="name@company.com"
                   />
                   {error.email && (
@@ -110,7 +110,7 @@ export default function Login() {
                     name="password"
                     id="password"
                     placeholder="••••••••"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-orange-600 focus:border-orange-600 block w-full p-2.5"
+                    className="bg-gray-50/50 backdrop-blur-sm border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#373a4e] focus:border-[#373a4e] block w-full p-2.5 transition-all duration-200"
                   />
                   {error.password && (
                     <p className="text-sm text-red-500">{error.password}</p>
@@ -124,7 +124,7 @@ export default function Login() {
                         aria-describedby="remember"
                         type="checkbox"
                         checked
-                        className="w-4 h-4 bg-white  border border-gray-300 rounded focus:ring-3 focus:ring-orange-300  "
+                        className="w-4 h-4 bg-white border border-gray-300 rounded focus:ring-2 focus:ring-[#373a4e]/30"
                       />
                     </div>
                     <div className="ml-3 text-sm">
@@ -143,7 +143,7 @@ export default function Login() {
                 {loading ? (
                   <button
                     type="button"
-                    className="w-full flex items-center justify-center text-white bg-cyan-800	 hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800"
+                    className="w-full flex items-center justify-center text-white bg-[#373a4e] hover:bg-[#2f3141] focus:ring-4 focus:outline-none focus:ring-[#373a4e]/30 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-200"
                   >
                     <TailSpin
                       height="20"
@@ -159,19 +159,19 @@ export default function Login() {
                 ) : (
                   <button
                     type="submit"
-                    className="w-full text-white bg-cyan-800	da hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center  bg-cyan-800"
+                    className="w-full text-white bg-[#373a4e] hover:bg-[#2f3141] focus:ring-4 focus:outline-none focus:ring-[#373a4e]/30 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-200"
                   >
                     Sign in
                   </button>
                 )}
 
                 {/* <p className="text-sm text-black ">
-                  Don’t have an account yet?{" "}
+                  Ainda não tem uma conta?{" "}
                   <Link
                     href={"/auth/register"}
                     className="font-medium text-orange-600 hover:underline "
                   >
-                    Sign up
+                    Registar
                   </Link>
                 </p> */}
               </form>

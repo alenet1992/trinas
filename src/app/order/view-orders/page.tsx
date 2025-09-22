@@ -191,7 +191,6 @@ export default function Page() {
       return;
     }
 
-    debugger
     // Determinar o preço a ser usado
     const priceToUse = quantityPrice ? parseFloat(quantityPrice.value) : product.price;
     const productToAdd = quantityPrice ? {
@@ -691,7 +690,7 @@ export default function Page() {
                   id="orderName"
                   value={orderName}
                   onChange={(e) => setOrderName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 transition-all duration-300"
+                  className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 shadow-sm"
                   placeholder="Nome para a encomenda"
                 />
               </div>
@@ -734,7 +733,7 @@ export default function Page() {
                     id="pickupTime"
                     value={pickupTime}
                     onChange={(e) => setPickupTime(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 transition-all duration-300"
+                    className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-sm "
                   />
                 </div>
               )}

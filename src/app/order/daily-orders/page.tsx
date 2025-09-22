@@ -170,7 +170,7 @@ export default function DailyOrdersPage() {
       selector: (row: Order) => row?._id,
       sortable: true,
       cell: (row: Order) => (
-        <Link href={`/order/view-orders-details/${row._id}` as any} className="text-blue-600 hover:underline font-medium">
+        <Link href={`/order/view-orders-details/${row._id}` as any} className="text-[#373a4e] hover:underline font-medium">
           #{row._id.substring(row._id.length - 6)}
         </Link>
       ),
@@ -188,7 +188,7 @@ export default function DailyOrdersPage() {
       selector: (row: Order) => row?.orderType,
       sortable: true,
       cell: (row: Order) => (
-        <span className={`px-3 py-1 rounded-full text-xs font-medium ${row.orderType === 'delivery' ? "bg-blue-100 text-blue-700" : "bg-indigo-100 text-indigo-700"}`}>
+        <span className={`px-3 py-1 rounded-full text-xs font-medium ${row.orderType === 'delivery' ? "bg-[#373a4e]/10 text-[#373a4e]" : "bg-indigo-100 text-indigo-700"}`}>
           {row.orderType === 'delivery' ? "Delivery" : "Takeway"}
         </span>
       ),
@@ -229,7 +229,7 @@ export default function DailyOrdersPage() {
         <div className="flex space-x-2">
           <button 
             onClick={() => handleViewOrderDetails(row._id)}
-            className="px-3 py-1 text-xs bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-full transition-all duration-200"
+            className="px-3 py-1 text-xs bg-[#373a4e]/10 text-[#373a4e] hover:bg-[#373a4e] hover:text-white rounded-full transition-all duration-200"
           >
             Detalhes
           </button>
@@ -270,41 +270,40 @@ export default function DailyOrdersPage() {
   return (
     <div className="w-full bg-gray-50 min-h-screen pt-12">
       <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-
-        { todayDate && 
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
-          <h1 className="text-2xl font-bold text-gray-800" >
-            Pedidos do Dia - <span className="text-blue-600">{todayDate}</span>
-          </h1>
-          <div className="flex space-x-3">
-            <button 
-              onClick={() => window.history.back()}
-              className="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-700 hover:text-white rounded-lg transition-all duration-200 flex items-center"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              Voltar
-            </button>
-            <button 
-              onClick={handleRefresh} 
-              className={`px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition-all duration-200 flex items-center ${refreshing ? 'opacity-70 cursor-not-allowed' : ''}`}
-              disabled={refreshing}
-            >
-              <FiRefreshCw className={`mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-              Atualizar
-            </button>
-            <Link href={"/order/view-orders" as any}>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 flex items-center">
+        {todayDate && (
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+            <h1 className="text-2xl font-bold text-gray-800">
+              Pedidos do Dia - <span className="text-[#373a4e]">{todayDate}</span>
+            </h1>
+            <div className="flex space-x-3">
+              <button 
+                onClick={() => window.history.back()}
+                className="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-700 hover:text-white rounded-lg transition-all duration-200 flex items-center"
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Novo Pedido
+                Voltar
               </button>
-            </Link>
+              <button 
+                onClick={handleRefresh} 
+                className={`px-4 py-2 bg-[#373a4e]/10 text-[#373a4e] hover:bg-[#373a4e] hover:text-white rounded-lg transition-all duration-200 flex items-center ${refreshing ? 'opacity-70 cursor-not-allowed' : ''}`}
+                disabled={refreshing}
+              >
+                <FiRefreshCw className={`mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                Atualizar
+              </button>
+              <Link href={"/order/view-orders" as any}>
+                <button className="px-4 py-2 bg-[#373a4e] text-white rounded-lg hover:bg-[#2f3141] transition-all duration-200 flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Novo Pedido
+                </button>
+              </Link>
+            </div>
           </div>
-        </div>
-      }
+        )}
         {loading ? (
           <Loading />
         ) : (
@@ -316,7 +315,7 @@ export default function DailyOrdersPage() {
                   <button
                     onClick={() => setActiveTab('all')}
                     className={`inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group  text-black ${activeTab === 'all' 
-                      ? 'text-blue-600 border-blue-600 active' 
+                      ? 'text-blue-600 border-[#373a4e] active' 
                       : 'border-transparent hover:text-gray-600 hover:border-gray-300'}`}
                   >
                     Todos
@@ -345,14 +344,14 @@ export default function DailyOrdersPage() {
                   <button
                     onClick={() => setActiveTab('delivery')}
                     className={`inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group text-black ${activeTab === 'delivery' 
-                      ? 'text-blue-600 border-blue-600 active' 
+                      ? 'text-[#373a4e] border-[#373a4e] active' 
                       : 'border-transparent hover:text-gray-600 hover:border-gray-300'}`}
                   >
                     <svg className="w-4 h-4 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                       <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.5 10.25a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Zm0 0a2.225 2.225 0 0 0-1.666.75H12m3.5-.75v-6m-7.5 6.75A2.25 2.25 0 1 1 5.75 7.5a2.25 2.25 0 0 1 2.25 2.25Z" />
                     </svg>
                     Delivery
-                    <span className="ml-2 bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                    <span className="ml-2 bg-[#373a4e]/10 text-[#373a4e] text-xs font-medium px-2.5 py-0.5 rounded-full">
                       {orderData.filter(order => order.orderType === 'delivery').length}
                     </span>
                   </button>
@@ -368,7 +367,7 @@ export default function DailyOrdersPage() {
                   </svg>
                 </div>
                 <input
-                  className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 shadow-sm"
+                  className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-[#373a4e] focus:border-[#373a4e] block w-full pl-10 p-2.5 shadow-sm"
                   type="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}

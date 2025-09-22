@@ -24,16 +24,17 @@ export default function Hero({ setRatio }: IProps) {
 
       {isAuthenticated ? (
         <>
-        <div className="w-full min-h-screen relative bg-gray-50 py-12">
+        <div className="w-full min-h-screen relative bg-gradient-to-b from-gray-50 to-gray-100 py-16">
               <div className="max-w-6xl mx-auto px-4">
-                <h1 className="text-3xl font-bold text-center mb-12 text-gray-800">Trinas - Gestão de Encomendas</h1>
+                <h1 className="text-4xl font-bold text-center mb-4 text-[#373a4e]">Trinas - Gestão de Encomendas</h1>
+                <p className="text-gray-600 text-center mb-12 text-lg">Sistema integrado para gestão eficiente de encomendas e clientes</p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {/* Card para Criação de Encomenda */}
                   <Link href="/order/view-orders">
-                    <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300 flex flex-col items-center cursor-pointer h-full">
-                      <div className="bg-orange-100 p-4 rounded-full mb-4">
-                        <IoIosAddCircle className="text-4xl text-orange-600" />
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-8 hover:shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center cursor-pointer h-full border border-gray-100">
+                      <div className="bg-[#373a4e]/10 p-4 rounded-full mb-4">
+                        <IoIosAddCircle className="text-4xl text-[#373a4e]" />
                       </div>
                       <h2 className="text-xl font-semibold mb-2 text-gray-800 text-center">Criação de Encomenda</h2>
                       <p className="text-gray-600 text-center">Adicione novas encomendas ao sistema</p>
@@ -42,33 +43,33 @@ export default function Hero({ setRatio }: IProps) {
         
                   {/* Card para Ementa da Semana */}
                   <Link href="/product/weekly-menu">
-                    <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300 flex flex-col items-center cursor-pointer h-full">
-                      <div className="bg-blue-100 p-4 rounded-full mb-4">
-                        <CgMenuGridR className="text-4xl text-blue-600" />
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-8 hover:shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center cursor-pointer h-full border border-gray-100">
+                      <div className="bg-[#373a4e]/10 p-4 rounded-full mb-4">
+                        <CgMenuGridR className="text-4xl text-[#373a4e]" />
                       </div>
-                      <h2 className="text-xl font-semibold mb-2 text-gray-800">Ementa da Semana</h2>
+                      <h2 className="text-xl font-semibold mb-2 text-gray-800 text-center">Ementa da Semana</h2>
                       <p className="text-gray-600 text-center">Gerencie o menu semanal de refeições</p>
                     </div>
                   </Link>
         
                   {/* Card para Lista de Encomendas do Dia */}
                   <Link href="/order/daily-orders">
-                    <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300 flex flex-col items-center cursor-pointer h-full">
-                      <div className="bg-green-100 p-4 rounded-full mb-4">
-                        <HiOutlineDocumentText className="text-4xl text-green-600" />
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-8 hover:shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center cursor-pointer h-full border border-gray-100">
+                      <div className="bg-[#373a4e]/10 p-4 rounded-full mb-4">
+                        <HiOutlineDocumentText className="text-4xl text-[#373a4e]" />
                       </div>
-                      <h2 className="text-xl font-semibold mb-2 text-gray-800">Encomendas do Dia</h2>
+                      <h2 className="text-xl font-semibold mb-2 text-gray-800 text-center">Encomendas do Dia</h2>
                       <p className="text-gray-600 text-center">Visualize todas as encomendas diárias</p>
                     </div>
                   </Link>
         
                   {/* Card para Lista de Clientes */}
                   <Link href="/client/list">
-                    <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all duration-300 flex flex-col items-center cursor-pointer h-full">
-                      <div className="bg-purple-100 p-4 rounded-full mb-4">
-                        <FiUsers className="text-4xl text-purple-600" />
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-8 hover:shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center cursor-pointer h-full border border-gray-100">
+                      <div className="bg-[#373a4e]/10 p-4 rounded-full mb-4">
+                        <FiUsers className="text-4xl text-[#373a4e]" />
                       </div>
-                      <h2 className="text-xl font-semibold mb-2 text-gray-800">Lista de Clientes</h2>
+                      <h2 className="text-xl font-semibold mb-2 text-gray-800 text-center">Lista de Clientes</h2>
                       <p className="text-gray-600 text-center">Gerencie todos os clientes cadastrados</p>
                     </div>
                   </Link>
@@ -77,14 +78,18 @@ export default function Hero({ setRatio }: IProps) {
             </div>
         </>
       ) : (
-        <Image
-        src={"/intro-1.png"}
-        alt="no Image"
-        fill={false}
-        width={300}
-        height={300}
-        className="m-auto"
-      />
+        <div className="flex flex-col items-center justify-center h-full p-8">
+          <Image
+            src={"/intro-1.png"}
+            alt="Trinas - Gestão de Encomendas"
+            width={400}
+            height={400}
+            className="rounded-2xl shadow-lg mb-8 transition-all duration-300 hover:scale-105"
+            priority
+          />
+          <h1 className="text-4xl font-bold text-center mb-4 text-[#373a4e]">Bem-vindo ao Trinas</h1>
+          <p className="text-gray-600 text-center text-lg max-w-2xl">Sistema integrado para gestão eficiente de encomendas e clientes.</p>
+        </div>
       )}
     </div>
   );
