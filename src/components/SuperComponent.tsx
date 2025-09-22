@@ -11,6 +11,7 @@ import QuantityDataTable from "@/app/dashboard/quantity/QuantityDataTable";
 import MealPlannerList from "@/app/dashboard/MealPlanner/MealPlannerList";
 import ClientCreatePage from "@/app/auth/register/page";
 import WeeklyMenu from "@/app/product/weekly-menu/page";
+import DailyOrdersPage from '@/app/order/daily-orders/page';
 
 export default function SuperComponent() {
   const navActive = useSelector((state: RootState) => state.AdminNav.ActiveNav);
@@ -40,7 +41,10 @@ export default function SuperComponent() {
       return <MealPlannerList />; 
     case "activeWeeklyMenu":
       return <WeeklyMenu />;
-      
+    case "activeDailyOrders":
+        return <DailyOrdersPage />; 
+        
+
     default:
       return <TileContainer />;
   

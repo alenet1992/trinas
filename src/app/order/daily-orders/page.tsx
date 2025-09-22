@@ -77,6 +77,7 @@ export default function DailyOrdersPage() {
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isLoadingOrderDetails, setIsLoadingOrderDetails] = useState(false);
+  const [activeTab, setActiveTab] = useState<'all' | 'takeaway' | 'delivery'>('all');
 
   const user = useSelector((state: RootState) => state.User.userData);
 
@@ -246,22 +247,28 @@ export default function DailyOrdersPage() {
   ];
 
   useEffect(() => {
-    if (search === "") {
-      setFilteredData(orderData);
-    } else {
-      setFilteredData(
-        orderData?.filter((item) => {
-          const itemData = item?._id?.toUpperCase();
-          const clientName = item?.user?.name?.toUpperCase() || "";
-          const textData = search.toUpperCase();
-          return itemData.indexOf(textData) > -1 || clientName.indexOf(textData) > -1;
-        })
-      );
+    let result = orderData;
+    
+    // Primeiro filtra por tipo de pedido (se não for 'all')
+    if (activeTab !== 'all') {
+      result = result.filter(item => item.orderType === activeTab);
     }
-  }, [search, orderData]);
+    
+    // Depois aplica o filtro de pesquisa
+    if (search !== "") {
+      result = result.filter((item) => {
+        const itemData = item?._id?.toUpperCase();
+        const clientName = item?.user?.name?.toUpperCase() || "";
+        const textData = search.toUpperCase();
+        return itemData.indexOf(textData) > -1 || clientName.indexOf(textData) > -1;
+      });
+    }
+    
+    setFilteredData(result);
+  }, [search, orderData, activeTab]);
 
   return (
-    <div className="w-full bg-gray-50 min-h-screen p-6">
+    <div className="w-full bg-gray-50 min-h-screen pt-12">
       <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
 
         { todayDate && 
@@ -302,6 +309,57 @@ export default function DailyOrdersPage() {
           <Loading />
         ) : (
           <div className="w-full">
+            {/* Tabs para filtrar por tipo de pedido */}
+            <div className="mb-6 border-b border-gray-200">
+              <ul className="flex flex-wrap -mb-px text-sm font-medium text-center">
+                <li className="mr-2">
+                  <button
+                    onClick={() => setActiveTab('all')}
+                    className={`inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group  text-black ${activeTab === 'all' 
+                      ? 'text-blue-600 border-blue-600 active' 
+                      : 'border-transparent hover:text-gray-600 hover:border-gray-300'}`}
+                  >
+                    Todos
+                    <span className="ml-2 bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                      {orderData.length}
+                    </span>
+                  </button>
+                </li>
+                <li className="mr-2">
+                  <button
+                    onClick={() => setActiveTab('takeaway')}
+                    className={`inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group text-black ${activeTab === 'takeaway' 
+                      ? 'text-indigo-600 border-indigo-600 active' 
+                      : 'border-transparent hover:text-gray-600 hover:border-gray-300'}`}
+                  >
+                    <svg className="w-4 h-4 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9V4a3 3 0 0 0-6 0v5m9.343 10H2.657a1 1 0 0 1-.97-1.242l1.99-7.962A2 2 0 0 1 5.64 8h6.72a2 2 0 0 1 1.962 1.796l1.99 7.962A1 1 0 0 1 15.343 19Z" />
+                    </svg>
+                    Takeaway
+                    <span className="ml-2 bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                      {orderData.filter(order => order.orderType === 'takeaway').length}
+                    </span>
+                  </button>
+                </li>
+                <li className="mr-2">
+                  <button
+                    onClick={() => setActiveTab('delivery')}
+                    className={`inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group text-black ${activeTab === 'delivery' 
+                      ? 'text-blue-600 border-blue-600 active' 
+                      : 'border-transparent hover:text-gray-600 hover:border-gray-300'}`}
+                  >
+                    <svg className="w-4 h-4 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.5 10.25a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Zm0 0a2.225 2.225 0 0 0-1.666.75H12m3.5-.75v-6m-7.5 6.75A2.25 2.25 0 1 1 5.75 7.5a2.25 2.25 0 0 1 2.25 2.25Z" />
+                    </svg>
+                    Delivery
+                    <span className="ml-2 bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                      {orderData.filter(order => order.orderType === 'delivery').length}
+                    </span>
+                  </button>
+                </li>
+              </ul>
+            </div>
+            
             <div className="mb-4 flex justify-between items-center">
               <div className="relative w-80" >
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -319,6 +377,9 @@ export default function DailyOrdersPage() {
               </div>
               <div className="text-sm text-gray-500">
                 Total: <span className="font-medium text-blue-600">{filteredData.length}</span> pedidos
+                {activeTab !== 'all' && (
+                  <span className="ml-1">({activeTab === 'takeaway' ? 'Takeaway' : 'Delivery'})</span>
+                )}
               </div>
             </div>
             

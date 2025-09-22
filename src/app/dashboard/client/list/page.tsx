@@ -162,7 +162,7 @@ export default function ClientListPage() {
   };
 
   return (
-    <div className={`w-full h-full ${withPadding ? " p-12" : ""}`}>
+    <div className={`w-full h-full ${withPadding ? " p-12" : ""} pt-12`}>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Lista de Clientes</h1>
         <div className="flex items-center gap-4">

@@ -3,8 +3,6 @@ import AuthCheck from "@/middleware/AuthCheck";
 import { NextResponse } from "next/server";
 import Order from "@/model/Order";
 import Joi from "joi";
-import Cart from "@/model/Cart";
-
 
 const createOrderSchema = Joi.object({
     user: Joi.string().required(),

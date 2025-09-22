@@ -71,7 +71,7 @@ export default function AdminSidebar() {
       {/* Header */}
       <div className="p-6 border-b border-slate-200">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-[#373a4e] rounded-lg flex items-center justify-center">
             <HiOutlineDocumentText className="w-5 h-5 text-white" />
           </div>
           <h1 className="text-xl font-bold text-slate-800">Dashboard</h1>
@@ -92,9 +92,9 @@ export default function AdminSidebar() {
                   <li key={itemIndex}>
                     <button
                       onClick={() => dispatch(setNavActive(item.action))}
-                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-left text-slate-700 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-all duration-200 group"
+                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-left text-slate-700 hover:bg-[#373a4e]/10 hover:text-[#373a4e] rounded-lg transition-all duration-200 group"
                     >
-                      <IconComponent className="w-5 h-5 text-slate-500 group-hover:text-blue-600 transition-colors" />
+                      <IconComponent className="w-5 h-5 text-slate-500 group-hover:text-[#373a4e] transition-colors" />
                       <span className="font-medium">{item.label}</span>
                     </button>
                   </li>

@@ -52,7 +52,7 @@ export default function Dashboard() {
       <AdminSidebar />
       <div className="relative md:ml-64 bg-blueGray-100 ">
         <AdminNavbar />
-        <div className="w-full  flex flex-wrap items-start justify-center overflow-y-auto  px-4 py-2 pt-20">
+        <div className="w-full  flex flex-wrap items-start justify-center overflow-y-auto px-6 py-4 pt-20">
           <SuperComponent></SuperComponent>
         </div>
       </div>

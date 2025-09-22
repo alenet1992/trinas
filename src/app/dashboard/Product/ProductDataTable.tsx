@@ -71,15 +71,15 @@ export default function ProductDataTable() {
         <div className="flex items-center justify-start px-2 h-20">
           <button
             onClick={() => router.push(`/product/update-product/${row?._id}`)}
-            className=" w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700"
+            className="w-20 py-2 mx-2 text-xs text-[#373a4e] hover:text-white my-2 hover:bg-[#373a4e] border border-[#373a4e] rounded-full transition-all duration-300 shadow-sm hover:shadow"
           >
-            Atualizar
+            Editar
           </button>
           <button
             onClick={() => handleDeleteProduct(row?._id)}
-            className=" w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded transition-all duration-700"
+            className="w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded-full transition-all duration-300 shadow-sm hover:shadow"
           >
-            Eliminar
+            Apagar
           </button>
         </div>
       ),
@@ -111,41 +111,71 @@ export default function ProductDataTable() {
   }, [search, prodData]);
 
   return (
-    <div className="w-full h-full">
-      <div className="text-right m-2 mr-0">
-        <Link href={"/product/add-product"}>
-          <button className="mb-4 sm:mb-0 inline-flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-4 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-            <IoIosAddCircle className="mx-2" /> Pratos
-          </button>
-        </Link>
+    <div className="w-full h-full pt-12">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-semibold text-gray-800">Lista de Pratos</h1>
+        <div className="flex items-center gap-4">
+          <div className="relative w-64">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <svg className="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+              </svg>
+            </div>
+            <input
+              type="search"
+              placeholder="Procurar prato..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 shadow-sm"
+            />
+          </div>
+          <Link href={"/product/add-product"}>
+            <button className="inline-flex items-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 transition-all duration-300 shadow-md hover:shadow-lg">
+              <IoIosAddCircle className="mr-2 text-lg" /> Novo Prato
+            </button>
+          </Link>
+        </div>
       </div>
 
-      <DataTable
-        columns={columns}
-        data={filteredData || []}
-        key={"ThisProductData"}
-        pagination
-        keyField="id"
-        title={`Lista de Pratos`}
-        fixedHeader
-        fixedHeaderScrollHeight="500px"
-        selectableRows
-        selectableRowsHighlight
-        persistTableHead
-        progressPending={isLoading}
-        progressComponent={<Loading />}
-        subHeader
-        subHeaderComponent={
-          <input
-            className="w-60 dark:bg-transparent py-2 px-2  outline-none  border-b-2 border-orange-600"
-            type={"search"}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={"Procurar"}
-          />
-        }
-        className="bg-white px-4 h-4/6 "
-      />
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+         <DataTable
+          columns={columns}
+          data={filteredData || []}
+          key={"ThisProductData"}
+          pagination
+          keyField="id"
+          fixedHeader
+          fixedHeaderScrollHeight="100%"
+          selectableRows
+          selectableRowsHighlight
+          persistTableHead
+          progressPending={isLoading}
+          progressComponent={<Loading />}
+          subHeader
+          className="bg-white px-4"
+          customStyles={{
+            headRow: {
+              style: {
+                backgroundColor: '#f9fafb',
+                borderBottomWidth: '1px',
+                borderBottomColor: '#e5e7eb',
+              },
+            },
+            rows: {
+              style: {
+                minHeight: '72px',
+                fontSize: '14px',
+              },
+            },
+            pagination: {
+              style: {
+                borderTopWidth: '1px',
+                borderTopColor: '#e5e7eb',
+              },
+            },
+          }}
+        />
+      </div>
     </div>
   );
 }

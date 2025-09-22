@@ -90,7 +90,6 @@ export default function WeeklyMenu() {
           ...prevMenus,
           [weekIndex]: data.data.menu
         }));
-        toast.info(`Ementa da ${getWeekText()} carregada com sucesso!`);
       } else {
         // Se não houver ementa para esta semana, inicializar uma nova
         initializeWeekIfNeeded(weekIndex);
@@ -290,7 +289,7 @@ export default function WeeklyMenu() {
       <ToastContainer />
       <div className="flex flex-wrap">
         <div className="w-full px-4">
-          <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-md rounded-3xl bg-white/90 backdrop-blur-sm border border-gray-100">
+          <div className="mt-3 relative flex flex-col min-w-0 break-words w-full mb-6 shadow-md rounded-3xl bg-white/90 backdrop-blur-sm border border-gray-100">
             <div className="rounded-t mb-0 px-4 py-3 border-0">
               <div className="flex flex-wrap items-center">
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1">

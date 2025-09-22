@@ -22,9 +22,6 @@ export default function Hero({ setRatio }: IProps) {
   return (
     <div className="w-full h-screen relative bg-grey">
 
-
-
-
       {isAuthenticated ? (
         <>
         <div className="w-full min-h-screen relative bg-gray-50 py-12">

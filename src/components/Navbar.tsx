@@ -79,7 +79,7 @@ export default function Navbar() {
         <div className="flex-none text-right mr">
           {user ? (
             <div className="flex items-center justify-center  min-h-full">
-              <button onClick={handleLogout} className="btn text-white mx-2">
+              <button onClick={handleLogout} className="bg-[#373a4e] hover:bg-[#2f3141] text-white text-sm font-medium px-4 py-2 rounded-full shadow-sm hover:shadow transition-all duration-200 mx-2">
                 logout
               </button>
               {/* <button
@@ -104,7 +104,7 @@ export default function Navbar() {
           ) : (
             <button
               onClick={() => router.push("/auth/login")}
-              className="btn text-white mx-2"
+              className="bg-[#373a4e] hover:bg-[#2f3141] text-white text-sm font-medium px-4 py-2 rounded-full shadow-sm hover:shadow transition-all duration-200 mx-2"
             >
               Login
             </button>
