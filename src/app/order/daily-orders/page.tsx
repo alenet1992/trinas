@@ -102,6 +102,15 @@ export default function DailyOrdersPage({
             return format(orderDate, "yyyy-MM-dd") === todayString;
           })
           .sort((a: Order, b: Order) => {
+            // Primeiro, prioriza pedidos com status 'new'
+            if (a.status === 'new' && b.status !== 'new') return -1;
+            if (a.status !== 'new' && b.status === 'new') return 1;
+
+            // Depois, prioriza pedidos com status 'in_progress'
+            if (a.status === 'in_progress' && b.status !== 'in_progress' && b.status !== 'new') return -1;
+            if (a.status !== 'in_progress' && b.status === 'in_progress' && a.status !== 'new') return 1;
+            
+            // Se ambos tiverem o mesmo status, ordena por horário de retirada
             const timeA = a.pickupTime ? new Date(a.pickupTime).getTime() : Infinity;
             const timeB = b.pickupTime ? new Date(b.pickupTime).getTime() : Infinity;
             return timeA - timeB;
@@ -149,25 +158,17 @@ export default function DailyOrdersPage({
     }
   };
 
-  const updateOrderStatus = async (id: string, currentStatus: 'new' | 'in_progress' | 'delivered'): Promise<void> => {
+  const handleOrderStatusUpdate = async (id: string, status: 'new' | 'in_progress' | 'delivered'): Promise<void> => {
     try {
-      const res = await update_order_status(id, currentStatus);
+      const res = await update_order_status(id, status);
       if (res?.success) {
         // Update the list after the change
         const updatedOrders = orderData.map(order => {
           if (order._id === id) {
-            let nextStatus;
-            if (order.status === 'new') {
-              nextStatus = 'in_progress' as const;
-            } else if (order.status === 'in_progress') {
-              nextStatus = 'delivered' as const;
-            } else {
-              return order; // Se já estiver entregue, não altera o status
-            }
-            return { 
-              ...order, 
-              status: nextStatus,
-              isDelivered: nextStatus === 'delivered'
+            return {
+              ...order,
+              status: status,
+              isDelivered: status === 'delivered'
             };
           }
           return order;
@@ -275,7 +276,7 @@ export default function DailyOrdersPage({
           </button>
           {row.status !== 'delivered' && (
             <button
-              onClick={() => updateOrderStatus(row._id, row.status)}
+              onClick={() => handleOrderStatusUpdate(row._id, row.status)}
               className={`px-3 py-1 text-xs rounded-full transition-all duration-200 ${row.status === 'new' ? 'bg-red-50 text-red-600 hover:bg-red-600' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-600'} hover:text-white`}
             >
               {row.status === 'new' ? 'Iniciar Preparação' : 'Marcar como Entregue'}
@@ -308,7 +309,7 @@ export default function DailyOrdersPage({
   }, [search, orderData, activeTab]);
 
   return (
-    <div className="w-full bg-gray-50 min-h-screen pt-12">
+    <div className={`w-full bg-gray-50 min-h-screen ${inner ? 'p-4' : 'pt-12'}`}>
       <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
         {todayDate && (
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
@@ -537,7 +538,7 @@ export default function DailyOrdersPage({
         isVisible={showOrderDetails}
         order={selectedOrder}
         handleHideDialog={handleHideOrderDetails}
-        onOrderStatusUpdate={updateOrderStatus}
+        onOrderStatusUpdate={handleOrderStatusUpdate}
       />
     </div>
   );

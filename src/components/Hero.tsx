@@ -31,13 +31,13 @@ export default function Hero({ setRatio }: IProps) {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {/* Card para Criação de Encomenda */}
-                  <Link href="/order/view-orders">
-                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-8 hover:shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center cursor-pointer h-full border border-gray-100">
-                      <div className="bg-[#373a4e]/10 p-4 rounded-full mb-4">
-                        <IoIosAddCircle className="text-4xl text-[#373a4e]" />
+                  <Link href="/order/view-orders" className="group">
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 backdrop-blur-sm rounded-2xl shadow-lg p-8 hover:shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center cursor-pointer h-full border border-indigo-100 hover:border-indigo-200">
+                      <div className="bg-indigo-100 p-4 rounded-full mb-4 group-hover:bg-indigo-200 transition-colors duration-300">
+                        <IoIosAddCircle className="text-4xl text-indigo-600" />
                       </div>
-                      <h2 className="text-xl font-semibold mb-2 text-gray-800 text-center">Criação de Encomenda</h2>
-                      <p className="text-gray-600 text-center">Adicione novas encomendas ao sistema</p>
+                      <h2 className="text-xl font-semibold mb-2 text-indigo-900 text-center">Criação de Encomenda</h2>
+                      <p className="text-indigo-600 text-center">Adicione novas encomendas ao sistema</p>
                     </div>
                   </Link>
         

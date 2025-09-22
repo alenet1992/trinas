@@ -47,7 +47,7 @@ interface IOrderDetailsDialog {
   isVisible: boolean;
   order?: Order | null;
   handleHideDialog: () => void;
-  onOrderStatusUpdate?: (orderId: string, status: string) => void;
+  onOrderStatusUpdate?: (orderId: string, status: 'new' | 'in_progress' | 'delivered') => void;
 }
 
 export const OrderDetailsDialog = (props: IOrderDetailsDialog) => {
