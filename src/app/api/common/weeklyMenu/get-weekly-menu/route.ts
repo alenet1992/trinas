@@ -12,7 +12,16 @@ export async function GET(req: Request) {
 
     if (!weekIndex) {
       // If no weekIndex is provided, return all weekly menus
-      const getData = await WeeklyMenu.find({}).populate('menu.$*');
+      const getData = await WeeklyMenu.find({}).populate({
+        path: 'menu.$*.id',
+        model: 'Products',
+        select: 'name description category prices',
+        populate: {
+          path: 'category',
+          model: 'Categories',
+          select: 'name'
+        }
+      });
       if (getData && getData.length > 0) {
         return NextResponse.json({ success: true, data: getData });
       } else {
@@ -20,7 +29,17 @@ export async function GET(req: Request) {
       }
     } else {
       // If weekIndex is provided, return the specific weekly menu
-      const getData = await WeeklyMenu.findOne({ weekIndex: parseInt(weekIndex) }).populate('menu.$*');
+      const getData = await WeeklyMenu.findOne({ weekIndex: parseInt(weekIndex)}).populate({
+        path: 'menu.$*._id',
+        model: 'Products',
+        select: 'name description category prices',
+        populate: {
+          path: 'category',
+          model: 'Categories',
+          select: 'name'
+        }
+      });
+      
       if (getData) {
         return NextResponse.json({ success: true, data: getData });
       } else {

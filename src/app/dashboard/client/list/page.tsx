@@ -183,7 +183,7 @@ export default function ClientListPage() {
           </div>
           <button 
             onClick={() => setShowAddClientDialog(true)}
-            className="inline-flex items-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 transition-all duration-300 shadow-md hover:shadow-lg">
+            className="inline-flex items-center text-white bg-[#373a4e] hover:bg-[#2f3141] focus:ring-4 focus:ring-[#373a4e]/30 font-medium rounded-full text-sm px-5 py-2.5 transition-all duration-300 shadow-md hover:shadow-lg">
             <IoIosAddCircle className="mr-2 text-lg" /> Adicionar cliente
           </button>
         </div>
@@ -208,7 +208,7 @@ export default function ClientListPage() {
             selectableRows
             selectableRowsHighlight
             persistTableHead
-          className="bg-white px-4"
+          className="bg-white"
           onRowClicked={(e) => {
             setUserInfo(e);
             setIsVisible(true);

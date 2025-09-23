@@ -28,6 +28,7 @@ export async function POST(req: Request) {
 
             // Check if a menu for this week already exists
             const existingMenu = await WeeklyMenu.findOne({ weekIndex });
+            console.log('Creating new weekly menu', data);
 
             let saveData;
             if (existingMenu) {
@@ -39,6 +40,7 @@ export async function POST(req: Request) {
                 );
             } else {
                 // Create new menu
+
                 saveData = await WeeklyMenu.create(data);
             }
 

@@ -81,10 +81,20 @@ export default function WeeklyMenu() {
   // Função para carregar a ementa semanal existente
   const fetchWeeklyMenu = async (weekIndex: number) => {
     try {
+      setLoader(true);
       const response = await fetch(`/api/common/weeklyMenu/get-weekly-menu?weekIndex=${weekIndex}`);
       const data = await response.json();
-      
+
       if (data.success && data.data) {
+
+        // Process each day's menu items to add product field
+        Object.keys(data.data.menu).forEach(day => {
+          data.data.menu[day] = data.data.menu[day].map(item => ({
+            ...item._id, 
+            category: item._id?.category,
+          }));
+        });
+
         // Atualizar o estado com os dados da ementa semanal
         setWeeklyMenus(prevMenus => ({
           ...prevMenus,
@@ -98,6 +108,8 @@ export default function WeeklyMenu() {
       console.error('Erro ao carregar a ementa semanal:', error);
       toast.error('Erro ao carregar a ementa. Inicializando uma nova ementa.');
       initializeWeekIfNeeded(weekIndex);
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -170,7 +182,6 @@ export default function WeeklyMenu() {
     initializeWeekIfNeeded(0);
     toast.info('Voltando para a semana atual');
   };
-  const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
 
   // Função para inicializar uma nova semana se não existir
   const initializeWeekIfNeeded = (weekIndex: number) => {
@@ -333,7 +344,7 @@ export default function WeeklyMenu() {
                     
                     <Link
                       href="/dashboard"
-                      className="bg-blue-600 text-white active:bg-blue-700 text-xs font-bold uppercase px-3 py-1 rounded-full outline-none focus:outline-none ease-linear transition-all duration-150 shadow-sm"
+                      className="bg-[#373a4e] text-white active:bg-[#373a4e]/90 text-xs font-bold uppercase px-3 py-1 rounded-full outline-none focus:outline-none ease-linear transition-all duration-150 shadow-sm"
                     >
                       Voltar ao Dashboard
                     </Link>
@@ -355,7 +366,7 @@ export default function WeeklyMenu() {
                 visible={true}
               />
                 <p className="text-sm mt-3 font-semibold text-gray-700">
-                  A salvar a ementa semanal...
+                  A processar a ementa semanal...
                 </p>
               </div>
             ) : (
@@ -364,7 +375,7 @@ export default function WeeklyMenu() {
                 <div className="flex flex-wrap mb-4 px-4 py-2">
                   <div className="w-full mb-4 px-4">
                     <h4 className="font-semibold text-gray-700 mb-2">Selecione o dia da semana:</h4>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-4 justify-center md:justify-start">
                       {weekDays.map((day, index) => {
                         const weekDates = getWeekDates(currentWeek);
                         const date = weekDates[index];
@@ -374,14 +385,14 @@ export default function WeeklyMenu() {
                           <button
                             key={day}
                             onClick={() => setSelectedDay(day)}
-                            className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 ${selectedDay === day
-                              ? 'bg-blue-600 text-white shadow-md'
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 shadow-sm'
+                            className={`w-[calc(50%-1rem)] md:w-auto px-6 py-4 rounded-2xl text-sm font-medium transition-all duration-300 ${selectedDay === day
+                              ? 'bg-[#373a4e] text-white shadow-lg ring-4 ring-[#373a4e]/10'
+                              : 'bg-gray-100/90 text-gray-700 hover:bg-gray-200/90 shadow hover:shadow-md'
                               }`}
                           >
-                            <div className="flex flex-col items-center">
-                              <span>{day.split('-')[0]}</span>
-                              <span className="text-xs mt-1">{formattedDate}</span>
+                            <div className="flex flex-col items-center space-y-2">
+                              <span className="font-bold text-sm">{day.split('-')[0]}</span>
+                              <span className="text-xs font-medium opacity-80">{formattedDate}</span>
                             </div>
                           </button>
                         );
@@ -460,7 +471,7 @@ export default function WeeklyMenu() {
                               <h5 className="font-medium text-gray-800">{product.name}</h5>
                               <p className="text-sm text-gray-600">{product.description}</p>
                               <span className="text-xs px-2 py-1 bg-blue-50 rounded-full text-blue-700">
-                                {product.category.name}
+                              {product.category.name}
                               </span>
                             </div>
                             <button className="p-1 bg-blue-50 hover:bg-blue-100 rounded-full">
@@ -476,9 +487,9 @@ export default function WeeklyMenu() {
                   </div>
 
                   {/* Produtos selecionados para o dia */}
-                  <div className="w-full md:w-1/2 pl-2 mt-4 md:mt-0">
+                  <div className="w-full md:w-1/2 pl-2 mt-4 md:mt-0 h-100">
                     <h4 className="font-semibold text-gray-700 mb-2">Produtos para {selectedDay}:</h4>
-                    <div className="bg-gray-50/70 p-4 rounded-3xl min-h-[200px] max-h-96 overflow-y-auto shadow-inner border border-gray-100">
+                    <div className="bg-gray-50/70 p-4 rounded-3xl min-h-[400px] max-h-[400px] overflow-y-auto shadow-inner border border-gray-100 h-100">
                       {getCurrentWeekMenu()[selectedDay]?.length > 0 ? (
                         getCurrentWeekMenu()[selectedDay].map((product) => (
                           <div
@@ -552,13 +563,13 @@ export default function WeeklyMenu() {
                                   {getCurrentWeekMenu()[day].map((product) => {
                                     // Definir cores diferentes para cada categoria
                                     let categoryColor = "bg-gray-200 text-gray-700";
-                                    // if (product.category?.name.toLowerCase().includes("peixe")) {
+                                    // if (  product.category.name.toLowerCase().includes("peixe")) {
                                     //   categoryColor = "bg-blue-100 text-blue-700";
-                                    // } else if (product.category?.name.toLowerCase().includes("carne")) {
+                                    // } else if (  product.category.name.toLowerCase().includes("carne")) {
                                     //   categoryColor = "bg-red-100 text-red-700";
-                                    // } else if (product.category?.name.toLowerCase().includes("sopa")) {
+                                    // } else if (  product.category.name.toLowerCase().includes("sopa")) {
                                     //   categoryColor = "bg-amber-100 text-amber-700";
-                                    // } else if (product.category?.name.toLowerCase().includes("veg")) {
+                                    // } else if (  product.category.name.toLowerCase().includes("veg")) {
                                     //   categoryColor = "bg-green-100 text-green-700";
                                     // }
                                     
@@ -567,7 +578,7 @@ export default function WeeklyMenu() {
                                         <div className="flex justify-between items-center">
                                           <span className="font-medium text-gray-800">{product.name}</span>
                                           <span className={`text-xs px-2 py-1 rounded-full ${categoryColor}`}>
-                                            {product.category.name}
+                                            {/* {product.category.name} */}
                                           </span>
                                         </div>
                                       </li>
@@ -590,20 +601,22 @@ export default function WeeklyMenu() {
                   </div>
                 </div>
 
-                {/* Botão para salvar */}
-                <div className="px-4 py-4 flex justify-end">
-                  <button
-                    onClick={saveWeeklyMenu}
-                    className="bg-gradient-to-r from-blue-600 to-blue-800 text-white active:from-blue-700 active:to-blue-900 font-bold uppercase text-sm px-6 py-3 rounded-full shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                  >
-                    Guardar Ementa Semanal
-                  </button>
-                </div>
+              
               </div>
             )}
           </div>
         </div>
       </div>
+      { !loader && ( 
+      <div className="fixed bottom-0 right-5 left-auto mx-auto text-center z-50 mb-4">
+        <button
+          onClick={saveWeeklyMenu}
+          className="bg-gradient-to-r from-blue-600 to-blue-800 text-white active:from-blue-700 active:to-blue-900 font-bold uppercase text-sm px-6 py-3 rounded-full shadow-md hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
+        >
+          Guardar Ementa Semanal
+        </button>
+      </div>
+      )}
     </div>
   );
 }

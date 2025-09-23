@@ -9,12 +9,16 @@ export interface IWeeklyMenu {
     menu: {
         [day: string]: Array<{
             _id: string;
-            name: string;
-            description?: string;
-            category: {
+            product: {
                 _id: string;
                 name: string;
+                description?: string;
+                category: {
+                    _id: string;
+                    name: string;
+                };
             };
+            outOfStock: boolean;
         }>;
     };
     createdAt?: string;
@@ -37,8 +41,14 @@ const WeeklyMenuSchema = new mongoose.Schema({
     menu: {
         type: Map,
         of: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Products'
+            product: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Products'
+            },
+            outOfStock: {
+                type: Boolean,
+                default: false
+            }
         }]
     }
 }, { timestamps: true });

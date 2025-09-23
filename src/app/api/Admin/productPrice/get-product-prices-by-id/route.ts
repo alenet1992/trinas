@@ -1,6 +1,9 @@
+
+
 import connectDB from "@/DB/connectDB";
 import { NextResponse } from "next/server";
 import ProductPrice from "@/model/ProductPrice";
+
 
 export const dynamic = 'force-dynamic'
 
@@ -11,8 +14,9 @@ export async function GET(req: Request) {
     const productId = searchParams.get('id');
 
     if (!productId) return NextResponse.json({ status: 400, success: false, message: 'Please provide product id.' });
-
     const productPrices = await ProductPrice.find({ product: productId });
+    console.log(productPrices)
+   // const productPrices = await ProductPrice.find({ product: productId }).populate('Quantity', 'name description')
     if (productPrices && productPrices.length > 0) {
       return NextResponse.json({ success: true, data: productPrices });
     } else {

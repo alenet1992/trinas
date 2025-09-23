@@ -4,10 +4,12 @@ import { FiUsers, FiUserPlus, FiToggleLeft, FiUnderline } from "react-icons/fi";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { setNavActive } from "@/utils/AdminNavSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/Store/store";
 
 export default function AdminSidebar() {
   const dispatch = useDispatch();
+  const activeNav = useSelector((state: RootState) => state.AdminNav.ActiveNav);
 
   const menuItems = [
     {
@@ -92,9 +94,9 @@ export default function AdminSidebar() {
                   <li key={itemIndex}>
                     <button
                       onClick={() => dispatch(setNavActive(item.action))}
-                      className="w-full flex items-center space-x-3 px-3 py-2.5 text-left text-slate-700 hover:bg-[#373a4e]/10 hover:text-[#373a4e] rounded-lg transition-all duration-200 group"
+                      className={`w-full flex items-center space-x-3 px-3 py-2.5 text-left rounded-lg transition-all duration-200 group ${activeNav === item.action ? 'bg-[#373a4e] text-white' : 'text-slate-700 hover:bg-[#373a4e]/10 hover:text-[#373a4e]'}`}
                     >
-                      <IconComponent className="w-5 h-5 text-slate-500 group-hover:text-[#373a4e] transition-colors" />
+                      <IconComponent className={`w-5 h-5 transition-colors ${activeNav === item.action ? 'text-white' : 'text-slate-500 group-hover:text-[#373a4e]'}`} />
                       <span className="font-medium">{item.label}</span>
                     </button>
                   </li>

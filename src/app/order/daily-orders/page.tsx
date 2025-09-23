@@ -133,7 +133,16 @@ export default function DailyOrdersPage({
   };
 
   useEffect(() => {
+    // Initial fetch
     fetchOrders();
+
+    // Set up interval to fetch every 5 minutes (300000ms)
+    const interval = setInterval(() => {
+      fetchOrders();
+    }, 300000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
   }, []);
   
   const handleRefresh = () => {
@@ -161,23 +170,24 @@ export default function DailyOrdersPage({
   const handleOrderStatusUpdate = async (id: string, status: 'new' | 'in_progress' | 'delivered'): Promise<void> => {
     try {
       const res = await update_order_status(id, status);
-      if (res?.success) {
+      if (res?.nextStatus) {
+
         // Update the list after the change
         const updatedOrders = orderData.map(order => {
           if (order._id === id) {
             return {
               ...order,
-              status: status,
-              isDelivered: status === 'delivered'
+              status: res?.nextStatus,
             };
           }
+
           return order;
         });
         
         setOrderData(updatedOrders);
         setFilteredData(updatedOrders);
       } else {
-        toast.error(res?.message || "Erro ao atualizar estado do pedido");
+        toast.error("Erro ao atualizar estado do pedido");
       }
     } catch (error) {
       toast.error("Erro ao atualizar estado do pedido");
@@ -309,7 +319,7 @@ export default function DailyOrdersPage({
   }, [search, orderData, activeTab]);
 
   return (
-    <div className={`w-full bg-gray-50 min-h-screen ${inner ? 'p-4' : 'pt-12'}`}>
+    <div className={`w-full bg-gray-50 min-h-screen ${inner ? 'pt-4' : 'pt-12'}`}>
       <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
         {todayDate && (
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
@@ -444,7 +454,7 @@ export default function DailyOrdersPage({
                   <p className="mt-1 text-sm text-gray-500">Não existem pedidos registrados para o dia de hoje.</p>
                   <button 
                     onClick={handleRefresh}
-                    className="mt-4 px-4 py-2 text-sm bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition-all duration-200 inline-flex items-center"
+                    className="mt-4 px-4 py-2 text-sm bg-[#373a4e] text-white hover:bg-[#373a4e]/90 rounded-lg transition-all duration-200 inline-flex items-center"
                   >
                     <FiRefreshCw className="mr-2" /> Atualizar
                   </button>

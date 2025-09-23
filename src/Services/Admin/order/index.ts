@@ -41,7 +41,7 @@ export const update_order_status = async (id: string, currentStatus: 'new' | 'in
     });
 
     const data = await res.json();
-    return data;
+    return {data, nextStatus};
   } catch (error) {
     console.log('Error in updating order status (service) =>', error);
     throw error;

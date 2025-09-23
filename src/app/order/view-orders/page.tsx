@@ -33,6 +33,7 @@ interface Product {
   description: string;
   prices?: ProductPrice[];
   selectedQuantity?: string;
+  outOfStock?: boolean
 }
 
 interface CartItem {
@@ -72,9 +73,18 @@ export default function Page() {
   const [pickupTime, setPickupTime] = useState<string>('');
   const [showOrderFormModal, setShowOrderFormModal] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'orders' | 'daily'>('orders');
+  const [showQuantityModal, setShowQuantityModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedQuantityPrice, setSelectedQuantityPrice] = useState<ProductPrice | null>(null);
+  const [isUpdatingStock, setIsUpdatingStock] = useState<boolean>(false);
+  const [showOutOfStockConfirmation, setShowOutOfStockConfirmation] = useState<boolean>(false);
+  const [productToMarkAsOutOfStock, setProductToMarkAsOutOfStock] = useState<Product | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   
   // Função para carregar os produtos do menu do dia atual
   const loadProducts = async () => {
+    setIsLoading(true);
     try {
       // Buscar produtos do menu do dia atual
       const todayResponse = await get_products_for_today();
@@ -83,27 +93,22 @@ export default function Page() {
         // Mapear os produtos do menu do dia para o formato esperado pela interface Product
         const mappedProductsPromises = todayResponse.map(async (product: any) => {
           // Buscar preços por quantidade para este produto
-          const pricesResponse = await getProductPricesByProductId(product._id);
+          const pricesResponse = await getProductPricesByProductId(product._id._id);
           const productPrices = pricesResponse.success ? pricesResponse.data : [];
           
-
-
-          console.log('pricesResponse', pricesResponse, productPrices);
-
-
           return {
-            id: product._id,
-            name: product.name,
-            price: product.price || 0, // Valor padrão caso não exista
+            id: product._id._id,
+            name: product._id.name,
+            price: product._id.price || 0, // Valor padrão caso não exista
             image: 'https://media.timeout.com/images/105749903/750/562/image.jpg', // Imagem padrão
-            category: product.category?.name || 'Sem categoria',
-            description: product.description || 'Sem descrição',
-            prices: productPrices
+            category: product._id.category?.name || 'Sem categoria',
+            description: product._id.description || 'Sem descrição',
+            prices: productPrices, 
+            outOfStock: product.outOfStock || false,
           };
         });
         
         const mappedProducts = await Promise.all(mappedProductsPromises);
-        
         const today = getCurrentDayOfWeek();
         setProducts(mappedProducts);
         setFilteredProducts(mappedProducts); // Atualizar também os produtos filtrados
@@ -127,7 +132,8 @@ export default function Page() {
               image: product.productImage || 'https://media.timeout.com/images/105749903/750/562/image.jpg', // Imagem padrão
               category: product.category?.name || 'Sem categoria',
               description: product.description || 'Sem descrição',
-              prices: productPrices
+              prices: productPrices,
+              outOfStock: product.outOfStock || false,
             };
           });
           
@@ -146,6 +152,8 @@ export default function Page() {
     } catch (error) {
       toast.error("Erro ao carregar produtos");
       console.error("Erro ao carregar produtos:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -167,10 +175,36 @@ export default function Page() {
     }
   };
 
-  // Estado para controlar o modal de seleção de quantidade
-  const [showQuantityModal, setShowQuantityModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [selectedQuantityPrice, setSelectedQuantityPrice] = useState<ProductPrice | null>(null);
+  const handleSetOutOfStock = async (product: Product) => {
+    try {
+      setIsUpdatingStock(true);
+      const response = await fetch(`/api/menu/product/${product.id}/out-of-stock`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Falha ao atualizar o status do produto');
+      }
+
+      // Atualiza o estado local do produto
+      const updatedProducts = products.map(p => {
+        if (p.id === product.id) {
+          return { ...p, outOfStock: true };
+        }
+        return p;
+      });
+      setProducts(updatedProducts);
+      setFilteredProducts(updatedProducts);
+    } catch (error) {
+      console.error('Erro ao marcar produto como esgotado:', error);
+      toast.error('Erro ao marcar produto como esgotado');
+    } finally {
+      setIsUpdatingStock(false);
+    }
+  };
 
   // Função para abrir o modal de seleção de quantidade
   const openQuantityModal = (product: Product) => {
@@ -187,7 +221,7 @@ export default function Page() {
   };
 
   // Função para adicionar produto ao carrinho
-  const addToCart = (product: Product, quantityPrice?: ProductPrice) => {
+  const addToCart = (product: Product, quantityPrice?: ProductPrice, index?: number) => {
     // Se temos preços por quantidade e nenhum foi selecionado, abrir modal
     if (product.prices && product.prices.length > 0 && !quantityPrice) {
       openQuantityModal(product);
@@ -199,12 +233,17 @@ export default function Page() {
     const productToAdd = quantityPrice ? {
       ...product,
       price: priceToUse,
-      selectedQuantity: quantityPrice.quantity.name
+      selectedQuantity: quantityPrice.quantity.name, 
+      quantityIndex: index 
     } : product;
     
     setCart(prevCart => {
       return [...prevCart, { product: productToAdd, quantity: 1 }];
     });
+
+    console.log(cart);
+
+    debugger;
 
     closeQuantityModal();
   };
@@ -344,6 +383,14 @@ export default function Page() {
 
   return (
     <>
+      {isLoading && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" style={{ backdropFilter: "blur(4px)" }}>
+          <div className="bg-white rounded-2xl p-6 flex items-center space-x-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+            <p className="text-lg font-medium text-gray-700">A carregar menu...</p>
+          </div>
+        </div>
+      )}
       <div className="hide-print flex flex-row h-screen antialiased text-blue-gray-800">
         <div className="flex flex-row w-auto flex-shrink-0 pl-4 pr-2 py-4">
           <div className="flex flex-col items-center py-4 flex-shrink-0 w-20 bg-grey rounded-3xl">
@@ -476,39 +523,59 @@ export default function Page() {
                        <div
                          key={product.id}
                          role="button"
-                         className="select-none cursor-pointer overflow-hidden rounded-2xl bg-white shadow hover:shadow-lg transition-all duration-300"
+                         className={`select-none overflow-hidden rounded-2xl bg-white shadow transition-all duration-300 relative ${product.outOfStock ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:shadow-lg'}`}
                          title={product.name}
-                         onClick={() => addToCart(product)}
+                         onClick={() => !product.outOfStock && addToCart(product)}
                        >
-                         <img
-                           src={product.image}
-                           alt={product.name}
-                           className="w-full h-32 object-cover"
-                         />
-                         <div className="flex pb-3 px-3 text-sm -mt-3 mt-2">
-                           <p
-                             className="flex-grow truncate mr-1"
-                             style={{ color: "black" }}
-                           >
-                             {product.name}
-                           </p>
+                        {product.outOfStock ? (
+                          <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md text-sm font-medium z-10">
+                            Esgotado
+                          </div>
+                        ) : (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setProductToMarkAsOutOfStock(product);
+                              setShowOutOfStockConfirmation(true);
+                            }}
+                            disabled={isUpdatingStock}
+                            className={`absolute top-2 right-2 bg-gray-500 hover:bg-gray-600 text-white p-1 rounded-md text-sm font-medium z-10 transition-colors ${isUpdatingStock ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            title="Marcar como esgotado"
+                          >
+                            {isUpdatingStock ? (
+                              <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                            ) : (
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                              </svg>
+                            )}
+                          </button>
+                        )}
+                         <div className="w-full h-32 flex items-center justify-center bg-gray-100 text-gray-800 font-medium text-center px-2">
+                           {product.name}
                          </div>
+          
                          
                          {product.prices && product.prices.length > 0 && (
-                           <div className="px-3 pb-3 text-sm">
+                           <div className="px-3 pb-3 text-sm pt-2">
                              <div className="grid grid-cols-2 gap-2">
-                               {product.prices.map((price, index) => (
+                               {product.prices.map((price, index) =>  Number(price.value) > 0 && (
                                  <div 
                                    key={price._id} 
-                                   className="flex justify-between bg-gray-50 p-2 rounded hover:bg-gray-200 cursor-pointer"
+                                   className={`flex justify-between bg-gray-50 p-2 rounded ${!product.outOfStock ? 'hover:bg-gray-200 cursor-pointer' : 'cursor-not-allowed'}`}
                                    onClick={(e) => {
-                                     e.stopPropagation();
-                                     addToCart(product, price);
+                                     if (!product.outOfStock) {
+                                       e.stopPropagation();
+                                       addToCart(product, price, index);
+                                     }
                                    }}
                                  >
-                                    <div className='d-flex'>
-                                   <span className="text-gray-700 font-medium">{index == 0 ? '1 dose' : '1/2 dose'}</span>
-                                   <span className="text-green-600 font-semibold">  {formatPrice(price.value)}</span>
+                                  <div className='d-flex'>
+                                   <div className="text-gray-700 font-medium">{index == 0 ? '1 dose' : '1/2 dose'}</div>
+                                   <div className="text-green-600 font-semibold">  {formatPrice(price.value)}</div>
                                    </div>
                                  </div>
                                ))}
@@ -546,7 +613,6 @@ export default function Page() {
                 <div className="space-y-3">
                   {cart.map((item) => (
                     <div key={item.product.id} className="flex items-center space-x-4 p-4 bg-white border border-gray-100 shadow-sm rounded-lg">
-                      <img src={item.product.image} alt={item.product.name} className="w-16 h-16 object-cover rounded-md" />
                       <div className="flex-1">
                         <h4 className="font-semibold text-base text-gray-800 mb-1">{item.product.name}</h4>
                         <p className="text-sm font-medium text-green-600">{formatPrice(item.product.price)}</p>
@@ -556,21 +622,7 @@ export default function Page() {
                         )}
                       </div>
                       <div className="flex flex-col items-end space-y-2">
-                        <div className="flex items-center bg-gray-100 rounded-lg p-1" style={{color: 'black'}}>
-                          <button
-                            onClick={() => updateCartQuantity(item.product.id, item.quantity - 1)}
-                            className="w-7 h-7 rounded-md bg-white border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-colors"
-                          >
-                            -
-                          </button>
-                          <span className="text-sm font-semibold mx-3 min-w-[20px] text-center">{item.quantity}</span>
-                          <button
-                            onClick={() => updateCartQuantity(item.product.id, item.quantity + 1)}
-                            className="w-7 h-7 rounded-md bg-white border border-gray-200 flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-colors"
-                          >
-                            +
-                          </button>
-                        </div>
+                        
                         <button
                           onClick={() => removeFromCart(item.product.id)}
                           className="text-xs text-red-600 hover:text-white hover:bg-red-500 font-medium flex items-center rounded-full px-2 py-1 transition-all duration-300"
@@ -595,7 +647,7 @@ export default function Page() {
                 </div>
                 <button
                   onClick={() => setShowOrderFormModal(true)}
-                  className="w-full bg-blue-500 text-white py-3 rounded-lg font-medium hover:bg-blue-600 flex items-center justify-center transition-all duration-300 shadow-sm hover:shadow"
+                  className="w-full bg-[#373a4e] text-white py-3 rounded-lg font-medium hover:bg-[#373a4e]/90 flex items-center justify-center transition-all duration-300 shadow-sm hover:shadow"
                 >
                   Finalizar Encomenda
                 </button>
@@ -641,7 +693,7 @@ export default function Page() {
                   <button
                     key={price._id}
                     onClick={() => {
-                      addToCart(selectedProduct, price);
+                      addToCart(selectedProduct, price, index);
                       closeQuantityModal();
                     }}
                     className="w-full flex justify-between items-center py-2 px-3 border border-gray-200 rounded-full bg-gray-50 hover:bg-gray-100 transition-all duration-300 shadow-sm hover:shadow"
@@ -689,7 +741,7 @@ export default function Page() {
                   id="orderName"
                   value={orderName}
                   onChange={(e) => setOrderName(e.target.value)}
-                  className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 shadow-sm"
+                  className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-sm"
                   placeholder="Nome para a encomenda"
                 />
               </div>
@@ -756,7 +808,7 @@ export default function Page() {
                   createOrder();
                 }}
                 disabled={isCreatingOrder}
-                className="flex-1 bg-blue-500 text-white py-2 px-4 rounded-full font-medium hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-sm hover:shadow transition-all duration-300"
+                className="flex-1 bg-[#373a4e] text-white py-2 px-4 rounded-full font-medium hover:bg-[#373a4e]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-sm hover:shadow transition-all duration-300"
               >
                 {isCreatingOrder ? (
                   <>
@@ -769,6 +821,52 @@ export default function Page() {
                 ) : (
                   'Fazer Encomenda'
                 )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Modal de confirmação para marcar produto como esgotado */}
+      {showOutOfStockConfirmation && productToMarkAsOutOfStock && (
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-xl">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-semibold">Confirmar ação</h3>
+              <button
+                onClick={() => {
+                  setShowOutOfStockConfirmation(false);
+                  setProductToMarkAsOutOfStock(null);
+                }}
+                className="text-gray-400 hover:text-gray-500"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <p className="text-gray-600 mb-8">Tem certeza que deseja marcar o produto "{productToMarkAsOutOfStock.name}" como esgotado?</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowOutOfStockConfirmation(false);
+                  setProductToMarkAsOutOfStock(null);
+                }}
+                className="px-6 py-2.5 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  if (productToMarkAsOutOfStock) {
+                    handleSetOutOfStock(productToMarkAsOutOfStock);
+                    setShowOutOfStockConfirmation(false);
+                    setProductToMarkAsOutOfStock(null);
+                  }
+                }}
+                disabled={isUpdatingStock}
+                className={`px-6 py-2.5 bg-[#373a4e] text-white rounded-full hover:bg-[#373a4e]/90 transition-colors ${isUpdatingStock ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                {isUpdatingStock ? 'Confirmando...' : 'Confirmar'}
               </button>
             </div>
           </div>

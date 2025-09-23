@@ -58,7 +58,7 @@ export default function ClientList() {
             <div className="flex items-center justify-start px-2 h-20">
               <button 
                 onClick={() => window.location.href = `/client/edit-client/${row?._id}`}
-                className="w-20 py-2 mx-2 text-xs text-blue-600 hover:text-white my-2 hover:bg-blue-600 border border-blue-600 rounded-full transition-all duration-300 shadow-sm hover:shadow"
+                className="w-20 py-2 mx-2 text-xs text-blue-600 hover:text-white my-2 hover:bg-[#373a4e] border border-[#373a4e] rounded-full transition-all duration-300 shadow-sm hover:shadow"
               >
                 Editar
               </button>
@@ -162,7 +162,7 @@ export default function ClientList() {
           </div>
           <button 
             onClick={() => setShowAddClientDialog(true)}
-            className="inline-flex items-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 transition-all duration-300 shadow-md hover:shadow-lg"
+            className="inline-flex items-center text-white bg-[#373a4e] hover:bg-[#2f3141] focus:ring-4 focus:ring-[#373a4e]/30 font-medium rounded-full text-sm px-5 py-2.5 transition-all duration-300 shadow-md hover:shadow-lg"
           >
             <IoIosAddCircle className="mr-2 text-lg" /> Adicionar cliente
           </button>
@@ -186,7 +186,7 @@ export default function ClientList() {
             selectableRowsHighlight
             persistTableHead
             subHeader
-            className="bg-white px-4"
+            className="bg-white"
             onRowClicked={(e) => {
               setUserInfo(e);
               setIsVisible(true);
