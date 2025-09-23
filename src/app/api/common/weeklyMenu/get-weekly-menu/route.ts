@@ -13,7 +13,7 @@ export async function GET(req: Request) {
     if (!weekIndex) {
       // If no weekIndex is provided, return all weekly menus
       const getData = await WeeklyMenu.find({}).populate({
-        path: 'menu.$*.id',
+        path: 'menu.$*._id',
         model: 'Products',
         select: 'name description category prices',
         populate: {

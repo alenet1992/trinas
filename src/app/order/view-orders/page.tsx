@@ -33,7 +33,8 @@ interface Product {
   description: string;
   prices?: ProductPrice[];
   selectedQuantity?: string;
-  outOfStock?: boolean
+  outOfStock?: boolean;
+  quantityIndex?: number;
 }
 
 interface CartItem {
@@ -175,10 +176,11 @@ export default function Page() {
     }
   };
 
-  const handleSetOutOfStock = async (product: Product) => {
+  const handleSetOutOfStock = async (product: Product, weekIndex: number) => {
     try {
+      
       setIsUpdatingStock(true);
-      const response = await fetch(`/api/menu/product/${product.id}/out-of-stock`, {
+      const response = await fetch(`/api/common/weeklyMenu/out-of-stock?weekIndex=${weekIndex}&productId=${product.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -251,21 +253,6 @@ export default function Page() {
   // Função para remover produto do carrinho
   const removeFromCart = (productId: string) => {
     setCart(prevCart => prevCart.filter(item => item.product.id !== productId));
-  };
-
-  // Função para atualizar quantidade no carrinho
-  const updateCartQuantity = (productId: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(productId);
-      return;
-    }
-    setCart(prevCart => 
-      prevCart.map(item => 
-        item.product.id === productId 
-          ? { ...item, quantity }
-          : item
-      )
-    );
   };
 
   // Função para calcular total do carrinho
@@ -558,7 +545,6 @@ export default function Page() {
                            {product.name}
                          </div>
           
-                         
                          {product.prices && product.prices.length > 0 && (
                            <div className="px-3 pb-3 text-sm pt-2">
                              <div className="grid grid-cols-2 gap-2">
@@ -574,7 +560,7 @@ export default function Page() {
                                    }}
                                  >
                                   <div className='d-flex'>
-                                   <div className="text-gray-700 font-medium">{index == 0 ? '1 dose' : '1/2 dose'}</div>
+                                   <div className="text-gray-700 font-medium">{index == 1 || product.prices?.length == 1 ? '1 dose' : '1/2 dose'}</div>
                                    <div className="text-green-600 font-semibold">  {formatPrice(price.value)}</div>
                                    </div>
                                  </div>
@@ -622,7 +608,7 @@ export default function Page() {
                         )}
                       </div>
                       <div className="flex flex-col items-end space-y-2">
-                        
+                        <p className="text-base font-bold text-gray-700 bg-gray-50 px-3 py-1 rounded-full"> {item.product.quantityIndex === 0 ?  '1/2 dose' : '1 dose'}</p>
                         <button
                           onClick={() => removeFromCart(item.product.id)}
                           className="text-xs text-red-600 hover:text-white hover:bg-red-500 font-medium flex items-center rounded-full px-2 py-1 transition-all duration-300"
@@ -858,7 +844,7 @@ export default function Page() {
               <button
                 onClick={() => {
                   if (productToMarkAsOutOfStock) {
-                    handleSetOutOfStock(productToMarkAsOutOfStock);
+                    handleSetOutOfStock(productToMarkAsOutOfStock, 0);
                     setShowOutOfStockConfirmation(false);
                     setProductToMarkAsOutOfStock(null);
                   }

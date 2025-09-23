@@ -72,6 +72,8 @@ export default function AddProductModal({ isOpen, onClose, onSuccess, productId,
     try {
       const { name, description, categoryID, quantity: quant } = data;
       
+      console.log('quant', quant);
+
       if (isEditing && productId) {
         const updatedData = {
           _id: productId,
