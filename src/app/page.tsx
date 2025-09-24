@@ -1,13 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
-import FeaturedProduct from "@/components/FeaturedProduct";
-import TopCategories from "@/components/TopCategories";
 import { get_all_categories } from "@/Services/Admin/category";
 import { get_all_products } from "@/Services/Admin/product";
-import useSWR from "swr";
 import { toast, ToastContainer } from "react-toastify";
 import {
   setCategoryData,

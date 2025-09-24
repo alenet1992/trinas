@@ -158,7 +158,7 @@ export default function FavouriteProductDataTable() {
             placeholder={"Nome do Produto"}
           />
         }
-        className="bg-white px-4"
+        className="bg-white"
       />
     </div>
   );

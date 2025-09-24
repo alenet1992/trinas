@@ -18,16 +18,15 @@ export default function AdminNavbar() {
 
   return (
     <div
-      className="fixed z-30 custom-header"
-      style={{ width: "calc(100% - 16rem);" }}
+      className="fixed z-30 w-[calc(100%-16rem)] px-6 py-4"
     >
-      <div className="dark:text-black backdrop-blur-xl">
+      <div className="bg-white/90 backdrop-blur-sm border border-gray-100 shadow-md rounded-3xl px-6 py-3 flex justify-between items-center transition-all duration-300">
         <div className="flex-1">
           <div className="dropdown md:hidden">
-            <label tabIndex={0} className="btn btn-active btn-circle">
+            <label tabIndex={0} className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200 inline-flex items-center justify-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
+                className="h-5 w-5 text-gray-600"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -40,41 +39,28 @@ export default function AdminNavbar() {
                 />
               </svg>
             </label>
-            <ul
-              tabIndex={0}
-              className="menu menu-compact dropdown-content mt-3 p-2 shadow text-black bg-gray-50 rounded-box w-52"
-            >
-              <li onClick={() => dispatch(setNavActive("Base"))}>
-                <button>Homepage</button>
-              </li>
-              <li onClick={() => dispatch(setNavActive("activeCategories"))}>
-                <button>Categorias</button>
-              </li>
-              <li onClick={() => dispatch(setNavActive("activeProducts"))}>
-                <button>Products</button>
-              </li>
-              <li onClick={() => dispatch(setNavActive("activePendingOrder"))}>
-                <button>Pending orders</button>
-              </li>
-              <li
-                onClick={() => dispatch(setNavActive("activeDeliveredOrder"))}
-              >
-                <button>Completed orders</button>
-              </li>
-            </ul>
           </div>
         </div>
-        <div className=" flex-none text-right mr-10 custom-header">
-          <div className="dropdown dropdown-end">
-            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-              <button
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </label>
-          </div>
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={() => router.push('/order/view-orders')}
+            className="bg-[#373a4e] hover:bg-[#2f3141] text-white text-sm font-medium px-4 py-2 rounded-full shadow-sm hover:shadow transition-all duration-200 inline-flex items-center space-x-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+            </svg>
+            <span>Criar encomenda</span>
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="bg-[#373a4e] hover:bg-[#2f3141] text-white text-sm font-medium px-4 py-2 rounded-full shadow-sm hover:shadow transition-all duration-200 inline-flex items-center space-x-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span>Logout</span>
+          </button>
         </div>
       </div>
     </div>

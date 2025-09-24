@@ -32,54 +32,12 @@ export default function Navbar() {
       }  fixed text-white top-0 left-0 z-50`}
     >
       <div className="navbar-start">
-        {user ? (
-          <div className="dropdown">
-            <label
-              tabIndex={0}
-              className="btn btn-active text-white btn-circle"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h7"
-                />
-              </svg>
-            </label>
-            <ul
-              tabIndex={0}
-              className="menu menu-compact dropdown-content mt-3 p-2 shadow text-black bg-gray-50 rounded-box w-52"
-            >
-              {/* <li>
-              <Link href={"/"}>Homepage</Link>
-            </li>
-            <li>
-              <Link href={"/"}>Shop</Link>
-            </li> */}
-              <li>
-                <Link href={"/order/view-orders"}>Nova encomenda</Link>
-              </li>
-              <li>
-                <Link href={"/dashboard"}>Gestão</Link>
-              </li>
-            </ul>
-          </div>
-        ) : (
-          <></>
-        )}
       </div>
       <div className="navbar-end">
         <div className="flex-none text-right mr">
           {user ? (
             <div className="flex items-center justify-center  min-h-full">
-              <button onClick={handleLogout} className="btn text-white mx-2">
+              <button onClick={handleLogout} className="bg-[#373a4e] hover:bg-[#2f3141] text-white text-sm font-medium px-4 py-2 rounded-full shadow-sm hover:shadow transition-all duration-200 mx-2">
                 logout
               </button>
               {/* <button
@@ -104,7 +62,7 @@ export default function Navbar() {
           ) : (
             <button
               onClick={() => router.push("/auth/login")}
-              className="btn text-white mx-2"
+              className="bg-[#373a4e] hover:bg-[#2f3141] text-white text-sm font-medium px-4 py-2 rounded-full shadow-sm hover:shadow transition-all duration-200 mx-2"
             >
               Login
             </button>

@@ -161,7 +161,7 @@ export default function CompletedOrderDataTable() {
             placeholder={"Orders ID"}
           />
         }
-        className="bg-white px-4  "
+        className="bg-white"
       />
     </div>
   );

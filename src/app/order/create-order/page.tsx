@@ -121,6 +121,7 @@ export default function Page() {
       paidAt: new Date(),
       isDelivered: false,
       deliveredAt: new Date(),
+      status: "new"
     };
 
     const res = await create_a_new_order(finalData);

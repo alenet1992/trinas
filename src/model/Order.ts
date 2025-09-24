@@ -1,9 +1,20 @@
 import mongoose from "mongoose";
-import User from "./User";
-import Product from "./Product";
 
+// Schema para o contador de pedidos
+const CounterSchema = new mongoose.Schema({
+    _id: { type: String, required: true },
+    seq: { type: Number, default: 0 }
+});
+
+
+// Modelo para o contador (se não existir)
+const Counter = mongoose.models.Counter || mongoose.model('Counter', CounterSchema);
 
 const OrderSchema = new mongoose.Schema({
+    orderNumber: {
+        type: Number,
+        unique: true
+    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -41,7 +52,41 @@ const OrderSchema = new mongoose.Schema({
     paidAt: { type: Date },
     isDelivered: { type: Boolean, default: false },
     deliveredAt: { type: Date },
+    orderName: { type: String },
+    orderType: { type: String, enum: ['takeaway', 'delivery'], default: 'takeaway' },
+    pickupTime: { type: Date },
+    status: { type: String, enum: ['new', 'in_progress', 'delivered'], default: 'new' },
 }, { timestamps: true });
+
+// Middleware pre-save para incrementar automaticamente o orderNumber e sincronizar status
+OrderSchema.pre('save', async function(next) {
+    const doc = this;
+    
+    // Sincroniza o status com isDelivered
+    if (doc.isDelivered && doc.status !== 'delivered') {
+        doc.status = 'delivered';
+    } else if (!doc.isDelivered && doc.status === 'delivered') {
+        doc.status = 'in_progress';
+    }
+    
+    if (doc.isNew) {
+        try {
+            const counter = await Counter.findByIdAndUpdate(
+                { _id: 'orderNumber' },
+                { $inc: { seq: 1 } },
+                { new: true, upsert: true }
+            );
+            doc.orderNumber = counter.seq;
+            doc.status = 'new';
+            next();
+        } catch (error) {
+            // Corrigindo o tipo do erro para ser compatível com CallbackError
+            return next(new Error(error instanceof Error ? error.message : 'Erro ao gerar número do pedido'));
+        }
+    } else {
+        next();
+    }
+});
 
 const Order = mongoose.models.Order || mongoose.model("Order", OrderSchema);
 

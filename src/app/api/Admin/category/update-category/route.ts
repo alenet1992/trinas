@@ -10,30 +10,23 @@ export async function PUT(req: Request) {
 
     if (isAuthenticated === 'admin') {
       const data = await req.json();
-      const  {name , _id  , description  , slug } = data
-
-      const saveData = await Category.findOneAndUpdate(_id , { categoryName : name , categoryDescription : description ,categorySlug: slug}  , { new: true });
+      const  { name , _id  , description  } = data
+      const saveData = await Category.findOneAndUpdate({_id} , { name , description}  , { new: true });
 
       if (saveData) {
-
-        return NextResponse.json({ success: true, message: "Category updated successfully!" });
-
+        return NextResponse.json({ success: true, message: "Categoria atualizada com sucesso!" });
       } else {
-
-        return NextResponse.json({ success: false, message: "Failed to update the category. Please try again!" });
-
+        return NextResponse.json({ success: false, message: "Falha ao atualizar a categoria. Por favor, tente novamente!" });
       }
 
     } else {
-
-      return NextResponse.json({ success: false, message: "You are not authorized." });
-
+      return NextResponse.json({ success: false, message: "Você não está autorizado." });
     }
 
   } catch (error) {
 
-    console.log('Error in update a new category:', error);
-    return NextResponse.json({ success: false, message: 'Something went wrong. Please try again!' });
+    console.log('Erro ao atualizar uma nova categoria:', error);
+    return NextResponse.json({ success: false, message: 'Algo deu errado. Por favor, tente novamente!' });
 
   }
 }
