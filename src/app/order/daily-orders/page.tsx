@@ -67,14 +67,9 @@ interface Order {
   _id: string;
 }
 
-interface DailyOrdersPageProps {
-  inner?: boolean
-}
-
-
 export default function DailyOrdersPage({
-  inner = true
-}: DailyOrdersPageProps) {
+  inner
+}: any) {
   const [loading, setLoading] = useState<boolean>(true);
   const [orderData, setOrderData] = useState<Order[]>([]);
   const [filteredData, setFilteredData] = useState<Order[]>([]);

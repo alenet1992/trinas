@@ -88,7 +88,7 @@ export default function WeeklyMenu() {
 
         // Process each day's menu items to add product field
         Object.keys(data.data.menu).forEach(day => {
-          data.data.menu[day] = data.data.menu[day].map(item => ({
+          data.data.menu[day] = data.data.menu[day].map((item: any) => ({
             ...item._id, 
             category: item._id?.category,
           }));
@@ -340,13 +340,6 @@ export default function WeeklyMenu() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
-                    
-                    <Link
-                      href="/dashboard"
-                      className="bg-[#373a4e] text-white active:bg-[#373a4e]/90 text-xs font-bold uppercase px-3 py-1 rounded-full outline-none focus:outline-none ease-linear transition-all duration-150 shadow-sm"
-                    >
-                      Voltar ao Dashboard
-                    </Link>
                   </div>
                 </div>
               </div>
