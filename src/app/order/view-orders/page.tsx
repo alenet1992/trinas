@@ -11,6 +11,7 @@ import { get_products_for_today, getCurrentDayOfWeek } from "@/Services/common/w
 import { getProductPricesByProductId } from "@/Services/Admin/product/price";
 import Cookies from 'js-cookie';
 import DailyOrdersPage from '@/app/order/daily-orders/page';
+import ClientList from '@/app/client/list/page';
 
 interface userData {
   email: String;
@@ -72,14 +73,14 @@ export default function ViewOrders() {
   const [orderType, setOrderType] = useState<'takeaway' | 'delivery'>('takeaway'); // Tipo específico para orderType
   const [pickupTime, setPickupTime] = useState<string>('');
   const [showOrderFormModal, setShowOrderFormModal] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'orders' | 'daily'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'daily' | 'clients'>('clients');
   const [showQuantityModal, setShowQuantityModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedQuantityPrice, setSelectedQuantityPrice] = useState<ProductPrice | null>(null);
   const [isUpdatingStock, setIsUpdatingStock] = useState<boolean>(false);
   const [showOutOfStockConfirmation, setShowOutOfStockConfirmation] = useState<boolean>(false);
   const [productToMarkAsOutOfStock, setProductToMarkAsOutOfStock] = useState<Product | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [clientSuggestions, setClientSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showAddClientDialog, setShowAddClientDialog] = useState<boolean>(false);
@@ -191,8 +192,10 @@ export default function ViewOrders() {
   
   // Carregar produtos quando o componente for montado
   useEffect(() => {
-    loadProducts();
-  }, []);
+    if(activeTab === 'orders') {
+      loadProducts();
+    }
+  }, [activeTab]);
 
   // Função para filtrar produtos
   const filterProducts = (keyword: string) => {
@@ -463,6 +466,52 @@ export default function ViewOrders() {
                   </span>
                 </a>
               </li>
+              <li>
+                <a className="flex items-center" onClick={() => setActiveTab('clients')}>
+                  <span className={`flex items-center justify-center h-12 w-12 rounded-2xl shadow-lg text-white ${activeTab === 'clients' ? 'bg-cyan-300' : ''}`}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a className="flex items-center" onClick={() => window.location.href = '/dashboard'}>
+                  <span className={`flex items-center justify-center h-12 w-12 rounded-2xl shadow-lg text-white`}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                  </span>
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -609,7 +658,13 @@ export default function ViewOrders() {
 
           { activeTab === 'daily' && (
             <div className='px-2  '>
-              <DailyOrdersPage  inner={false} />
+              <DailyOrdersPage inner={false} />
+            </div>
+          )}
+
+          { activeTab === 'clients' && (
+            <div className='px-2  '>
+              <ClientList />
             </div>
           )}
 

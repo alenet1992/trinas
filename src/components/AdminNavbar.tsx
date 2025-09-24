@@ -39,29 +39,19 @@ export default function AdminNavbar() {
                 />
               </svg>
             </label>
-            <ul
-              tabIndex={0}
-              className="menu menu-compact dropdown-content mt-3 p-4 shadow-lg bg-white/95 backdrop-blur-sm rounded-2xl w-56 border border-gray-100 space-y-1"
-            >
-              <li onClick={() => dispatch(setNavActive("Base"))}>
-                <button className="px-4 py-2 text-gray-700 hover:bg-[#373a4e]/10 hover:text-[#373a4e] rounded-xl transition-all duration-200 font-medium text-sm">Homepage</button>
-              </li>
-              <li onClick={() => dispatch(setNavActive("activeCategories"))}>
-                <button className="px-4 py-2 text-gray-700 hover:bg-[#373a4e]/10 hover:text-[#373a4e] rounded-xl transition-all duration-200 font-medium text-sm">Categorias</button>
-              </li>
-              <li onClick={() => dispatch(setNavActive("activeProducts"))}>
-                <button className="px-4 py-2 text-gray-700 hover:bg-[#373a4e]/10 hover:text-[#373a4e] rounded-xl transition-all duration-200 font-medium text-sm">Products</button>
-              </li>
-              <li onClick={() => dispatch(setNavActive("activePendingOrder"))}>
-                <button className="px-4 py-2 text-gray-700 hover:bg-[#373a4e]/10 hover:text-[#373a4e] rounded-xl transition-all duration-200 font-medium text-sm">Pending orders</button>
-              </li>
-              <li onClick={() => dispatch(setNavActive("activeDeliveredOrder"))}>
-                <button className="px-4 py-2 text-gray-700 hover:bg-[#373a4e]/10 hover:text-[#373a4e] rounded-xl transition-all duration-200 font-medium text-sm">Completed orders</button>
-              </li>
-            </ul>
           </div>
         </div>
         <div className="flex items-center space-x-4">
+          <button
+            onClick={() => router.push('/order/view-orders')}
+            className="bg-[#373a4e] hover:bg-[#2f3141] text-white text-sm font-medium px-4 py-2 rounded-full shadow-sm hover:shadow transition-all duration-200 inline-flex items-center space-x-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+            </svg>
+            <span>Criar encomenda</span>
+          </button>
+
           <button
             onClick={handleLogout}
             className="bg-[#373a4e] hover:bg-[#2f3141] text-white text-sm font-medium px-4 py-2 rounded-full shadow-sm hover:shadow transition-all duration-200 inline-flex items-center space-x-2"

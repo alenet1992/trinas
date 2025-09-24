@@ -16,7 +16,7 @@ export default function Loading() {
                 wrapperClass=""
                 visible={true}
             />
-            <p className='text-sm mt-2 font-semibold text-[#373a4e]'>Carregando...</p>
+            <p className='text-sm mt-2 font-semibold text-[#373a4e]'>Loading...</p>
         </div>
     )
 }

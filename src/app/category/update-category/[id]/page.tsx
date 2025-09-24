@@ -176,7 +176,7 @@ export default function Page({
             height="60"
             width="60"
             color="#f97316"
-            ariaLabel="carregando"
+            ariaLabel="Loading"
             radius="12"
             wrapperStyle={{}}
             wrapperClass=""

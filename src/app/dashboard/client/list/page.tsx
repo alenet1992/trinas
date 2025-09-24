@@ -192,7 +192,7 @@ export default function ClientListPage() {
         <div className="flex justify-center items-center h-64 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 animate-fadeIn">
           <div className="flex flex-col items-center">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-3"></div>
-            <p className="text-gray-500">Carregando dados...</p>
+            <p className="text-gray-500">Loading ...</p>
           </div>
         </div>
       ) : (

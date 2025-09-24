@@ -1,5 +1,12 @@
 import mongoose from 'mongoose';
 
+export interface userData {
+  email: String;
+  role: String;
+  _id: String;
+  name: String;
+}
+
 
 const UserSchema = new mongoose.Schema({
     name: String,

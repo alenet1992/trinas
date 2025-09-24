@@ -43,7 +43,7 @@ export default function Login() {
       if (res?.finalData?.user?.role === "admin") {
         Router.push("/dashboard" as any);
       } else if (res?.finalData?.user?.role === "user") {
-        Router.push("/dashboard/client/list" as any);
+        Router.push("/order/view-orders" as any);
       } else {
         Router.push("/");
       }

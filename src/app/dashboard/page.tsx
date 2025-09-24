@@ -18,13 +18,18 @@ import {
 } from "@/utils/AdminSlice";
 import { setNavActive } from "@/utils/AdminNavSlice";
 import { get_all_products } from "@/Services/Admin/product";
+import { userData } from '@/model/User';
 
 export default function Dashboard() {
   const Router = useRouter();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!Cookies.get("token")) {
+    const user: userData | null = JSON.parse(
+      localStorage.getItem("user") || "{}"
+    );
+
+    if (!Cookies.get("token") || user?.role !== "admin") {
       Router.push("/");
     }
     dispatch(setNavActive("Base"));

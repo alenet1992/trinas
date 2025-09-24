@@ -5,7 +5,7 @@ import { userAutenticated } from "@/Services/auth/UserAutenticated";
 import { IoIosAddCircle } from 'react-icons/io';
 import { CgMenuGridR } from 'react-icons/cg';
 import { HiOutlineDocumentText } from 'react-icons/hi';
-import { FiUsers } from 'react-icons/fi';
+import { FiUsers, FiSettings } from 'react-icons/fi';
 
 interface IProps {
   setRatio: (value: number) => void;
@@ -40,17 +40,7 @@ export default function Hero({ setRatio }: IProps) {
                       <p className="text-indigo-600 text-center">Adicione novas encomendas ao sistema</p>
                     </div>
                   </Link>
-        
-                  {/* Card para Ementa da Semana */}
-                  <Link href="/product/weekly-menu">
-                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-8 hover:shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center cursor-pointer h-full border border-gray-100">
-                      <div className="bg-[#373a4e]/10 p-4 rounded-full mb-4">
-                        <CgMenuGridR className="text-4xl text-[#373a4e]" />
-                      </div>
-                      <h2 className="text-xl font-semibold mb-2 text-gray-800 text-center">Ementa da Semana</h2>
-                      <p className="text-gray-600 text-center">Gerencie o menu semanal de refeições</p>
-                    </div>
-                  </Link>
+      
         
                   {/* Card para Lista de Encomendas do Dia */}
                   <Link href="/order/daily-orders">
@@ -71,6 +61,17 @@ export default function Hero({ setRatio }: IProps) {
                       </div>
                       <h2 className="text-xl font-semibold mb-2 text-gray-800 text-center">Lista de Clientes</h2>
                       <p className="text-gray-600 text-center">Gerencie todos os clientes cadastrados</p>
+                    </div>
+                  </Link>
+
+                  {/* Card para Configurações */}
+                  <Link href="/dashboard">
+                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-8 hover:shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center cursor-pointer h-full border border-gray-100">
+                      <div className="bg-[#373a4e]/10 p-4 rounded-full mb-4">
+                        <FiSettings className="text-4xl text-[#373a4e]" />
+                      </div>
+                      <h2 className="text-xl font-semibold mb-2 text-gray-800 text-center">Configurações</h2>
+                      <p className="text-gray-600 text-center">Gerencie as configurações do sistema</p>
                     </div>
                   </Link>
                 </div>

@@ -175,7 +175,7 @@ export default function ProductDataTable() {
               <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80 backdrop-blur-sm">
                 <div className="text-center">
                   <Loading />
-                  <p className="mt-2 text-sm text-gray-500">Carregando produtos...</p>
+                  <p className="mt-2 text-sm text-gray-500">Loading produtos...</p>
                 </div>
               </div>
             }

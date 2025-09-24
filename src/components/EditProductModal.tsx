@@ -147,7 +147,7 @@ export default function EditProductModal({ isOpen, onClose, productId, onSuccess
               visible={true}
             />
             <p className="text-sm mt-2 font-semibold text-orange-500">
-              {loader ? 'Atualizando produto...' : 'Carregando produto...'}
+              {loader ? 'Atualizando produto...' : 'Loading produto...'}
             </p>
           </div>
         ) : (

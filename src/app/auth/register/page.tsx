@@ -125,7 +125,7 @@ const AddUserDialog = (props: IAddUserDialog) => {
                     height="40"
                     width="40"
                     color="#2563eb"
-                    ariaLabel="carregando"
+                    ariaLabel="Loading"
                     radius="12"
                     wrapperStyle={{}}
                     wrapperClass=""

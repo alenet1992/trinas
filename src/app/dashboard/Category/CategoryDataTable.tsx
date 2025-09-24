@@ -217,7 +217,7 @@ export default function CategoryDataTable() {
                   visible={true}
                 />
                 <p className="text-sm sm:text-base mt-4 font-semibold text-gray-700">
-                  Carregando categorias...
+                Loading categorias...
                 </p>
               </div>
             }
