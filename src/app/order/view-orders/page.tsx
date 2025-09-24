@@ -1,10 +1,16 @@
 "use client";
-import { RootState } from "@/Store/store";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+
+
+import { useEffect, useState } from "react";
+
+import { toast, ToastContainer } from "react-toastify";
+import { AddClientDialog } from "@/components/AddClientDialog";
 import Image from "next/image";
-import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer, toast } from "react-toastify";
+import { get_all_products } from "@/Services/Admin/product";
+import { get_products_for_today, getCurrentDayOfWeek } from "@/Services/common/weeklyMenu";
+import { getProductPricesByProductId } from "@/Services/Admin/product/price";
+import Cookies from 'js-cookie';
+import DailyOrdersPage from '@/app/order/daily-orders/page';
 
 interface userData {
   email: String;
@@ -53,14 +59,7 @@ interface Order {
   pickupTime?: string | Date | null;
 }
 
-// Importar os serviços para buscar produtos
-import { get_all_products } from "@/Services/Admin/product";
-import { get_products_for_today, getCurrentDayOfWeek } from "@/Services/common/weeklyMenu";
-import { getProductPricesByProductId } from "@/Services/Admin/product/price";
-import Cookies from 'js-cookie';
-import DailyOrdersPage from '@/app/order/daily-orders/page';
-
-export default function Page() {
+export default function ViewOrders() {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -81,8 +80,40 @@ export default function Page() {
   const [showOutOfStockConfirmation, setShowOutOfStockConfirmation] = useState<boolean>(false);
   const [productToMarkAsOutOfStock, setProductToMarkAsOutOfStock] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [clientSuggestions, setClientSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showAddClientDialog, setShowAddClientDialog] = useState<boolean>(false);
 
-  
+  const handleNameChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setOrderName(value);
+
+    if (value.length >= 2) {
+      try {
+        const response = await fetch('/api/common/client/getAll');
+        const data = await response.json();
+        
+        if (data.success) {
+          const filteredClients = data.data.filter((client: any) =>
+            client.name.toLowerCase().includes(value.toLowerCase())
+          );
+          setClientSuggestions(filteredClients);
+          setShowSuggestions(true);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar clientes:', error);
+      }
+    } else {
+      setClientSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleSelectClient = (clientName: string) => {
+    setOrderName(clientName);
+    setShowSuggestions(false);
+  };
+
   // Função para carregar os produtos do menu do dia atual
   const loadProducts = async () => {
     setIsLoading(true);
@@ -627,7 +658,7 @@ export default function Page() {
             
             {cart.length > 0 && (
               <div className="p-4 border-t">
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex justify-between items-center mb-3">
                   <span className="font-semibold">Total:</span>
                   <span className="font-bold text-lg text-blue-600">{formatPrice(getCartTotal())}</span>
                 </div>
@@ -721,15 +752,40 @@ export default function Page() {
             
             <div className="space-y-4 mb-6">
               <div>
-                <label htmlFor="orderName" className="block text-sm font-medium text-gray-700 mb-1">Nome do cliente</label>
+                <div className="flex justify-between items-center mb-2">
+                  <label htmlFor="orderName" className="block text-sm font-medium text-gray-700 mb-1">Nome do cliente</label>
+                  <button
+                    onClick={() => setShowAddClientDialog(true)}
+                    className="text-sm text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-full transition-all duration-300 flex items-center gap-1"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Novo Cliente
+                  </button>
+                </div>
                 <input
                   type="text"
                   id="orderName"
                   value={orderName}
-                  onChange={(e) => setOrderName(e.target.value)}
+                  onChange={handleNameChange}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                   className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-sm"
                   placeholder="Nome para a encomenda"
                 />
+                {showSuggestions && clientSuggestions.length > 0 && (
+                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-auto" style={{maxWidth: '400px'}}>
+                    {clientSuggestions.map((client: any) => (
+                      <div
+                        key={client._id}
+                        className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700 transition-colors duration-150"
+                        onClick={() => handleSelectClient(client.name)}
+                      >
+                        <strong>{client.name}</strong> - <span className="font-light">{client.address}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               
               <div>
@@ -858,6 +914,17 @@ export default function Page() {
           </div>
         </div>
       )}
+      <AddClientDialog
+        isVisible={showAddClientDialog}
+        handleHideDialog={() => setShowAddClientDialog(false)}
+        onClientAdded={() => {
+          setShowAddClientDialog(false);
+          // Atualizar a lista de sugestões após adicionar um novo cliente
+          if (orderName.length >= 2) {
+            handleNameChange({ target: { value: orderName } } as React.ChangeEvent<HTMLInputElement>);
+          }
+        }}
+      />
     </>
   );
 }
