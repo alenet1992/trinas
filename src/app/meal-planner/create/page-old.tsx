@@ -116,7 +116,7 @@ export default function AddProduct() {
               <input
                 {...register(`quantity.${index}`)}
                 type="text"
-                placeholder="Escreva o preço em $"
+                placeholder="Escreva o preço"
                 className="input input-bordered w-full"
               />
             </td>

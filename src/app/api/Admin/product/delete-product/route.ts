@@ -13,20 +13,19 @@ export async function DELETE(req: Request) {
       const { searchParams } = new URL(req.url);
       const id = searchParams.get('id');
 
-      if (!id) return NextResponse.json({ success: true, message: "Product ID is Required" });
+      if (!id) return NextResponse.json({ success: true, message: "É necessário o ID do Produto" });
 
       const deleteData = await Product.findByIdAndDelete(id);
 
       if (deleteData) {
-        return NextResponse.json({ success: true, message: "Product Deleted successfully!" });
+        return NextResponse.json({ success: true, message: "Produto eliminado com sucesso!" });
       } else {
-        return NextResponse.json({ success: false, message: "Failed to Delete the Product. Please try again!" });
+        return NextResponse.json({ success: false, message: "Falha ao eliminar o Produto. Por favor, tente novamente!" });
       }
     } else {
-      return NextResponse.json({ success: false, message: "You are not authorized." });
+      return NextResponse.json({ success: false, message: "Não está autorizado." });
     }
   } catch (error) {
-    console.log('Error in deleting a new Product:', error);
-    return NextResponse.json({ success: false, message: 'Something went wrong. Please try again!' });
+    return NextResponse.json({ success: false, message: 'Algo correu mal. Por favor, tente novamente!' });
   }
 }

@@ -10,32 +10,35 @@ export async function PUT(req: Request) {
 
     if (isAuthenticated === 'admin') {
       const data = await req.json();
-      const  id = data
-      console.log(id)
-      if(!id) return NextResponse.json({ success: false, message: "Please provide the order id!" });
+      const { id, status } = data;
 
-      const saveData = await Order.findOneAndUpdate(id , { isDelivered : true }  , { new: true });
+      if (!id || !status) {
+        return NextResponse.json({ success: false, message: "Please provide both order id and status!" });
+      }
+
+      const updateData = {
+        status,
+        isDelivered: status === 'delivered'
+      };
+
+      const saveData = await Order.findOneAndUpdate(
+        { _id: id },
+        updateData,
+        { new: true }
+      );
 
       if (saveData) {
-
         return NextResponse.json({ success: true, message: "Order status updated successfully!" });
-
       } else {
-
         return NextResponse.json({ success: false, message: "Failed to update the Order status. Please try again!" });
-
       }
 
     } else {
-
       return NextResponse.json({ success: false, message: "You are not authorized." });
-
     }
 
   } catch (error) {
-
     console.log('Error in update order status:', error);
-    return NextResponse.json({ success: false, message: 'Something went wrong. Please try again!' });
-
+    return NextResponse.json({ success: false, message: 'Something went wrong. Please try again!', error});
   }
 }

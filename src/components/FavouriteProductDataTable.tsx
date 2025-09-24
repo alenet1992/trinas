@@ -64,21 +64,21 @@ export default function FavouriteProductDataTable() {
 
   const columns = [
     {
-      name: "Product Name",
+      name: "Nome do Produto",
       selector: (row: BookmarkItem) => row?.productID?.productName,
       sortable: true,
     },
     {
-      name: "Price",
+      name: "Preço",
       selector: (row: BookmarkItem) => row?.productID?.productPrice,
       sortable: true,
     },
     {
-      name: "Image",
+      name: "Imagem",
       cell: (row: BookmarkItem) => (
         <Image
           src={row?.productID?.productImage}
-          alt="No Image Found"
+          alt="Nenhuma Imagem Encontrada"
           className="py-2"
           width={100}
           height={100}
@@ -86,14 +86,14 @@ export default function FavouriteProductDataTable() {
       ),
     },
     {
-      name: "Action",
+      name: "Ação",
       cell: (row: BookmarkItem) => (
         <div className="flex items-start justify-start px-2 h-20">
           <button
             onClick={() => handleDeleteProduct(row?._id)}
             className=" w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded transition-all duration-700"
           >
-            Delete
+            Eliminar
           </button>
         </div>
       ),
@@ -142,7 +142,7 @@ export default function FavouriteProductDataTable() {
         key={"ThisProductData"}
         pagination
         keyField="id"
-        title={`Favourite Products list`}
+        title={`Lista de Produtos Favoritos`}
         fixedHeader
         fixedHeaderScrollHeight="750px"
         selectableRows
@@ -155,10 +155,10 @@ export default function FavouriteProductDataTable() {
             type={"search"}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={"Product Name"}
+            placeholder={"Nome do Produto"}
           />
         }
-        className="bg-white px-4"
+        className="bg-white"
       />
     </div>
   );

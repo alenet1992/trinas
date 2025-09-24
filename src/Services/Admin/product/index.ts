@@ -1,7 +1,5 @@
 import Cookies from "js-cookie";
 
-
-
 export const add_new_product = async (formData: any) => {
   try {
     console.log('productData', formData);
@@ -9,7 +7,6 @@ export const add_new_product = async (formData: any) => {
     const res = await fetch(`/api/Admin/product/add-product`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${Cookies.get('token')}`
       },
       body: formData,

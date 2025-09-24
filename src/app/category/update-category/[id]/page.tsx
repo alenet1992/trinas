@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
-import { TailSpin } from "react-loader-spinner";
+import { Grid } from "react-loader-spinner";
 import {
   get_category_by_id,
   update_a_category,
@@ -126,8 +126,8 @@ export default function Page({
   };
 
   return (
-    <div className="w-full dark:text-black p-4 min-h-screen  bg-gray-50 flex flex-col ">
-      <div className="text-sm breadcrumbs  border-b-2 border-b-orange-600">
+    <div className="w-full dark:text-black p-4 md:p-6 min-h-screen bg-gray-50 flex flex-col">
+      <div className="text-sm breadcrumbs border-b-2 border-b-orange-600 overflow-x-auto pb-2">
         <ul>
           <li onClick={() => dispatch(setNavActive("Base"))}>
             <Link href={"/dashboard"}>
@@ -144,7 +144,7 @@ export default function Page({
                   d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
                 ></path>
               </svg>
-              Home
+              Início
             </Link>
           </li>
           <li>
@@ -161,86 +161,88 @@ export default function Page({
                 d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               ></path>
             </svg>
-            Update Category
+            <span className="hidden md:inline">Atualizar</span>
+            <span className="md:hidden">Editar</span>
+            <span className="hidden md:inline"> Categoria</span>
           </li>
         </ul>
       </div>
       <div className="w-full my-2 text-center">
-        <h1 className="text-2xl py-2 ">Update Category</h1>
+        <h1 className="text-xl md:text-2xl py-2 font-semibold">Atualizar Categoria</h1>
       </div>
       {isLoading || loader ? (
-        <div className="w-full  flex-col h-96 flex items-center justify-center ">
-          <TailSpin
-            height="50"
-            width="50"
-            color="orange"
-            ariaLabel="tail-spin-loading"
-            radius="1"
+        <div className="w-full flex-col h-[calc(100vh-200px)] flex items-center justify-center">
+          <Grid
+            height="60"
+            width="60"
+            color="#f97316"
+            ariaLabel="Loading"
+            radius="12"
             wrapperStyle={{}}
             wrapperClass=""
             visible={true}
           />
-          <p className="text-sm mt-2 font-semibold text-orange-500">
-            updating Category Hold Tight ....
+          <p className="text-base mt-4 font-medium text-orange-500">
+            Atualizando categoria, aguarde...
           </p>
         </div>
       ) : (
         <div className="w-full h-full flex items-start justify-center">
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="w-full max-w-lg  py-2 flex-col "
+            className="w-full max-w-lg mx-auto px-4 md:px-0 py-4 flex-col space-y-4"
           >
             <div className="form-control w-full mb-2">
               <label className="label">
-                <span className="label-text">Procurar</span>
+                <span className="label-text text-base font-medium">Nome da Categoria</span>
               </label>
               <input
                 {...register("name")}
                 type="text"
-                placeholder="Type here"
-                className="input input-bordered w-full"
+                placeholder="Digite o nome da categoria"
+                className="input input-bordered w-full rounded-lg focus:ring-2 focus:ring-orange-500"
               />
               {errors.name && (
-                <span className="text-red-500 text-xs mt-2">
-                  This field is required
+                <span className="text-red-500 text-sm mt-2">
+                  Este campo é obrigatório
                 </span>
               )}
             </div>
             <div className="form-control w-full mb-2">
               <label className="label">
-                <span className="label-text">Category Slug</span>
+                <span className="label-text text-base font-medium">URL Amigável</span>
               </label>
               <input
                 {...register("slug")}
                 type="text"
-                placeholder="Type here"
-                className="input input-bordered w-full"
+                placeholder="url-amigavel-da-categoria"
+                className="input input-bordered w-full rounded-lg focus:ring-2 focus:ring-orange-500"
               />
               {errors.slug && (
-                <span className="text-red-500 text-xs mt-2">
-                  This field is required
+                <span className="text-red-500 text-sm mt-2">
+                  Este campo é obrigatório
                 </span>
               )}
             </div>
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Category Description</span>
+                <span className="label-text text-base font-medium">Descrição da Categoria</span>
               </label>
               <textarea
                 {...register("description")}
-                className="textarea textarea-bordered h-24"
-                placeholder="Description"
+                className="textarea textarea-bordered h-32 rounded-lg focus:ring-2 focus:ring-orange-500"
+                placeholder="Digite a descrição da categoria"
               ></textarea>
               {errors.description && (
-                <span className="text-red-500 text-xs mt-2">
-                  This field is required
+                <span className="text-red-500 text-sm mt-2">
+                  Este campo é obrigatório
                 </span>
               )}
             </div>
             {catData && (
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Old Image</span>
+                  <span className="label-text text-base font-medium">Imagem Atual</span>
                 </label>
                 <Image
                   src={catData?.categoryImage || ""}
@@ -251,7 +253,7 @@ export default function Page({
               </div>
             )}
 
-            <button className="btn btn-block mt-3">Done !</button>
+            <button className="btn btn-block mt-6 bg-orange-500 hover:bg-orange-600 text-white border-none rounded-lg h-12 text-base font-medium">Atualizar</button>
           </form>
         </div>
       )}

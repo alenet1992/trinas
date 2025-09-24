@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import useSWR from "swr";
 import { ToastContainer, toast } from "react-toastify";
-import { TailSpin } from "react-loader-spinner";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Store/store";
@@ -14,6 +13,7 @@ import { ICategory } from "../../../model/Category";
 import { GetAllQuantity } from "@/Services/Admin/quantity";
 import { add_new_product } from "@/Services/Admin/product";
 import { newProductPrice } from "@/Services/Admin/product/price";
+import { TailSpin } from 'react-loader-spinner'
 
 type Inputs = {
   name: string;
@@ -62,13 +62,13 @@ export default function AddProduct() {
     setLoader(true);
     const { name, description, categoryID, quantity: quant } = data;
     const productData = new FormData();
-    for (let i = 0; i < selectedFiles.length; i++) {
-      productData.append("files", selectedFiles[i]);
-    }
+    // for (let i = 0; i < selectedFiles.length; i++) {
+    //   productData.append("files", selectedFiles[i]);
+    // }
 
     productData.append("name", name);
     productData.append("description", description);
-    productData.append("categoryID", name);
+    productData.append("categoryID", categoryID);
     productData.append("quant", JSON.stringify(quant));
 
     console.log(productData, "productData");
@@ -104,7 +104,7 @@ export default function AddProduct() {
         return (
           <tr
             key={index}
-            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 transition-colors duration-200"
           >
             <th
               scope="row"
@@ -116,8 +116,8 @@ export default function AddProduct() {
               <input
                 {...register(`quantity.${index}`)}
                 type="text"
-                placeholder="Escreva o preço em $"
-                className="input input-bordered w-full"
+                placeholder="Escreva o preço"
+                className="input w-full px-4 py-2 rounded-full border-2 border-gray-200 focus:border-gray-600 focus:outline-none transition-all duration-300 shadow-sm"
               />
             </td>
           </tr>
@@ -127,15 +127,9 @@ export default function AddProduct() {
     return <></>;
   };
 
-  const [selectedFiles, setSelectedFiles] = useState([]);
-
-  const handleFileChange = (e: any) => {
-    setSelectedFiles(e.target.files);
-  };
-
   return (
-    <div className="w-full  p-4 min-h-screen  bg-gray-50 flex flex-col ">
-      <div className="text-sm breadcrumbs  border-b-2 border-b-orange-600">
+    <div className="w-full p-6 min-h-screen bg-gray-50 flex flex-col">
+      <div className="text-sm breadcrumbs border-b-2 border-b-gray-800 pb-2 mb-4">
         <ul className="dark:text-black">
           <li>
             <Link href={"/dashboard"}>
@@ -173,22 +167,22 @@ export default function AddProduct() {
           </li>
         </ul>
       </div>
-      <div className="w-full my-2 text-center">
-        <h1 className="text-2xl py-2 dark:text-black ">Novo Prato</h1>
+      <div className="w-full my-4 text-center">
+        <h1 className="text-2xl py-3 dark:text-black font-medium">Novo Prato</h1>
       </div>
       {loader ? (
-        <div className="w-full  flex-col h-96 flex items-center justify-center ">
+        <div className="w-full flex-col h-96 flex items-center justify-center rounded-3xl bg-white/50 backdrop-blur-sm shadow-lg">
           <TailSpin
             height="50"
             width="50"
-            color="orange"
+            color="#333333"
             ariaLabel="tail-spin-loading"
             radius="1"
             wrapperStyle={{}}
             wrapperClass=""
             visible={true}
           />
-          <p className="text-sm mt-3 font-semibold text-orange-500">
+          <p className="text-sm mt-3 font-semibold text-gray-700">
             A criar um novo prato ....
           </p>
         </div>
@@ -196,7 +190,7 @@ export default function AddProduct() {
         <div className="w-full h-full flex items-start justify-center">
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="w-full max-w-lg  py-2 flex-col "
+            className="w-full max-w-lg py-6 px-8 flex-col bg-white/80 backdrop-blur-sm shadow-lg rounded-3xl"
           >
             <div className="form-control w-full max-w-full">
               <label className="label">
@@ -204,7 +198,7 @@ export default function AddProduct() {
               </label>
               <select
                 {...register("categoryID", { required: true })}
-                className="select select-bordered"
+                className="select select-bordered rounded-full px-6 border-2 border-gray-200 focus:border-gray-600 focus:outline-none transition-all duration-300 shadow-sm"
               >
                 <option disabled selected>
                   Selecionar categoria
@@ -226,7 +220,7 @@ export default function AddProduct() {
                 {...register("name", { required: true })}
                 type="text"
                 placeholder="Nome"
-                className="input input-bordered w-full"
+                className="input w-full px-6 py-3 rounded-full border-2 border-gray-200 focus:border-gray-600 focus:outline-none transition-all duration-300 shadow-sm"
               />
               {errors.name && (
                 <span className="text-red-500 text-xs mt-2">
@@ -240,8 +234,8 @@ export default function AddProduct() {
               </label>
               <textarea
                 {...register("description", { required: true })}
-                className="textarea textarea-bordered h-24"
-                placeholder="Description"
+                className="textarea h-24 px-6 py-4 rounded-2xl border-2 border-gray-200 focus:border-gray-600 focus:outline-none transition-all duration-300 shadow-sm"
+                placeholder="Descrição"
               ></textarea>
               {errors.description && (
                 <span className="text-red-500 text-xs mt-2">
@@ -249,12 +243,12 @@ export default function AddProduct() {
                 </span>
               )}
             </div>
-            <section>
-              <p className="text-base font-sans hover:font-serif text-black	mt-2 mb-0.5">
+            <section className="mt-6 mb-4">
+              <p className="text-base font-medium text-black mb-3 pl-2">
                 Tabela de Preços
               </p>
-              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 rounded-2xl overflow-hidden shadow-sm">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="px-6 py-3">
                       Quantidade
@@ -269,14 +263,14 @@ export default function AddProduct() {
                 </tbody>
               </table>
             </section>
-            <input
+            {/* <input
               type="file"
               name="files"
               multiple
               onChange={handleFileChange}
-            />
+            /> */}
 
-            <button className="btn btn-block mt-3">Done !</button>
+            <button className="btn btn-block mt-6 rounded-full bg-gradient-to-r from-gray-600 to-gray-800 border-none text-white hover:from-gray-700 hover:to-black shadow-md hover:shadow-lg transition-all duration-300 py-3 text-base font-medium">Criar prato</button>
           </form>
         </div>
       )}

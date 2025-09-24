@@ -32,6 +32,7 @@ interface Order {
   isDelivered: boolean;
   isPaid: boolean;
   itemsPrice: number;
+  pickupTime?:  Date;
   orderItems: {
     qty: number;
     product: {
@@ -100,6 +101,16 @@ export default function OrdersDetailsDataTable() {
       sortable: true,
     },
     {
+      name: "Pickup Time",
+      selector: (row: Order) => row?.pickupTime,
+      sortable: true,
+      cell: (row: Order) => (
+        <span>
+          {row?.pickupTime ? new Date(row.pickupTime).toLocaleString() : "N/A"}
+        </span>
+      ),
+    },
+    {
       name: "Total Price",
       selector: (row: Order) => row?.totalPrice,
       sortable: true,
@@ -160,7 +171,7 @@ export default function OrdersDetailsDataTable() {
             placeholder={"Orders ID"}
           />
         }
-        className="bg-white px-4 "
+        className="bg-white"
       />
     </div>
   );

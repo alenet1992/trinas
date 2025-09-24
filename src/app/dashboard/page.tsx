@@ -18,20 +18,18 @@ import {
 } from "@/utils/AdminSlice";
 import { setNavActive } from "@/utils/AdminNavSlice";
 import { get_all_products } from "@/Services/Admin/product";
-
-interface userData {
-  email: String;
-  role: String;
-  _id: String;
-  name: String;
-}
+import { userData } from '@/model/User';
 
 export default function Dashboard() {
   const Router = useRouter();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!Cookies.get("token")) {
+    const user: userData | null = JSON.parse(
+      localStorage.getItem("user") || "{}"
+    );
+
+    if (!Cookies.get("token") || user?.role !== "admin") {
       Router.push("/");
     }
     dispatch(setNavActive("Base"));
@@ -59,7 +57,7 @@ export default function Dashboard() {
       <AdminSidebar />
       <div className="relative md:ml-64 bg-blueGray-100 ">
         <AdminNavbar />
-        <div className="w-full  flex flex-wrap items-start justify-center overflow-y-auto  px-4 py-2 pt-20">
+        <div className="w-full  flex flex-wrap items-start justify-center overflow-y-auto px-6 py-4 pt-20">
           <SuperComponent></SuperComponent>
         </div>
       </div>

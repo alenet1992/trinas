@@ -1,160 +1,111 @@
 import React from "react";
 import { AiFillHome } from "react-icons/ai";
-import { BiCategory } from "react-icons/bi";
-import { GiLoincloth } from "react-icons/gi";
+import { FiUsers, FiUserPlus, FiToggleLeft, FiUnderline } from "react-icons/fi";
+import { HiOutlineDocumentText } from "react-icons/hi";
+import { AiOutlineClockCircle } from "react-icons/ai";
 import { setNavActive } from "@/utils/AdminNavSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/Store/store";
 
 export default function AdminSidebar() {
   const dispatch = useDispatch();
+  const activeNav = useSelector((state: RootState) => state.AdminNav.ActiveNav);
+
+  const menuItems = [
+    {
+      category: "Principal",
+      items: [
+        {
+          label: "Home",
+          icon: AiFillHome,
+          action: "Base",
+        },
+      ],
+    },
+    {
+      category: "Gestão de Clientes",
+      items: [
+        {
+          label: "Lista de Clientes",
+          icon: FiUsers,
+          action: "activeClientList",
+        },
+      ],
+    },
+    {
+      category: "Gestão de Utilizadores",
+      items: [
+        {
+          label: "Lista de Utilizadores",
+          icon: FiUserPlus,
+          action: "activeCreatePage",
+        },
+      ],
+    },
+    {      category: "Gestão de take away",
+      items: [
+        {
+          label: "Tipos de pratos",
+          icon: FiToggleLeft,
+          action: "activeCategories",
+        },
+        {
+          label: "Pratos",
+          icon: FiUnderline,
+          action: "activeProducts",
+        },
+        {
+          label: "Ementa da semana",
+          icon: FiUnderline,
+          action: "activeWeeklyMenu",
+        },
+        {
+          label: "Encomendas do Dia",
+          icon: AiOutlineClockCircle,
+          action: "activeDailyOrders",
+        },
+      ],
+    },  
+  ];
+
   return (
-    <div className="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-6 w-60 hidden dark:text-black md:block bg-white h-full">
-      <h1 className="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0">
-        {/* <RxDashboard className="mx-2" /> */}
-        Dashboard
-      </h1>
-      <div className="w-full ">
-        <hr className="my-4 md:min-w-full" />
+    <div className="fixed left-0 top-0 bottom-0 w-64 bg-gradient-to-b from-slate-50 to-slate-100 border-r border-slate-200 shadow-lg overflow-y-auto z-50 hidden md:block">
+      {/* Header */}
+      <div className="p-6 border-b border-slate-200">
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 bg-[#373a4e] rounded-lg flex items-center justify-center">
+            <HiOutlineDocumentText className="w-5 h-5 text-white" />
+          </div>
+          <h1 className="text-xl font-bold text-slate-800">Dashboard</h1>
+        </div>
+      </div>
 
-        <ul className="flex flex-col items-start justify-center">
-          <li
-            onClick={() => dispatch(setNavActive("Base"))}
-            className="py-3 px-1 "
-          >
-            <button className="flex items-center justify-center">
-              <AiFillHome className="mx-2" /> Home
-            </button>
-          </li>
-        </ul>
-        <hr className="my-4 md:min-w-full" />
-        <ul>
-          <li style={{ padding: "10px 0px 5px 0px" }}>Gestão de clientes</li>
-          <li
-            onClick={() => dispatch(setNavActive("activeClientList"))}
-            className="py-3 px-1 "
-          >
-            <button className="flex items-center justify-center">
-              <GiLoincloth className="mx-2" /> Lista de clientes
-            </button>
-          </li>
-        </ul>
-
-        <hr className="my-4 md:min-w-full" />
-        <ul>
-          <li style={{ padding: "10px 0px 5px 0px" }}>Gestão utilizadores</li>
-          <li
-            onClick={() => dispatch(setNavActive("activeCreatePage"))}
-            className="py-3 px-1 "
-          >
-            <button className="flex items-center justify-center">
-              <GiLoincloth className="mx-2" /> Adicionar 
-            </button>
-          </li>
-        </ul>
-        {  /* 
-        <ul>
-          <ul style={{ opacity: 0.5, pointerEvents: "none" }}>
-            <li style={{ padding: "10px 0px 5px 0px" }}>Gestão de pratos</li>
-            <li
-              onClick={() => dispatch(setNavActive("activeCategories"))}
-              className="py-3 px-1 "
-            >
-              <button className="flex items-center justify-center">
-                <BiCategory className="mx-2" /> Categories
-              </button>
-            </li>
-            <li
-              onClick={() => dispatch(setNavActive("activeQuantity"))}
-              className="py-3 px-1 "
-            >
-              <button className="flex items-center justify-center">
-                <BiCategory className="mx-2" /> Quantidade
-              </button>
-            </li>
-          </ul>
-          <hr className="my-4 md:min-w-full" />
-       <ul>
-            <li style={{ padding: "10px 0px 5px 0px" }}>Gestão de take-away</li>
-            <li
-              onClick={() => dispatch(setNavActive("activeMealPlanner"))}
-              className="py-3 px-1 "
-            >
-              <button className="flex items-center justify-center">
-                <BiCategory className="mx-2" /> Gestão de ementa
-              </button>
-            </li>
-          </ul>
-
-          <hr className="my-4 md:min-w-full" />
-          <ul style={{ opacity: 0.5, pointerEvents: "none" }}>
-            <li style={{ padding: "10px 0px 5px 0px" }}>
-              Gestão de facturação
-            </li>
-            <li
-              onClick={() => dispatch(setNavActive("activeCategories"))}
-              className="py-3 px-1 "
-            >
-              <button className="flex items-center justify-center">
-                <BiCategory className="mx-2" /> Facturação
-              </button>
-            </li>
-          </ul>
-
-          <hr className="my-4 md:min-w-full" />
-          <ul style={{ opacity: 0.5, pointerEvents: "none" }}>
-            <li style={{ padding: "10px 0px 5px 0px" }}>Gestão de stock</li>
-            {/* <li
-              onClick={() => dispatch(setNavActive("activeCategories"))}
-              className="py-3 px-1 "
-            >
-              <button className="flex items-center justify-center">
-                <BiCategory className="mx-2" /> Entradas
-              </button>
-            </li> 
-          </ul>  
-          {/* 
-          <hr className="my-4 md:min-w-full" />
-          <ul>
-            <li style={{ padding: "10px 0px 5px 0px" }}>Gestão de produção</li>
-            <li
-              onClick={() => dispatch(setNavActive("activeCategories"))}
-              className="py-3 px-1 "
-            >
-              <button className="flex items-center justify-center">
-                <BiCategory className="mx-2" /> Entrada de produções
-              </button>
-            </li>
-            <li
-              onClick={() => dispatch(setNavActive("activeCategories"))}
-              className="py-3 px-1 "
-            >
-              <button className="flex items-center justify-center">
-                <BiCategory className="mx-2" /> Evolução da produção
-              </button>
-            </li>
-          </ul> */}
-
-          {/* <li
-            className="py-3 px-1 "
-            onClick={() => dispatch(setNavActive("activePendingOrder"))}
-          >
-            <button className="flex items-center justify-center">
-              <MdOutlinePendingActions className="mx-2" /> Pending orders
-            </button>
-          </li>
-          <li
-            className="py-3 px-1 "
-            onClick={() => dispatch(setNavActive("activeDeliveredOrder"))}
-          >
-            <button className="flex items-center justify-center">
-              <GrCompliance className="mx-2" />
-              Completed orders
-            </button>
-          </li> */}
-
-          {/* gestao do user 
-        </ul> */} 
-      </div> 
-    </div> 
+      {/* Navigation */}
+      <nav className="p-4 space-y-6">
+        {menuItems.map((section, sectionIndex) => (
+          <div key={sectionIndex} className="space-y-2">
+            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 py-2">
+              {section.category}
+            </h3>
+            <ul className="space-y-1">
+              {section.items.map((item, itemIndex) => {
+                const IconComponent = item.icon;
+                return (
+                  <li key={itemIndex}>
+                    <button
+                      onClick={() => dispatch(setNavActive(item.action))}
+                      className={`w-full flex items-center space-x-3 px-3 py-2.5 text-left rounded-lg transition-all duration-200 group ${activeNav === item.action ? 'bg-[#373a4e] text-white' : 'text-slate-700 hover:bg-[#373a4e]/10 hover:text-[#373a4e]'}`}
+                    >
+                      <IconComponent className={`w-5 h-5 transition-colors ${activeNav === item.action ? 'text-white' : 'text-slate-500 group-hover:text-[#373a4e]'}`} />
+                      <span className="font-medium">{item.label}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </nav>
+    </div>
   );
 }

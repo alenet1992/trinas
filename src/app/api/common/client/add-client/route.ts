@@ -38,7 +38,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: "You are not authorized." });
     }
   } catch (error) {
-    console.log('Error in adding a new Product:', error);
+    console.log('Error in adding a new cliente:', error);
     return NextResponse.json({ success: false, message: 'Something went wrong. Please try again!' });
   }
 }
