@@ -13,10 +13,12 @@ interface IProps {
 
 export default function Hero({ setRatio }: IProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isUser, setIsUser] = useState(false);
   
   useEffect(() => {
     const user = userAutenticated.checkUser();
     setIsAuthenticated(!!user && Object.keys(user).length > 0);
+    setIsUser(user?.role === "user");
   }, []);
 
   return (
@@ -29,7 +31,7 @@ export default function Hero({ setRatio }: IProps) {
                 <h1 className="text-4xl font-bold text-center mb-4 text-[#373a4e]">Trinas - Gestão de Encomendas</h1>
                 <p className="text-gray-600 text-center mb-12 text-lg">Sistema integrado para gestão eficiente de encomendas e clientes</p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {/* Card para Criação de Encomenda */}
                   <Link href="/order/view-orders" className="group">
                     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 backdrop-blur-sm rounded-2xl shadow-lg p-8 hover:shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center cursor-pointer h-full border border-indigo-100 hover:border-indigo-200">
@@ -65,15 +67,17 @@ export default function Hero({ setRatio }: IProps) {
                   </Link>
 
                   {/* Card para Configurações */}
-                  <Link href="/dashboard">
-                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-8 hover:shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center cursor-pointer h-full border border-gray-100">
-                      <div className="bg-[#373a4e]/10 p-4 rounded-full mb-4">
+                  {!isUser && (
+                    <Link href="/dashboard">
+                      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-8 hover:shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center cursor-pointer h-full border border-gray-100">
+                        <div className="bg-[#373a4e]/10 p-4 rounded-full mb-4">
                         <FiSettings className="text-4xl text-[#373a4e]" />
                       </div>
                       <h2 className="text-xl font-semibold mb-2 text-gray-800 text-center">Configurações</h2>
                       <p className="text-gray-600 text-center">Gerencie as configurações do sistema</p>
                     </div>
                   </Link>
+                )}
                 </div>
               </div>
             </div>

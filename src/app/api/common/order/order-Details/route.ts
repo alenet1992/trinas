@@ -22,7 +22,7 @@ export async function GET(req: Request) {
         return NextResponse.json({ status: 400, success: false, message: 'ID do pedido inválido' });
       }
       
-      const getData = await Order.findById(id).populate("orderItems.product");
+      const getData = await Order.findById(id).populate("orderItems.product").populate("orderItems.product.category");
       if (getData) {
         return NextResponse.json({ success: true, data: getData });
       } else {

@@ -15,9 +15,55 @@ export const getCurrentDayOfWeek = (): string => {
   return days[today.getDay()];
 };
 
-// Function to get the current week index (0 for current week)
+/**
+ * Function to get the current week index using ISO week numbering standard (ISO-8601)
+ * 
+ * ISO weeks start on Monday and the first week of the year contains the first Thursday of that year.
+ * This means that some days from one year may be placed in weeks that are counted as part of the
+ * previous or next year.
+ * 
+ * @returns {number} The ISO week number (1-53)
+ */
 export const getCurrentWeekIndex = (): number => {
-  return 0; // Default to current week
+  const now = new Date();
+  
+  // Create a copy of the date
+  const date = new Date(now.getTime());
+  
+  // Find Thursday of this week (ISO weeks are defined by Thursday)
+  date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
+  
+  // Get first day of year
+  const startOfYear = new Date(date.getFullYear(), 0, 1);
+  
+  // Calculate full weeks to nearest Thursday
+  // 86400000 = 1000 * 60 * 60 * 24 (milliseconds in a day)
+  const weekNumber = Math.floor(1 + Math.round(((date.getTime() - startOfYear.getTime()) / 86400000 - 3 + 
+    ((startOfYear.getDay() + 6) % 7)) / 7));
+  
+  return weekNumber+date.getFullYear();
+};
+
+/**
+ * Test function to get the week number for a specific date
+ * @param {Date} date - The date to get the week number for
+ * @returns {number} The ISO week number
+ */
+export const getWeekNumberForDate = (date: Date): number => {
+  // Create a copy of the date
+  const dateCopy = new Date(date.getTime());
+  
+  // Find Thursday of this week
+  dateCopy.setDate(dateCopy.getDate() + 3 - ((dateCopy.getDay() + 6) % 7));
+  
+  // Get first day of year
+  const startOfYear = new Date(dateCopy.getFullYear(), 0, 1);
+  
+  // Calculate full weeks to nearest Thursday
+  const weekNumber = Math.floor(1 + Math.round(((dateCopy.getTime() - startOfYear.getTime()) / 86400000 - 3 + 
+    ((startOfYear.getDay() + 6) % 7)) / 7));
+  
+  return weekNumber;
 };
 
 // Function to get the weekly menu for the current week

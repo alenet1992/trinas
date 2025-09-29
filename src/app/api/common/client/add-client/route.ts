@@ -21,7 +21,7 @@ export async function POST(req: Request) {
 
       const data: ClientModel = await req.json();
 
-      const { name, contact, address, note, nif } = data;
+      const { name, contact, address } = data;
 
       const { error } = AddClientSchema.validate({ name, contact, address });
 

@@ -8,16 +8,17 @@ const createOrderSchema = Joi.object({
     user: Joi.string().required(),
     orderItems: Joi.array().items(
         Joi.object({
-            qty: Joi.number().required(),
-            product: Joi.string().required()
+            product: Joi.string().required(),
+            quantityIndex: Joi.number().required(),
+            price: Joi.number().required(),
         })
     ).required(),
     shippingAddress: Joi.object({
-        fullName: Joi.string().required(),
+        name: Joi.string().required(),
+        contact: Joi.number().required(),
         address: Joi.string().required(),
-        city: Joi.string().required(),
-        postalCode: Joi.number().required(),
-        country: Joi.string().required()
+        note: Joi.string().optional().allow('').allow(null),
+        nif: Joi.string().optional().allow('').allow(null),
     }).required(),
     paymentMethod: Joi.string().required(),
     itemsPrice: Joi.number().required(),
@@ -39,7 +40,6 @@ export async function POST(req: Request) {
 
         if (isAuthenticated) {
             const data = await req.json();
-     
      
             const { error } = createOrderSchema.validate(data);
 

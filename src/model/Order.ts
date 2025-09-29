@@ -6,8 +6,6 @@ const CounterSchema = new mongoose.Schema({
     seq: { type: Number, default: 0 }
 });
 
-
-// Modelo para o contador (se não existir)
 const Counter = mongoose.models.Counter || mongoose.model('Counter', CounterSchema);
 
 const OrderSchema = new mongoose.Schema({
@@ -22,7 +20,8 @@ const OrderSchema = new mongoose.Schema({
     },
     orderItems: [
         {
-            qty: { type: Number, required: true },
+            quantityIndex: { type: Number, required: true },
+            price: { type: Number, required: true },
             product: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "Products",
@@ -31,11 +30,11 @@ const OrderSchema = new mongoose.Schema({
         }
     ],
     shippingAddress: {
-        fullName: { type: String, required: true },
+        name: { type: String, required: true },
+        contact: { type: Number, required: true },
         address: { type: String, required: true },
-        city: { type: String, required: true },
-        postalCode: { type: Number, required: true },
-        country: { type: String, required: true },
+        note: { type: String },
+        nif: { type: String, required: true },
     },
     paymentMethod: { type: String, required: true, default: "Paypal" },
     paymentResult: {

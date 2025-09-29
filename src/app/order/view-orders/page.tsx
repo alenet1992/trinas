@@ -7,11 +7,12 @@ import { toast, ToastContainer } from "react-toastify";
 import { AddClientDialog } from "@/components/AddClientDialog";
 import Image from "next/image";
 import { get_all_products } from "@/Services/Admin/product";
-import { get_products_for_today, getCurrentDayOfWeek } from "@/Services/common/weeklyMenu";
+import { get_products_for_today, getCurrentDayOfWeek, getCurrentWeekIndex } from "@/Services/common/weeklyMenu";
 import { getProductPricesByProductId } from "@/Services/Admin/product/price";
 import Cookies from 'js-cookie';
 import DailyOrdersPage from '@/app/order/daily-orders/page';
 import ClientList from '@/app/client/list/page';
+import { ClientModel } from '@/model/Client';
 
 interface userData {
   email: String;
@@ -84,6 +85,17 @@ export default function ViewOrders() {
   const [clientSuggestions, setClientSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showAddClientDialog, setShowAddClientDialog] = useState<boolean>(false);
+  const [clientData, setClientData] = useState<ClientModel>({
+    name: "string",
+    contact: 0,
+    address: "string",
+    nif: "string"
+  });
+
+  const handleChangeTab = (tab: 'orders' | 'daily' | 'clients') => {
+    setActiveTab(tab);
+    window.location.hash = tab;
+  };
 
   const handleNameChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -110,8 +122,9 @@ export default function ViewOrders() {
     }
   };
 
-  const handleSelectClient = (clientName: string) => {
-    setOrderName(clientName);
+  const handleSelectClient = (clientName: ClientModel) => {
+    setOrderName(clientName.name);
+    setClientData(clientName);
     setShowSuggestions(false);
   };
 
@@ -190,6 +203,14 @@ export default function ViewOrders() {
     }
   };
   
+  // Verificar hash da URL ao carregar a página
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash === 'orders' || hash === 'daily' || hash === 'clients') {
+      setActiveTab(hash as 'orders' | 'daily' | 'clients');
+    }
+  }, []);
+
   // Carregar produtos quando o componente for montado
   useEffect(() => {
     if(activeTab === 'orders') {
@@ -257,7 +278,8 @@ export default function ViewOrders() {
   };
 
   // Função para adicionar produto ao carrinho
-  const addToCart = (product: Product, quantityPrice?: ProductPrice, index?: number) => {
+  const addToCart = (product: Product, quantityPrice?: ProductPrice, index?: string) => {
+    
     // Se temos preços por quantidade e nenhum foi selecionado, abrir modal
     if (product.prices && product.prices.length > 0 && !quantityPrice) {
       openQuantityModal(product);
@@ -270,16 +292,12 @@ export default function ViewOrders() {
       ...product,
       price: priceToUse,
       selectedQuantity: quantityPrice.quantity.name, 
-      quantityIndex: index 
+      quantityIndex: index === '1/2 dose' ? 0 : 1 
     } : product;
     
     setCart(prevCart => {
       return [...prevCart, { product: productToAdd, quantity: 1 }];
     });
-
-    console.log(cart);
-
-    debugger;
 
     closeQuantityModal();
   };
@@ -327,15 +345,18 @@ export default function ViewOrders() {
       const orderData = {
         user: user._id,
         orderItems: cart.map(item => ({
-          qty: item.quantity,
           product: item.product.id,
+          quantityIndex: item.product.quantityIndex,
+          price: item.product.quantityIndex !== undefined && item.product.prices?.[item.product.quantityIndex]?.value
+            ? item.product.prices[item.product.quantityIndex].value
+            : item.product.price
         })),
-        shippingAddress: {
-          fullName: orderName,
-          address: 'Endereço de entrega',
-          city: 'Cidade',
-          postalCode: 1000,
-          country: 'Portugal',
+        shippingAddress: { 
+          name: clientData.name,
+          contact: clientData.contact,
+          address: clientData.address,
+          note: clientData.note,
+          nif: clientData.nif,
         },
         paymentMethod: 'Dinheiro',
         itemsPrice: getCartTotal(),
@@ -343,11 +364,11 @@ export default function ViewOrders() {
         taxPrice: 0,
         totalPrice: getCartTotal(),
         orderName: orderName,
-        orderType: orderType, // 'takeaway' ou 'delivery'
+        orderType: orderType,
         pickupTime: orderType === 'takeaway' ? temp : null, 
         status: "new"
       };
-      
+
       // Chamar a API para criar a encomenda
       const response = await fetch('/api/common/order/create-order', {
         method: 'POST',
@@ -413,7 +434,7 @@ export default function ViewOrders() {
         </div>
       )}
       <div className="hide-print flex flex-row h-screen antialiased text-blue-gray-800">
-        <div className="flex flex-row w-auto flex-shrink-0 pl-4 pr-2 py-4">
+        <div className="flex flex-row w-auto flex-shrink-0 pl-4 pr-2 py-4" style={{height: '100%', position: 'fixed', zIndex: 10}}>
           <div className="flex flex-col items-center py-4 flex-shrink-0 w-20 bg-grey rounded-3xl">
             <div className="flex items-center justify-center h-12 w-12 bg-grey text-cyan-700 rounded-full overflow-hidden">
               <Image
@@ -427,7 +448,7 @@ export default function ViewOrders() {
             </div>
             <ul className="flex flex-col space-y-2 mt-12">
               <li>
-                <a href="#" className="flex items-center" onClick={() => setActiveTab('orders')}>
+                <a href="#" className="flex items-center" onClick={() => handleChangeTab('orders')}>
                   <span className={`flex items-center justify-center h-12 w-12 rounded-2xl shadow-lg text-white ${activeTab === 'orders' ? 'bg-cyan-300' : ''}`}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -447,7 +468,7 @@ export default function ViewOrders() {
                 </a>
               </li>
               <li>
-                <a className="flex items-center" onClick={() => setActiveTab('daily')}>
+                <a className="flex items-center" onClick={() => handleChangeTab('daily')}>
                   <span className={`flex items-center justify-center h-12 w-12 rounded-2xl shadow-lg text-white ${activeTab === 'daily' ? 'bg-cyan-300' : ''}`}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -467,7 +488,7 @@ export default function ViewOrders() {
                 </a>
               </li>
               <li>
-                <a className="flex items-center" onClick={() => setActiveTab('clients')}>
+                <a className="flex items-center" onClick={() => handleChangeTab('clients')}>
                   <span className={`flex items-center justify-center h-12 w-12 rounded-2xl shadow-lg text-white ${activeTab === 'clients' ? 'bg-cyan-300' : ''}`}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -516,8 +537,9 @@ export default function ViewOrders() {
           </div>
         </div>
 
-        <div className="flex-grow flex">
+        <div className="flex-grow flex" style={{ paddingLeft: '96px'}}>
           <div className="flex flex-col bg-blue-gray-50 h-full w-full py-4">
+          { activeTab === 'orders' && (
             <div className="flex px-2 flex-row relative">
               <div className="absolute left-5 top-3 px-2 py-2 rounded-full bg-grey text-white">
                 <svg
@@ -543,7 +565,8 @@ export default function ViewOrders() {
                 onChange={(e) => setSearchKeyword(e.target.value)}
               />
             </div>
-
+          )}
+          
           { activeTab === 'orders' && (
             <div className="h-full overflow-hidden mt-4">
               {isFromDailyMenu && (
@@ -634,8 +657,9 @@ export default function ViewOrders() {
                                    className={`flex justify-between bg-gray-50 p-2 rounded ${!product.outOfStock ? 'hover:bg-gray-200 cursor-pointer' : 'cursor-not-allowed'}`}
                                    onClick={(e) => {
                                      if (!product.outOfStock) {
+                                      const carl = index == 1 || product.prices?.length == 1 ? '1 dose' : '1/2 dose';
                                        e.stopPropagation();
-                                       addToCart(product, price, index);
+                                       addToCart(product, price, carl);
                                      }
                                    }}
                                  >
@@ -669,8 +693,7 @@ export default function ViewOrders() {
           )}
 
           </div>
-
-          {/* Carrinho lateral */}
+          { activeTab === 'orders' && (
           <div className="flex flex-col bg-white shadow-lg" style={{width: '32rem'}}>
             <div className="p-4 border-b">
               <h2 className="text-xl font-semibold text-gray-800">Encomenda</h2>
@@ -726,8 +749,8 @@ export default function ViewOrders() {
               </div>
             )}
           </div>
+          )}
         </div>
-        
       </div>
       
       <ToastContainer
@@ -771,7 +794,7 @@ export default function ViewOrders() {
                     className="w-full flex justify-between items-center py-2 px-3 border border-gray-200 rounded-full bg-gray-50 hover:bg-gray-100 transition-all duration-300 shadow-sm hover:shadow"
                   >
                     <span className='text-black'>{index==0 ? '1 dose' : '1/2 dose'}</span>
-                    <span className="text-green-600 font-medium">{formatPrice(price.value)}</span>
+                    <span className="text-green-600 font-medium">{formatPrice(price.value.toString())}</span>
                   </button>
                 ))}
               </div>
@@ -834,7 +857,7 @@ export default function ViewOrders() {
                       <div
                         key={client._id}
                         className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700 transition-colors duration-150"
-                        onClick={() => handleSelectClient(client.name)}
+                        onClick={() => handleSelectClient(client)}
                       >
                         <strong>{client.name}</strong> - <span className="font-light">{client.address}</span>
                       </div>
@@ -955,7 +978,7 @@ export default function ViewOrders() {
               <button
                 onClick={() => {
                   if (productToMarkAsOutOfStock) {
-                    handleSetOutOfStock(productToMarkAsOutOfStock, 0);
+                    handleSetOutOfStock(productToMarkAsOutOfStock, getCurrentWeekIndex());
                     setShowOutOfStockConfirmation(false);
                     setProductToMarkAsOutOfStock(null);
                   }
