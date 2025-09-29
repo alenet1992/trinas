@@ -314,7 +314,7 @@ export default function DailyOrdersPage({
   }, [search, orderData, activeTab]);
 
   return (
-    <div className={`w-full bg-gray-50 min-h-screen ${inner ? 'pt-4' : 'p-4'}`}>
+    <div className={`w-full min-h-screen ${inner ? 'pt-4' : 'p-4'}`}>
       <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
         {todayDate && (
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">

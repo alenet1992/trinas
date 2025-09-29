@@ -19,6 +19,10 @@
 
 body {
   color: rgb(var(--foreground-rgb));
+
+  background-image: url('/background-noise.webp');
+  background-repeat: repeat;
+  background-attachment: fixed;
 }
 
 .bg-grey{

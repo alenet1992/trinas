@@ -121,7 +121,7 @@ export default function Page({
   };
 
   return (
-    <div className="w-full bg-gray-50 h-screen px-2 py-2">
+    <div className="w-full h-screen px-2 py-2">
       <div className="text-sm breadcrumbs border-b-2 border-b-orange-600 mb-4">
         <ul className="dark:text-black">
           <li>
