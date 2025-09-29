@@ -8,7 +8,7 @@ export async function PUT(req: Request) {
     await connectDB();
     const isAuthenticated = await AuthCheck(req);
 
-    if (isAuthenticated === 'admin') {
+    if (isAuthenticated) {
       const data = await req.json();
       const { id, status } = data;
 

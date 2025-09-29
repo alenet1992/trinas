@@ -210,7 +210,7 @@ export default function DailyOrdersPage({
       name: "Cliente",
       selector: (row: Order) => row?.orderName,
       sortable: true,
-      maxWidth: "130px",
+    
       cell: (row: Order) => (
         <span className="font-medium">{row?.orderName}</span>
       ),
@@ -219,7 +219,7 @@ export default function DailyOrdersPage({
       name: "Tipo de Pedido",
       selector: (row: Order) => row?.orderType,
       sortable: true,
-      maxWidth: "130px",
+   
       cell: (row: Order) => (
         <span className={`px-3 py-1 rounded-full text-xs font-medium ${row.orderType === 'delivery' ? "bg-[#373a4e]/10 text-[#373a4e]" : "bg-indigo-100 text-indigo-700"}`}>
           {row.orderType === 'delivery' ? "Delivery" : "Takeway"}
@@ -314,7 +314,7 @@ export default function DailyOrdersPage({
   }, [search, orderData, activeTab]);
 
   return (
-    <div className={`w-full bg-gray-50 min-h-screen ${inner ? 'pt-4' : 'pt-12'}`}>
+    <div className={`w-full bg-gray-50 min-h-screen ${inner ? 'pt-4' : 'p-4'}`}>
       <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
         {todayDate && (
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">

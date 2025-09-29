@@ -13,7 +13,8 @@ interface Order {
   isPaid: boolean;
   itemsPrice: number;
   orderItems: {
-    qty: number;
+    quantityIndex: number;
+    price: number;
     product: {
       productImage: string;
       productName: string;
@@ -25,11 +26,11 @@ interface Order {
   paidAt: string;
   paymentMethod: string;
   shippingAddress?: {
+    name: string;
+    contact: number;
     address: string;
-    city: string;
-    country: string;
-    fullName: string;
-    postalCode: number;
+    note?: string;
+    nif?: string;
   };
   shippingPrice: number;
   taxPrice: number;
@@ -41,6 +42,7 @@ interface Order {
   };
   _id: string;
   status: 'new' | 'in_progress' | 'delivered';
+  pickupTime: string;
 }
 
 interface IOrderDetailsDialog {
@@ -65,15 +67,15 @@ export const OrderDetailsDialog = (props: IOrderDetailsDialog) => {
     try {
       const res = await update_order_status(order._id, order.status);
       if (res?.data.success) {
-        toast.success(res?.data?.message || "Estado do pedido atualizado");
+        toast.success(res?.data?.message || "Estado da encomenda atualizado");
         if (onOrderStatusUpdate) {
           onOrderStatusUpdate(order._id, res?.data?.status || '');
         }
       } else {
-        toast.error(res?.data?.message || "Erro ao atualizar estado do pedido");
+        toast.error(res?.data?.message || "Erro ao atualizar estado da encomenda");
       }
     } catch (error) {
-      toast.error("Erro ao atualizar estado do pedido");
+      toast.error("Erro ao atualizar estado da encomenda");
     } finally {
       setIsUpdating(false);
     }
@@ -93,7 +95,7 @@ export const OrderDetailsDialog = (props: IOrderDetailsDialog) => {
         <div className="relative bg-white rounded-2xl shadow-lg border border-gray-100 overflow-y-auto max-h-[90vh]">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-100">
             <h3 className="text-xl font-semibold text-gray-800">
-              Pedido #{order._id.substring(order._id.length - 6)}
+              Encomenda #{order.orderNumber}
             </h3>
             <button
               type="button"
@@ -139,7 +141,7 @@ export const OrderDetailsDialog = (props: IOrderDetailsDialog) => {
             </div>
 
             <div className="border-t border-gray-200 pt-4">
-              <h4 className="text-lg font-medium text-gray-800 mb-3">Itens do Pedido</h4>
+              <h4 className="text-lg font-medium text-gray-800 mb-3">Itens da Encomenda</h4>
               <div className="grid grid-cols-1 gap-4">
                 {order.orderItems.map((item) => (
                   <div key={item._id} className="bg-white shadow-sm border border-gray-100 rounded-lg flex items-center overflow-hidden">
@@ -147,10 +149,10 @@ export const OrderDetailsDialog = (props: IOrderDetailsDialog) => {
                       <h5 className="font-medium text-gray-800">{item.product.productName}</h5>
                       {/* <p className="text-sm font-semibold text-blue-700">€{item.product.productPrice.toFixed(2)}</p> */}
                       <p className="text-sm text-gray-600">
-                        Quantidade: <span className="font-semibold">{item.qty}</span>
+                        Quantidade: <span className="font-semibold">{item.quantityIndex === 0 ? '1/2 dose' : '1 dose'}</span>
                       </p>
                       <p className="text-sm text-gray-600">
-                        Total: <span className="font-semibold">€{(item.qty * item.product.productPrice).toFixed(2)}</span>
+                        Total: <span className="font-semibold">€ {item.price}</span>
                       </p>
                     </div>
                   </div>
@@ -159,7 +161,7 @@ export const OrderDetailsDialog = (props: IOrderDetailsDialog) => {
             </div>
 
             <div className="border-t border-gray-200 pt-4">
-              <h4 className="text-lg font-medium text-gray-800 mb-3">Resumo do Pedido</h4>
+              <h4 className="text-lg font-medium text-gray-800 mb-3">Resumo da Encomenda</h4>
               <div className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
                 <div className="flex justify-between py-2 mt-2 pt-2">
                   <span className="text-gray-800 font-medium">Total:</span>
@@ -168,43 +170,39 @@ export const OrderDetailsDialog = (props: IOrderDetailsDialog) => {
               </div>
             </div>
 
-            {order.shippingAddress && (
-              <div className="border-t border-gray-200 pt-4">
-                <h4 className="text-lg font-medium text-gray-800 mb-3">Informações de Entrega</h4>
+            <div className="border-t border-gray-200 pt-4">
+              <h4 className="text-lg font-medium text-gray-800 mb-3">Informações de Entrega</h4>
+              {order.shippingAddress && order.orderType === 'delivery' && (
                 <div className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
                   <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-medium">Nome:</span> {order.shippingAddress.fullName}
+                    <span className="font-medium">Nome:</span> {order.shippingAddress.name}
                   </p>
                   <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-medium">Endereço:</span> {order.shippingAddress.address}
+                    <span className="font-medium">Morada:</span> {order.shippingAddress.address}
                   </p>
                   <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-medium">Cidade:</span> {order.shippingAddress.city}
-                  </p>
-                  <p className="text-sm text-gray-600 mb-2">
-                    <span className="font-medium">Código Postal:</span> {order.shippingAddress.postalCode}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium">País:</span> {order.shippingAddress.country}
+                    <span className="font-medium">Numero:</span> {order.shippingAddress.contact}
                   </p>
                 </div>
-              </div>
-            )}
+              ) || (
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium">Entrega:</span> {order.pickupTime ? format(new Date(order.pickupTime), "HH:mm", { locale: pt }) : 'Retirar na Loja'}
+                </p>
+              )}
+            </div>
+        
 
             <div className="border-t border-gray-200 pt-4">
               <h4 className="text-lg font-medium text-gray-800 mb-3">Informações do Cliente</h4>
               <div className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
                 <p className="text-sm text-gray-600 mb-2">
-                  <span className="font-medium">Nome:</span> {order.user.name}
-                </p>
-                <p className="text-sm text-gray-600">
-                  <span className="font-medium">Email:</span> {order.user.email}
+                  <span className="font-medium">Nome:</span> {order.shippingAddress?.fullName || order.user.name}
                 </p>
               </div>
             </div>
           </div>
           
-          {!order.isDelivered && (
+          {(order.status || order.status === 'new' ||  order.status === 'in_progress') && (
             <div className="sticky bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-md flex justify-center">
               <button
                 onClick={handleUpdateOrderStatus}
@@ -217,10 +215,10 @@ export const OrderDetailsDialog = (props: IOrderDetailsDialog) => {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Atualizando...
+                    A atualizar...
                   </>
                 ) : (
-                  "Marcar como Entregue"
+                  "Marcar como " + (order.status === 'new' ? 'Em Progresso' : 'Entregue')
                 )}
               </button>
             </div>

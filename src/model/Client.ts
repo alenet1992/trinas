@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
 
 export interface ClientModel {
-    _id?: String,
-    name: String,
+    _id?: string,
+    name: string,
     contact: Number,
-    address: String,
-    note?: String,
-    nif: String
+    address: string,
+    note?: string,
+    nif: string
 };
 
 const ClientSchema = new mongoose.Schema({

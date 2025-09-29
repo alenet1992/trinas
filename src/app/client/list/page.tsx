@@ -141,7 +141,7 @@ export default function ClientList() {
   };
 
   return (
-    <div className={`w-full h-full ${withPadding ? "" : ""} pt-12`}>
+    <div className={`w-full h-full ${withPadding ? "" : ""} p-6 `}>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Lista de Clientes</h1>
         <div className="flex items-center gap-4">
@@ -182,8 +182,6 @@ export default function ClientList() {
             keyField="id"
             fixedHeader
             fixedHeaderScrollHeight="100%"
-            selectableRows
-            selectableRowsHighlight
             persistTableHead
             className="bg-white"
             onRowClicked={(e) => {

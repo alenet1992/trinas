@@ -6,6 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { TailSpin } from "react-loader-spinner";
 import Cookies from 'js-cookie';
+import { getCurrentWeekIndex } from '@/Services/common/weeklyMenu';
 
 // Interface para o tipo Product
 interface Product {
@@ -40,7 +41,7 @@ const weekDays = [
 
 export default function WeeklyMenu() {
   const [loader, setLoader] = useState(false);
-  const [currentWeek, setCurrentWeek] = useState(0); // 0 = semana atual, -1 = semana anterior, 1 = próxima semana
+  const [currentWeek, setCurrentWeek] = useState(getCurrentWeekIndex()); // 0 = semana atual, -1 = semana anterior, 1 = próxima semana
   // Estado para armazenar os produtos carregados da API
   const [products, setProducts] = useState<Product[]>([]);
   // Estrutura para armazenar ementas de múltiplas semanas
@@ -178,8 +179,8 @@ export default function WeeklyMenu() {
   
   // Função para voltar para a semana atual
   const goToCurrentWeek = () => {
-    setCurrentWeek(0);
-    initializeWeekIfNeeded(0);
+    setCurrentWeek(getCurrentWeekIndex());
+    initializeWeekIfNeeded(getCurrentWeekIndex());
     toast.info('Voltando para a semana atual');
   };
 
