@@ -89,7 +89,7 @@ export default function WeeklyMenu() {
 
         // Process each day's menu items to add product field
         Object.keys(data.data.menu).forEach(day => {
-          data.data.menu[day] = data.data.menu[day].map(item => ({
+          data.data.menu[day] = data.data.menu[day].map((item: any) => ({
             ...item._id, 
             category: item._id?.category,
           }));
@@ -375,7 +375,7 @@ export default function WeeklyMenu() {
                 <div className="flex flex-wrap mb-4 px-4 py-2">
                   <div className="w-full mb-4 px-4">
                     <h4 className="font-semibold text-gray-700 mb-2">Selecione o dia da semana:</h4>
-                    <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+                    <div className="flex flex-wrap gap-3 justify-center md:justify-start">
                       {weekDays.map((day, index) => {
                         const weekDates = getWeekDates(currentWeek);
                         const date = weekDates[index];
@@ -385,14 +385,14 @@ export default function WeeklyMenu() {
                           <button
                             key={day}
                             onClick={() => setSelectedDay(day)}
-                            className={`w-[calc(50%-1rem)] md:w-auto px-6 py-4 rounded-2xl text-sm font-medium transition-all duration-300 ${selectedDay === day
-                              ? 'bg-[#373a4e] text-white shadow-lg ring-4 ring-[#373a4e]/10'
-                              : 'bg-gray-100/90 text-gray-700 hover:bg-gray-200/90 shadow hover:shadow-md'
+                            className={`w-[calc(50%-0.75rem)] md:w-auto px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-200 ${selectedDay === day
+                              ? 'bg-[#373a4e] text-white shadow-md ring-2 ring-[#373a4e]/20'
+                              : 'bg-gray-100/80 text-gray-700 hover:bg-gray-200 shadow-sm hover:shadow'
                               }`}
                           >
-                            <div className="flex flex-col items-center space-y-2">
-                              <span className="font-bold text-sm">{day.split('-')[0]}</span>
-                              <span className="text-xs font-medium opacity-80">{formattedDate}</span>
+                            <div className="flex flex-col items-center space-y-1.5">
+                              <span className="font-semibold">{day.split('-')[0]}</span>
+                              <span className="text-xs opacity-90">{formattedDate}</span>
                             </div>
                           </button>
                         );
