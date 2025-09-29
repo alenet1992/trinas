@@ -64,13 +64,13 @@ export const OrderDetailsDialog = (props: IOrderDetailsDialog) => {
     setIsUpdating(true);
     try {
       const res = await update_order_status(order._id, order.status);
-      if (res?.success) {
-        toast.success(res?.message || "Estado do pedido atualizado");
+      if (res?.data.success) {
+        toast.success(res?.data?.message || "Estado do pedido atualizado");
         if (onOrderStatusUpdate) {
-          onOrderStatusUpdate(order._id, res?.status || '');
+          onOrderStatusUpdate(order._id, res?.data?.status || '');
         }
       } else {
-        toast.error(res?.message || "Erro ao atualizar estado do pedido");
+        toast.error(res?.data?.message || "Erro ao atualizar estado do pedido");
       }
     } catch (error) {
       toast.error("Erro ao atualizar estado do pedido");

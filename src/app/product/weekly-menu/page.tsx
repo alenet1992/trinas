@@ -3,6 +3,7 @@
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 import { TailSpin } from "react-loader-spinner";
 import Cookies from 'js-cookie';
 
@@ -298,7 +299,7 @@ export default function WeeklyMenu() {
     <div className="w-full h-full">
       <ToastContainer />
       <div className="flex flex-wrap">
-        <div className="w-full">
+        <div className="w-full px-4">
           <div className="mt-3 relative flex flex-col min-w-0 break-words w-full mb-6 shadow-md rounded-3xl bg-white/90 backdrop-blur-sm border border-gray-100">
             <div className="rounded-t mb-0 px-4 py-3 border-0">
               <div className="flex flex-wrap items-center">

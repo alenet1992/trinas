@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 
-import { useSWRConfig } from "swr";
 import DataTable from "react-data-table-component";
 import { useSelector } from "react-redux";
 import { RootState } from "@/Store/store";
@@ -77,7 +76,6 @@ interface Order {
 }
 
 export default function OrdersDetailsDataTable() {
-  const { mutate } = useSWRConfig();
   const router = useRouter();
   const [orderData, setOrderData] = useState<Order[] | []>([]);
   const data = useSelector((state: RootState) => state.Order.order) as
@@ -102,7 +100,7 @@ export default function OrdersDetailsDataTable() {
     },
     {
       name: "Pickup Time",
-      selector: (row: Order) => row?.pickupTime,
+      selector: (row: Order) => row?.pickupTime ? new Date(row.pickupTime).toISOString() : "",
       sortable: true,
       cell: (row: Order) => (
         <span>
