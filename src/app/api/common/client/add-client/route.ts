@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
       const { error } = AddClientSchema.validate({ name, contact, address });
 
-      if (error) return NextResponse.json({ success: false, message: error.details[0].message.replace(/['"+/g, '') });
+      if (error) return NextResponse.json({ success: false, message: error.details[0].message.replace(/['"]+/g, '') });
 
       const saveData = await Client.create(data);
 
