@@ -201,7 +201,7 @@ export const AddClientDialog = (props: IAddClientDialog) => {
                         <span className="label-text">Nif (número de contribuinte)</span>
                       </label>
                       <input
-                        {...register("nif", { required: true })}
+                        {...register("nif", { required: false })}
                         type="text"
                         placeholder="Escrever aqui o número de contribuinte"
                         className="input input-bordered w-full"

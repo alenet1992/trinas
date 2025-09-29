@@ -25,20 +25,20 @@ export async function POST(req: Request) {
 
       const { error } = AddClientSchema.validate({ name, contact, address });
 
-      if (error) return NextResponse.json({ success: false, message: error.details[0].message.replace(/['"]+/g, '') });
+      if (error) return NextResponse.json({ success: false, message: error.details[0].message.replace(/['"+/g, '') });
 
       const saveData = await Client.create(data);
 
       if (saveData) {
-        return NextResponse.json({ success: true, message: "Cliente added successfully!" });
+        return NextResponse.json({ success: true, message: "Cliente adicionado com sucesso!" });
       } else {
-        return NextResponse.json({ success: false, message: "Failed to add the Cliente. Please try again!" });
+        return NextResponse.json({ success: false, message: "Falha ao adicionar o Cliente. Por favor, tente novamente!" });
       }
     } else {
-      return NextResponse.json({ success: false, message: "You are not authorized." });
+      return NextResponse.json({ success: false, message: "Não está autorizado." });
     }
   } catch (error) {
-    console.log('Error in adding a new cliente:', error);
-    return NextResponse.json({ success: false, message: 'Something went wrong. Please try again!' });
+    console.log('Erro ao adicionar um novo cliente:', error);
+    return NextResponse.json({ success: false, message: 'Algo correu mal. Por favor, tente novamente!' });
   }
 }
