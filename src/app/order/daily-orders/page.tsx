@@ -11,61 +11,8 @@ import { get_order_details } from "@/Services/common/order";
 import { format } from "date-fns/format";
 import { pt } from "date-fns/locale/pt";
 import { FiRefreshCw } from "react-icons/fi";
-import { OrderDetailsDialog } from "@/components/OrderDetailsDialog";
+import { Order, OrderDetailsDialog } from "@/components/OrderDetailsDialog";
 
-interface Order {
-  orderNumber: number;
-  orderName: string;
-  orderType: 'takeaway' | 'delivery';
-  createdAt: string;
-  deliveredAt: string;
-  isDelivered: boolean;
-  isPaid: boolean;
-  itemsPrice: number;
-  pickupTime?: string | Date;
-  status: 'new' | 'in_progress' | 'delivered';
-  orderItems: {
-    qty: number;
-    product: {
-      createdAt: string;
-      productCategory: string;
-      productDescription: string;
-      productFeatured: boolean;
-      productImage: string;
-      productName: string;
-      productPrice: number;
-      productQuantity: number;
-      productSlug: string;
-      updatedAt: string;
-      __v: number;
-      _id: string;
-    };
-    _id: string;
-  }[];
-  paidAt: string;
-  paymentMethod: string;
-  shippingAddress: {
-    address: string;
-    city: string;
-    country: string;
-    fullName: string;
-    postalCode: number;
-  };
-  shippingPrice: number;
-  taxPrice: number;
-  totalPrice: number;
-  updatedAt: string;
-  user: {
-    email: string;
-    name: string;
-    password: string;
-    role: string;
-    __v: number;
-    _id: string;
-  };
-  __v: number;
-  _id: string;
-}
 
 export default function DailyOrdersPage({
   inner
@@ -539,12 +486,14 @@ export default function DailyOrdersPage({
       />
       
       {/* Dialog para exibir detalhes da encomenda */}
-      <OrderDetailsDialog
-        isVisible={showOrderDetails}
-        order={selectedOrder}
-        handleHideDialog={handleHideOrderDetails}
-        onOrderStatusUpdate={handleOrderStatusUpdate}
-      />
+      { selectedOrder && (
+        <OrderDetailsDialog
+          isVisible={showOrderDetails}
+          order={selectedOrder}
+          handleHideDialog={handleHideOrderDetails}
+          onOrderStatusUpdate={handleOrderStatusUpdate}
+        />
+      )}
     </div>
   );
 }

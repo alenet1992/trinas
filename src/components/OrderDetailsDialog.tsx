@@ -4,7 +4,7 @@ import { pt } from "date-fns/locale";
 import { update_order_status } from "@/Services/Admin/order";
 import { toast } from "react-toastify";
 
-interface Order {
+export interface Order {
   orderName: string;
   orderType: 'takeaway' | 'delivery';
   createdAt: string;
@@ -43,6 +43,7 @@ interface Order {
   _id: string;
   status: 'new' | 'in_progress' | 'delivered';
   pickupTime: string;
+  orderNumber: number;
 }
 
 interface IOrderDetailsDialog {
@@ -196,7 +197,7 @@ export const OrderDetailsDialog = (props: IOrderDetailsDialog) => {
               <h4 className="text-lg font-medium text-gray-800 mb-3">Informações do Cliente</h4>
               <div className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
                 <p className="text-sm text-gray-600 mb-2">
-                  <span className="font-medium">Nome:</span> {order.shippingAddress?.fullName || order.user.name}
+                  <span className="font-medium">Nome:</span> {order.shippingAddress?.name || order.user.name}
                 </p>
               </div>
             </div>
