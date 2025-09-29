@@ -309,11 +309,12 @@ export default function ViewOrders() {
 
   // Função para calcular total do carrinho
   const getCartTotal = () => {
+    const extraCost = orderType === 'delivery' ? 3 : 0;
     return cart.reduce((total, item) => {
       // Usar o preço específico da quantidade selecionada, se disponível
       const price = item.product.price;
-      return total + (price * item.quantity);
-    }, 0);
+      return total + (price);
+    }, extraCost);
   };
 
   // Função para criar nova encomenda
