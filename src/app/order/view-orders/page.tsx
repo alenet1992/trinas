@@ -789,7 +789,8 @@ export default function ViewOrders() {
                   <button
                     key={price._id}
                     onClick={() => {
-                      addToCart(selectedProduct, price, index);
+                      const carl = index == 1 || selectedProduct.prices?.length == 1 ? '1 dose' : '1/2 dose';
+                      addToCart(selectedProduct, price, carl);
                       closeQuantityModal();
                     }}
                     className="w-full flex justify-between items-center py-2 px-3 border border-gray-200 rounded-full bg-gray-50 hover:bg-gray-100 transition-all duration-300 shadow-sm hover:shadow"

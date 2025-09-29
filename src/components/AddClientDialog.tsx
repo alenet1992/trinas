@@ -38,11 +38,11 @@ export const AddClientDialog = (props: IAddClientDialog) => {
     setLoader(true);
 
     const finalData: ClientModel = {
-      name: data.name,
+      name: data.name.toString(),
       contact: data.contact,
-      address: data.address,
-      note: data?.note,
-      nif: data.nif,
+      address: data.address.toString(),
+      note: data?.note?.toString(),
+      nif: data.nif.toString(), 
     };
 
     try {
