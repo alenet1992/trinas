@@ -311,11 +311,12 @@ export default function DailyOrdersPage({
                 <li className="mr-2">
                   <button
                     onClick={() => setActiveTab('all')}
-                    className={`inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group  text-black ${activeTab === 'all' 
+                    className={`inline-flex items-center justify-center p-3 md:p-4 border-b-2 rounded-t-lg group text-black ${activeTab === 'all' 
                       ? 'text-blue-600 border-[#373a4e] active' 
                       : 'border-transparent hover:text-gray-600 hover:border-gray-300'}`}
                   >
-                    Todos
+                    <span className="hidden md:inline">Todos</span>
+                    <span className="inline md:hidden">Todos</span>
                     <span className="ml-2 bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
                       {orderData.length}
                     </span>
@@ -324,14 +325,15 @@ export default function DailyOrdersPage({
                 <li className="mr-2">
                   <button
                     onClick={() => setActiveTab('takeaway')}
-                    className={`inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group text-black ${activeTab === 'takeaway' 
+                    className={`inline-flex items-center justify-center p-3 md:p-4 border-b-2 rounded-t-lg group text-black ${activeTab === 'takeaway' 
                       ? 'text-indigo-600 border-indigo-600 active' 
                       : 'border-transparent hover:text-gray-600 hover:border-gray-300'}`}
                   >
                     <svg className="w-4 h-4 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
                       <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9V4a3 3 0 0 0-6 0v5m9.343 10H2.657a1 1 0 0 1-.97-1.242l1.99-7.962A2 2 0 0 1 5.64 8h6.72a2 2 0 0 1 1.962 1.796l1.99 7.962A1 1 0 0 1 15.343 19Z" />
                     </svg>
-                    Takeaway
+                    <span className="hidden md:inline">Takeaway</span>
+                    <span className="inline md:hidden">Take</span>
                     <span className="ml-2 bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
                       {orderData.filter(order => order.orderType === 'takeaway').length}
                     </span>
@@ -340,14 +342,15 @@ export default function DailyOrdersPage({
                 <li className="mr-2">
                   <button
                     onClick={() => setActiveTab('delivery')}
-                    className={`inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group text-black ${activeTab === 'delivery' 
+                    className={`inline-flex items-center justify-center p-3 md:p-4 border-b-2 rounded-t-lg group text-black ${activeTab === 'delivery' 
                       ? 'text-[#373a4e] border-[#373a4e] active' 
                       : 'border-transparent hover:text-gray-600 hover:border-gray-300'}`}
                   >
                     <svg className="w-4 h-4 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                       <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.5 10.25a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Zm0 0a2.225 2.225 0 0 0-1.666.75H12m3.5-.75v-6m-7.5 6.75A2.25 2.25 0 1 1 5.75 7.5a2.25 2.25 0 0 1 2.25 2.25Z" />
                     </svg>
-                    Delivery
+                    <span className="hidden md:inline">Delivery</span>
+                    <span className="inline md:hidden">Del</span>
                     <span className="ml-2 bg-[#373a4e]/10 text-[#373a4e] text-xs font-medium px-2.5 py-0.5 rounded-full">
                       {orderData.filter(order => order.orderType === 'delivery').length}
                     </span>
@@ -356,8 +359,8 @@ export default function DailyOrdersPage({
               </ul>
             </div>
             
-            <div className="mb-4 flex justify-between items-center">
-              <div className="relative w-80" >
+            <div className="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-0">
+              <div className="relative w-full md:w-80" >
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <svg className="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
@@ -368,7 +371,7 @@ export default function DailyOrdersPage({
                   type="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Pesquisar por código ou cliente..."
+                  placeholder="Pesquisar..."
                 />
               </div>
               <div className="text-sm text-gray-500">
