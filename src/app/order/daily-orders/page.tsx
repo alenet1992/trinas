@@ -261,20 +261,20 @@ export default function DailyOrdersPage({
   }, [search, orderData, activeTab]);
 
   return (
-    <div className={`w-full min-h-screen ${inner ? 'pt-4' : 'p-4'}`}>
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+    <div className={`w-full min-h-screen ${inner ? 'pt-4' : 'p-2 md:p-4'}`}>
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-3 md:p-6">
         {todayDate && (
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
             <h1 className="text-2xl font-bold text-gray-800">
               Pedidos do Dia - <span className="text-[#373a4e]">{todayDate}</span>
             </h1>
-            <div className="flex space-x-3">
+            <div className="flex flex-wrap gap-2 md:gap-0 md:space-x-3">
                {inner && (
                 <button 
                   onClick={() => window.history.back()}
-                  className="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-700 hover:text-white rounded-lg transition-all duration-200 flex items-center"
+                  className="px-3 py-2 md:px-4 md:py-2 text-sm md:text-base bg-gray-100 text-gray-700 hover:bg-gray-700 hover:text-white rounded-lg transition-all duration-200 flex items-center"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 md:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 Voltar
@@ -282,16 +282,16 @@ export default function DailyOrdersPage({
                )}
               <button 
                 onClick={handleRefresh} 
-                className={`px-4 py-2 bg-[#373a4e]/10 text-[#373a4e] hover:bg-[#373a4e] hover:text-white rounded-lg transition-all duration-200 flex items-center ${refreshing ? 'opacity-70 cursor-not-allowed' : ''}`}
+                className={`px-3 py-2 md:px-4 md:py-2 text-sm md:text-base bg-[#373a4e]/10 text-[#373a4e] hover:bg-[#373a4e] hover:text-white rounded-lg transition-all duration-200 flex items-center ${refreshing ? 'opacity-70 cursor-not-allowed' : ''}`}
                 disabled={refreshing}
               >
-                <FiRefreshCw className={`mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                <FiRefreshCw className={`mr-1 md:mr-2 ${refreshing ? 'animate-spin' : ''}`} />
                 Atualizar
               </button>
               {inner && (
               <Link href={"/order/view-orders" as any}>
-                <button className="px-4 py-2 bg-[#373a4e] text-white rounded-lg hover:bg-[#2f3141] transition-all duration-200 flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <button className="px-3 py-2 md:px-4 md:py-2 text-sm md:text-base bg-[#373a4e] text-white rounded-lg hover:bg-[#2f3141] transition-all duration-200 flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 md:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
                   Novo Pedido

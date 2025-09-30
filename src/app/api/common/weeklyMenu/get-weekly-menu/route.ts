@@ -1,6 +1,7 @@
 import connectDB from "@/DB/connectDB";
 import { NextResponse } from "next/server";
 import WeeklyMenu from "@/model/WeeklyMenu";
+import Category from "@/model/Category";
 
 export const dynamic = 'force-dynamic';
 
