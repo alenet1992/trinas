@@ -44,6 +44,8 @@ export default function ClientListPage() {
   const [userInfo, setUserInfo] = useState<ClientModel>();
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [showAddClientDialog, setShowAddClientDialog] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(typeof window !== 'undefined' && window.innerWidth < 768);
+  const [isSmallScreen, setIsSmallScreen] = useState<boolean>(typeof window !== 'undefined' && window.innerWidth < 640);
 
   const { data: clientData, error } = useSWR(
     "/gettingAllClientesFOrAdmin",
@@ -55,41 +57,49 @@ export default function ClientListPage() {
       name: "Nome",
       selector: (row: ClientModel) => row?.name,
       sortable: true,
+      wrap: true,
+      minWidth: "150px",
     },
     {
       name: "Morada",
       selector: (row: ClientModel) => row?.address,
       sortable: true,
+      wrap: true,
+      omit: isMobile, // Hide on mobile
+      minWidth: "200px",
     },
     {
       name: "Contacto",
       selector: (row: ClientModel) => row?.contact,
       sortable: true,
+      minWidth: "120px",
     },
     {
       name: "Observações",
       selector: (row: ClientModel) => row?.note,
       sortable: true,
+      wrap: true,
+      omit: isSmallScreen, // Hide on small screens
+      minWidth: "150px",
     },
     userAutenticated.isAdmin()
       ? {
           name: "Ações",
           cell: (row: ClientModel) => (
-            <div className="flex items-center justify-start px-2 h-20">
-              {/* <button
-            onClick={() => router.push(`/product/update-product/${row?._id}`)}
-            className=" w-20 py-2 mx-2 text-xs text-green-600 hover:text-white my-2 hover:bg-green-600 border border-green-600 rounded transition-all duration-700"
-          >
-            Atualizar
-          </button> */}
+            <div className="flex items-center justify-start px-2 h-16 md:h-20">
               <button
-                onClick={() => handleDeleteCliente(row?._id as string)}
-                className="w-20 py-2 mx-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded-full transition-all duration-300 shadow-sm hover:shadow"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteCliente(row?._id as string);
+                }}
+                className="w-16 md:w-20 py-1.5 md:py-2 mx-1 md:mx-2 text-xs text-red-600 hover:text-white hover:bg-red-600 border border-red-600 rounded-full transition-all duration-300 shadow-sm hover:shadow"
               >
                 Apagar
               </button>
             </div>
           ),
+          width: "100px",
+          minWidth: "100px",
         }
       : {},
   ];
@@ -150,6 +160,16 @@ export default function ClientListPage() {
       toast.error("Erro ao carregar os dados dos clientes");
     }
   }, [error]);
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsSmallScreen(window.innerWidth < 640);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleHideDialog = () => {
     console.log("handleHideDialog");
@@ -162,11 +182,11 @@ export default function ClientListPage() {
   };
 
   return (
-    <div className={`w-full h-full ${withPadding ? " p-12" : ""} pt-12`}>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-gray-800">Lista de Clientes</h1>
-        <div className="flex items-center gap-4">
-          <div className="relative w-64">
+    <div className={`w-full h-full ${withPadding ? " p-4 md:p-12" : ""} pt-8 md:pt-12`}>
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+        <h1 className="text-xl md:text-2xl font-semibold text-gray-800">Lista de Clientes</h1>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full md:w-auto">
+          <div className="relative w-full sm:w-64">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg className="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
@@ -183,20 +203,20 @@ export default function ClientListPage() {
           </div>
           <button 
             onClick={() => setShowAddClientDialog(true)}
-            className="inline-flex items-center text-white bg-[#373a4e] hover:bg-[#2f3141] focus:ring-4 focus:ring-[#373a4e]/30 font-medium rounded-full text-sm px-5 py-2.5 transition-all duration-300 shadow-md hover:shadow-lg">
+            className="inline-flex items-center justify-center w-full sm:w-auto text-white bg-[#373a4e] hover:bg-[#2f3141] focus:ring-4 focus:ring-[#373a4e]/30 font-medium rounded-full text-sm px-5 py-2.5 transition-all duration-300 shadow-md hover:shadow-lg">
             <IoIosAddCircle className="mr-2 text-lg" /> Adicionar cliente
           </button>
         </div>
       </div>
       {isLoading ? (
-        <div className="flex justify-center items-center h-64 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 animate-fadeIn">
+        <div className="flex justify-center items-center h-48 md:h-64 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 animate-fadeIn">
           <div className="flex flex-col items-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-3"></div>
-            <p className="text-gray-500">Loading ...</p>
+            <div className="animate-spin rounded-full h-10 w-10 md:h-12 md:w-12 border-t-2 border-b-2 border-blue-500 mb-2 md:mb-3"></div>
+            <p className="text-sm md:text-base text-gray-500">Loading ...</p>
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 animate-fadeIn">
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 animate-fadeIn overflow-x-auto">
           <DataTable
             columns={columns as any}
             data={filteredData || []}
@@ -208,33 +228,57 @@ export default function ClientListPage() {
             selectableRows
             selectableRowsHighlight
             persistTableHead
-          className="bg-white"
-          onRowClicked={(e) => {
-            setUserInfo(e);
-            setIsVisible(true);
-          }}
+            responsive
+            className="bg-white"
+            onRowClicked={(e) => {
+              setUserInfo(e);
+              setIsVisible(true);
+            }}
           customStyles={{
             headRow: {
               style: {
                 backgroundColor: '#f9fafb',
                 borderBottomWidth: '1px',
                 borderBottomColor: '#e5e7eb',
+                fontSize: '0.75rem',
+                '@media (min-width: 768px)': {
+                  fontSize: '0.875rem',
+                },
               },
             },
             headCells: {
               style: {
-                fontSize: '0.875rem',
+                fontSize: '0.75rem',
                 fontWeight: '600',
                 color: '#4b5563',
-                paddingLeft: '16px',
-                paddingRight: '16px',
+                paddingLeft: '8px',
+                paddingRight: '8px',
+                '@media (min-width: 768px)': {
+                  fontSize: '0.875rem',
+                  paddingLeft: '16px',
+                  paddingRight: '16px',
+                },
+              },
+            },
+            cells: {
+              style: {
+                paddingLeft: '8px',
+                paddingRight: '8px',
+                '@media (min-width: 768px)': {
+                  paddingLeft: '16px',
+                  paddingRight: '16px',
+                },
               },
             },
             rows: {
               style: {
-                fontSize: '0.875rem',
+                fontSize: '0.75rem',
                 cursor: 'pointer',
                 backgroundColor: 'white',
+                minHeight: '48px',
+                '@media (min-width: 768px)': {
+                  fontSize: '0.875rem',
+                },
                 '&:hover': {
                   backgroundColor: '#f3f4f6',
                   transition: '0.2s',
@@ -251,13 +295,23 @@ export default function ClientListPage() {
               style: {
                 borderTopWidth: '1px',
                 borderTopColor: '#e5e7eb',
+                fontSize: '0.75rem',
+                '@media (min-width: 768px)': {
+                  fontSize: '0.875rem',
+                },
               },
               pageButtonsStyle: {
                 borderRadius: '50%',
-                height: '40px',
-                width: '40px',
-                padding: '8px',
-                margin: '0px 4px',
+                height: '32px',
+                width: '32px',
+                padding: '4px',
+                margin: '0px 2px',
+                '@media (min-width: 768px)': {
+                  height: '40px',
+                  width: '40px',
+                  padding: '8px',
+                  margin: '0px 4px',
+                },
                 cursor: 'pointer',
                 transition: '0.2s',
                 color: '#4b5563',

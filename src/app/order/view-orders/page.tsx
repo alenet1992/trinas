@@ -609,7 +609,7 @@ export default function ViewOrders() {
                     </div>
                   </div>
                 ) : (
-                   <div className="grid grid-cols-4 gap-4 pb-3">
+                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 pb-3">
                      {filteredProducts.map((product) => (
                        <div
                          key={product.id}
@@ -695,8 +695,8 @@ export default function ViewOrders() {
 
           </div>
           { activeTab === 'orders' && (
-          <div className="flex flex-col bg-white shadow-lg" style={{width: '32rem'}}>
-            <div className="p-4 border-b">
+          <div className="flex flex-col bg-white shadow-lg w-full md:w-96 lg:w-[32rem] md:relative fixed bottom-0 md:bottom-auto max-h-[22rem] md:max-h-none z-10 md:z-auto w-auto">
+            <div className="hidden md:block p-4 border-b">
               <h2 className="text-xl font-semibold text-gray-800">Encomenda</h2>
               <p className="text-sm bg-gray-100 px-2 py-1 rounded-full inline-block text-gray-600">{cart.length} {cart.length === 1 ? "item" : "itens"}</p>
             </div>
