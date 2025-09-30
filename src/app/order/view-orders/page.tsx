@@ -785,7 +785,7 @@ export default function ViewOrders() {
             <div className="mb-3">
               <p className="text-md font-medium mb-2 text-center">{selectedProduct.name}</p>
               <div className="space-y-1.5">
-                {selectedProduct.prices && selectedProduct.prices.map((price, index) => (
+                {selectedProduct.prices && selectedProduct.prices.map((price, index) => ( price.value && (
                   <button
                     key={price._id}
                     onClick={() => {
@@ -798,7 +798,7 @@ export default function ViewOrders() {
                     <span className='text-black'>{index==0 ? '1 dose' : '1/2 dose'}</span>
                     <span className="text-green-600 font-medium">{formatPrice(price.value.toString())}</span>
                   </button>
-                ))}
+                )))}
               </div>
             </div>
             
