@@ -14,6 +14,11 @@ import { toast } from "react-toastify";
 import { userAutenticated } from "@/Services/auth/UserAutenticated";
 import { Dialog } from "@/components/Dialog";
 import { AddClientDialog } from "@/components/AddClientDialog";
+import { userData } from '@/model/User';
+import Cookies from "js-cookie";
+import { useRouter } from 'next/navigation';
+import { useDispatch } from "react-redux";
+
 
 export default function ClientList() {
   const { mutate } = useSWRConfig();
@@ -26,6 +31,8 @@ export default function ClientList() {
   const [showAddClientDialog, setShowAddClientDialog] = useState(false);
   const [isMobile, setIsMobile] = useState<boolean>(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(typeof window !== 'undefined' ? window.innerWidth < 640 : false);
+  const Router = useRouter();
+  const dispatch = useDispatch();
 
   const { data: clientData, error } = useSWR(
     "/gettingAllClientesFOrAdmin",
@@ -152,6 +159,16 @@ export default function ClientList() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    const user: userData | null = JSON.parse(
+      localStorage.getItem("user") || "{}"
+    );
+
+    if (!Cookies.get("token")) {
+      Router.push("/");
+    }
+  }, [dispatch, Cookies, Router]);
 
   const handleHideDialog = () => {
     setIsVisible(false);
