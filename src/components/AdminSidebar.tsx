@@ -1,6 +1,6 @@
 import React from "react";
 import { AiFillHome } from "react-icons/ai";
-import { FiUsers, FiUserPlus, FiToggleLeft, FiUnderline, FiGlobe } from "react-icons/fi";
+import { FiUsers, FiUserPlus, FiToggleLeft, FiUnderline, FiGlobe, FiLock } from "react-icons/fi";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { setNavActive } from "@/utils/AdminNavSlice";
@@ -73,6 +73,16 @@ export default function AdminSidebar() {
           label: "Conteúdo do site",
           icon: FiGlobe,
           action: "activeSiteContent",
+        },
+      ],
+    },
+    {
+      category: "Administração",
+      items: [
+        {
+          label: "Contas da empresa",
+          icon: FiLock,
+          action: "activeCompanyAccounts",
         },
       ],
     },

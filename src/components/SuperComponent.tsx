@@ -12,6 +12,7 @@ import ClientCreatePage from "@/app/auth/register/page";
 import WeeklyMenu from "@/app/product/weekly-menu/page";
 import DailyOrdersPage from '@/app/order/daily-orders/page';
 import SiteContentEditor from '@/app/dashboard/site/SiteContentEditor';
+import CompanyAccounts from '@/app/dashboard/accounts/CompanyAccounts';
 
 export default function SuperComponent() {
   const navActive = useSelector((state: RootState) => state.AdminNav.ActiveNav);
@@ -43,6 +44,8 @@ export default function SuperComponent() {
         return <DailyOrdersPage />; 
     case "activeSiteContent":
       return <SiteContentEditor />;
+    case "activeCompanyAccounts":
+      return <CompanyAccounts />;
         
 
     default:
