@@ -152,7 +152,7 @@ export default function Page() {
 
   return (
     <div className="w-full h-full bg-gray-50 px-2">
-      <div className="text-sm breadcrumbs  border-b-2 border-b-orange-600">
+      <div className="text-sm breadcrumbs  border-b-2 border-b-line">
         <ul className="dark:text-black">
           <li>
             <Link href={"/"}>
@@ -199,14 +199,14 @@ export default function Page() {
           <TailSpin
             height="50"
             width="50"
-            color="orange"
+            color="#003087"
             ariaLabel="tail-spin-loading"
             radius="1"
             wrapperStyle={{}}
             wrapperClass=""
             visible={true}
           />
-          <p className="text-sm mt-2 font-semibold text-orange-500">
+          <p className="text-sm mt-2 font-semibold text-brand">
             Loading Hold Tight ....
           </p>
         </div>
@@ -238,26 +238,26 @@ export default function Page() {
               )}
             </div>
             <div className="w-full  py-2 my-2 flex justify-end ">
-              <h1 className="py-2 tracking-widest mb-2  border-b px-6 border-orange-600 text-sm  flex flex-col ">
+              <h1 className="py-2 tracking-widest mb-2  border-b px-6 border-line text-sm  flex flex-col ">
                 {" "}
                 Original Price{" "}
                 <span className="text-xl font-extrabold">
                   Rs {totalPrice || 0}
                 </span>{" "}
               </h1>
-              <h1 className="py-2 tracking-widest mb-2  border-b px-6 border-orange-600 text-sm  flex flex-col ">
+              <h1 className="py-2 tracking-widest mb-2  border-b px-6 border-line text-sm  flex flex-col ">
                 {" "}
                 Shipping Price{" "}
                 <span className="text-xl font-extrabold">Rs {500}</span>{" "}
               </h1>
-              <h1 className="py-2 tracking-widest mb-2  border-b px-6 border-orange-600 text-sm  flex flex-col ">
+              <h1 className="py-2 tracking-widest mb-2  border-b px-6 border-line text-sm  flex flex-col ">
                 {" "}
                 tax Price{" "}
                 <span className="text-xl font-extrabold">Rs {100}</span>{" "}
               </h1>
             </div>
             <div className="w-full  py-2 my-2 flex justify-end ">
-              <h1 className="py-2 tracking-widest mb-2  border-b px-6 border-orange-600 text-sm  flex flex-col ">
+              <h1 className="py-2 tracking-widest mb-2  border-b px-6 border-line text-sm  flex flex-col ">
                 {" "}
                 Total Order Price{" "}
                 <span className="text-xl font-extrabold">

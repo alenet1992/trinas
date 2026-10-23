@@ -50,7 +50,7 @@ export default function Page({
 
   return (
     <div className="w-full h-screen dark:text-black bg-gray-50 py-4 px-2 ">
-      <div className="text-sm breadcrumbs  border-b-2 border-b-orange-600">
+      <div className="text-sm breadcrumbs  border-b-2 border-b-line">
         <ul>
           <li>
             <Link href={"/"}>

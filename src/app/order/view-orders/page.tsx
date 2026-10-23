@@ -429,7 +429,7 @@ export default function ViewOrders() {
       {isLoading && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" style={{ backdropFilter: "blur(4px)" }}>
           <div className="bg-white rounded-2xl p-6 flex items-center space-x-4">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand"></div>
             <p className="text-lg font-medium text-gray-700">A carregar menu...</p>
           </div>
         </div>
@@ -560,7 +560,7 @@ export default function ViewOrders() {
               </div>
               <input
                 type="text"
-                className="bg-white rounded-3xl shadow text-lg full w-full h-16 py-4 pl-16 transition-all duration-300 focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-white rounded-3xl shadow text-lg full w-full h-16 py-4 pl-16 transition-all duration-300 focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-brand"
                 placeholder="Procurar prato"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
@@ -739,11 +739,11 @@ export default function ViewOrders() {
               <div className="p-4 border-t">
                 <div className="flex justify-between items-center mb-3">
                   <span className="font-semibold">Total:</span>
-                  <span className="font-bold text-lg text-blue-600">{formatPrice(getCartTotal())}</span>
+                  <span className="font-bold text-lg text-brand">{formatPrice(getCartTotal())}</span>
                 </div>
                 <button
                   onClick={() => setShowOrderFormModal(true)}
-                  className="w-full bg-[#373a4e] text-white py-3 rounded-lg font-medium hover:bg-[#373a4e]/90 flex items-center justify-center transition-all duration-300 shadow-sm hover:shadow"
+                  className="w-full bg-brand text-white py-3 rounded-lg font-medium hover:bg-brand/90 flex items-center justify-center transition-all duration-300 shadow-sm hover:shadow"
                 >
                   Finalizar Encomenda
                 </button>
@@ -769,7 +769,7 @@ export default function ViewOrders() {
       {/* Modal de seleção de quantidade */}
       {showQuantityModal && selectedProduct && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50" style={{ backdropFilter: "blur(4px)" }}>
-          <div className="bg-white rounded-lg shadow-lg p-4 w-80 max-w-full animate-fadeIn transition-all duration-300 transform scale-100 hover:scale-[1.01]">
+          <div className="bg-white rounded-2xl shadow-surface p-4 w-80 max-w-full animate-fadeIn transition-all duration-300 transform scale-100 hover:scale-[1.01]">
             <div className="flex justify-between items-center mb-3">
               <h3 className="text-base font-medium">Selecionar quantidade</h3>
               <button 
@@ -817,7 +817,7 @@ export default function ViewOrders() {
       {/* Modal de formulário de encomenda */}
       {showOrderFormModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50" style={{ backdropFilter: "blur(4px)" }}>
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto animate-fadeIn transition-all duration-300 transform scale-100 hover:scale-[1.01]">
+          <div className="bg-white rounded-2xl shadow-surface p-6 w-full max-w-md max-h-[90vh] overflow-y-auto animate-fadeIn transition-all duration-300 transform scale-100 hover:scale-[1.01]">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-2xl font-bold text-gray-800">Configurar Encomenda</h3>
               <button 
@@ -836,7 +836,7 @@ export default function ViewOrders() {
                   <label htmlFor="orderName" className="block text-sm font-medium text-gray-700 mb-1">Nome do cliente</label>
                   <button
                     onClick={() => setShowAddClientDialog(true)}
-                    className="text-sm text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-full transition-all duration-300 flex items-center gap-1"
+                    className="text-sm text-brand hover:text-brand-dark bg-brand-50 hover:bg-brand-100 px-3 py-1 rounded-full transition-all duration-300 flex items-center gap-1"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -850,11 +850,11 @@ export default function ViewOrders() {
                   value={orderName}
                   onChange={handleNameChange}
                   onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                  className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-sm"
+                  className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-brand focus:border-brand block w-full p-2.5 shadow-sm"
                   placeholder="Nome para a encomenda"
                 />
                 {showSuggestions && clientSuggestions.length > 0 && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-auto" style={{maxWidth: '400px'}}>
+                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-2xl shadow-surface max-h-48 overflow-auto" style={{maxWidth: '400px'}}>
                     {clientSuggestions.map((client: any) => (
                       <div
                         key={client._id}
@@ -879,7 +879,7 @@ export default function ViewOrders() {
                       value="takeaway"
                       checked={orderType === 'takeaway'}
                       onChange={() => setOrderType('takeaway')}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                      className="h-4 w-4 text-brand focus:ring-brand border-gray-300"
                     />
                     <label htmlFor="takeaway" className="ml-2 block text-sm text-gray-700">Takeaway</label>
                   </div>
@@ -891,7 +891,7 @@ export default function ViewOrders() {
                       value="delivery"
                       checked={orderType === 'delivery'}
                       onChange={() => setOrderType('delivery')}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                      className="h-4 w-4 text-brand focus:ring-brand border-gray-300"
                     />
                     <label htmlFor="delivery" className="ml-2 block text-sm text-gray-700">Delivery</label>
                   </div>
@@ -906,7 +906,7 @@ export default function ViewOrders() {
                     id="pickupTime"
                     value={pickupTime}
                     onChange={(e) => setPickupTime(e.target.value)}
-                    className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-sm "
+                    className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-brand focus:border-brand block w-full p-2.5 shadow-sm "
                   />
                 </div>
               )}
@@ -914,7 +914,7 @@ export default function ViewOrders() {
             
             <div className="flex justify-between items-center mb-4">
               <span className="font-semibold">Total:</span>
-              <span className="font-bold text-lg text-blue-600">{formatPrice(getCartTotal())}</span>
+              <span className="font-bold text-lg text-brand">{formatPrice(getCartTotal())}</span>
             </div>
             
             <div className="flex space-x-3">
@@ -930,7 +930,7 @@ export default function ViewOrders() {
                   createOrder();
                 }}
                 disabled={isCreatingOrder}
-                className="flex-1 bg-[#373a4e] text-white py-2 px-4 rounded-full font-medium hover:bg-[#373a4e]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-sm hover:shadow transition-all duration-300"
+                className="flex-1 bg-brand text-white py-2 px-4 rounded-full font-medium hover:bg-brand/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-sm hover:shadow transition-all duration-300"
               >
                 {isCreatingOrder ? (
                   <>
@@ -986,7 +986,7 @@ export default function ViewOrders() {
                   }
                 }}
                 disabled={isUpdatingStock}
-                className={`px-6 py-2.5 bg-[#373a4e] text-white rounded-full hover:bg-[#373a4e]/90 transition-colors ${isUpdatingStock ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`px-6 py-2.5 bg-brand text-white rounded-full hover:bg-brand/90 transition-colors ${isUpdatingStock ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 {isUpdatingStock ? 'Confirmando...' : 'Confirmar'}
               </button>

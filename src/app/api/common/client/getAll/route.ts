@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
 export async function GET(req: Request) {
   await connectDB();
   try {
-    const getData = await Client.find({});
+    const getData = await Client.find({}).sort({ name: 1 });
     if (getData) {
       return NextResponse.json({ success: true, data: getData });
     } else {

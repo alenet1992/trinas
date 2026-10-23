@@ -122,7 +122,7 @@ export default function Page({
 
   return (
     <div className="w-full h-screen px-2 py-2">
-      <div className="text-sm breadcrumbs border-b-2 border-b-orange-600 mb-4">
+      <div className="text-sm breadcrumbs border-b-2 border-b-line mb-4">
         <ul className="dark:text-black">
           <li>
             <Link href={"/"}>
@@ -190,7 +190,7 @@ export default function Page({
                   </div>
                   <div className="flex px-3 py-2 flex-col items-start justify-start w-1/2">
                     <h1 className="my-1 font-medium text-gray-800">{item?.product?.productName}</h1>
-                    <p className="text-sm my-1 font-semibold text-blue-700">
+                    <p className="text-sm my-1 font-semibold text-brand-dark">
                       €{item?.product?.productPrice?.toFixed(2)}
                     </p>
                     <p className="text-sm my-1 text-gray-600">
@@ -262,7 +262,7 @@ export default function Page({
               </div>
               <div className="flex py-2 w-full text-sm justify-between border-b border-gray-100">
                 <p className="text-gray-600">Valor Total</p>
-                <p className="font-semibold text-blue-700">€{orderData?.totalPrice?.toFixed(2)}</p>
+                <p className="font-semibold text-brand-dark">€{orderData?.totalPrice?.toFixed(2)}</p>
               </div>
               <div className="flex py-2 w-full text-sm justify-between">
                 <p className="text-gray-600">Estado do Pagamento</p>

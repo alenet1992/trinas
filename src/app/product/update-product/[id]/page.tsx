@@ -165,7 +165,7 @@ export default function Page({
 
   return (
     <div className="w-full dark:text-black p-4 min-h-screen  bg-gray-50 flex flex-col ">
-      <div className="text-sm breadcrumbs  border-b-2 border-b-orange-600">
+      <div className="text-sm breadcrumbs  border-b-2 border-b-line">
         <ul>
           <li onClick={() => dispatch(setNavActive("Base"))}>
             <Link href={"/dashboard"}>
@@ -211,14 +211,14 @@ export default function Page({
           <TailSpin
             height="50"
             width="50"
-            color="orange"
+            color="#003087"
             ariaLabel="tail-spin-loading"
             radius="1"
             wrapperStyle={{}}
             wrapperClass=""
             visible={true}
           />
-          <p className="text-sm mt-2 font-semibold text-orange-500">
+          <p className="text-sm mt-2 font-semibold text-brand">
             updating product Hold Tight ....
           </p>
         </div>

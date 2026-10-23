@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
-import { add_new_client } from "@/Services/Admin/cliente";
+import { add_new_client, update_a_client } from "@/Services/Admin/cliente";
 import { ClientModel } from "@/model/Client";
 import { useSWRConfig } from "swr";
 import { TailSpin } from 'react-loader-spinner'
@@ -18,10 +18,13 @@ interface IAddClientDialog {
   isVisible: boolean;
   handleHideDialog: () => void;
   onClientAdded?: () => void;
+  // Quando definido, o diálogo edita este cliente em vez de criar um novo
+  client?: ClientModel | null;
 }
 
 export const AddClientDialog = (props: IAddClientDialog) => {
-  const { isVisible, handleHideDialog, onClientAdded } = props;
+  const { isVisible, handleHideDialog, onClientAdded, client } = props;
+  const isEdit = !!client?._id;
   const [loader, setLoader] = useState(false);
   const { mutate } = useSWRConfig();
 
@@ -34,6 +37,17 @@ export const AddClientDialog = (props: IAddClientDialog) => {
     criteriaMode: "all",
   });
 
+  useEffect(() => {
+    if (!isVisible) return;
+    reset({
+      name: client?.name ?? "",
+      contact: client?.contact,
+      address: client?.address ?? "",
+      note: client?.note ?? "",
+      nif: client?.nif ?? "",
+    });
+  }, [isVisible, client, reset]);
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoader(true);
 
@@ -42,11 +56,13 @@ export const AddClientDialog = (props: IAddClientDialog) => {
       contact: data.contact,
       address: data.address.toString(),
       note: data?.note?.toString(),
-      nif: data.nif.toString(), 
+      nif: data?.nif?.toString() ?? "",
     };
 
     try {
-      const res = await add_new_client(finalData);
+      const res = isEdit
+        ? await update_a_client({ ...finalData, _id: client?._id })
+        : await add_new_client(finalData);
       if (res.success) {
         toast.success(res?.message);
         // Atualizar os dados da lista
@@ -63,7 +79,7 @@ export const AddClientDialog = (props: IAddClientDialog) => {
         toast.error(res?.message);
       }
     } catch (error) {
-      toast.error("Erro ao adicionar cliente");
+      toast.error(isEdit ? "Erro ao atualizar cliente" : "Erro ao adicionar cliente");
     } finally {
       setLoader(false);
     }
@@ -84,7 +100,7 @@ export const AddClientDialog = (props: IAddClientDialog) => {
           <div className="relative bg-white rounded-2xl shadow-lg border border-gray-100">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-100">
               <h3 className="text-xl font-semibold text-gray-800">
-                Adicionar Cliente
+                {isEdit ? "Editar Cliente" : "Adicionar Cliente"}
               </h3>
               <button
                 type="button"
@@ -124,8 +140,8 @@ export const AddClientDialog = (props: IAddClientDialog) => {
                     wrapperClass=""
                     visible={true}
                   />
-                  <p className="text-sm mt-2 font-semibold text-blue-500">
-                    Adicionando cliente...
+                  <p className="text-sm mt-2 font-semibold text-brand">
+                    {isEdit ? "A atualizar cliente..." : "A adicionar cliente..."}
                   </p>
                 </div>
               ) : (

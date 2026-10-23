@@ -75,7 +75,7 @@ export default function ProductDataTable() {
               setSelectedProductId(row?._id);
               setIsEditModalOpen(true);
             }}
-            className="min-w-[80px] py-2 mx-1 text-xs text-[#373a4e] hover:text-white my-2 hover:bg-[#373a4e] border border-[#373a4e] rounded-full transition-all duration-300 shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-[#373a4e]/20"
+            className="min-w-[80px] py-2 mx-1 text-xs text-brand hover:text-white my-2 hover:bg-brand border border-brand rounded-full transition-all duration-300 shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-brand/20"
           >
             Editar
           </button>
@@ -143,19 +143,19 @@ export default function ProductDataTable() {
               placeholder="Procurar prato..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 shadow-sm"
+              className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-brand focus:border-brand block w-full pl-10 p-2.5 shadow-sm"
             />
           </div>
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="inline-flex items-center justify-center text-white bg-[#373a4e] hover:bg-[#2f3141] focus:ring-4 focus:ring-[#373a4e]/30 font-medium rounded-full text-sm px-5 py-2.5 w-full sm:w-auto transition-all duration-300 shadow-md hover:shadow-lg"
+            className="inline-flex items-center justify-center text-white bg-brand hover:bg-brand-dark focus:ring-4 focus:ring-brand/30 font-medium rounded-full text-sm px-5 py-2.5 w-full sm:w-auto transition-all duration-300 shadow-md hover:shadow-lg"
           >
             <IoIosAddCircle className="mr-2 text-lg" /> Novo Prato
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+      <div className="bg-white rounded-2xl shadow-surface overflow-hidden border border-gray-100">
         <div className="relative min-h-[400px]">
           <DataTable
             columns={columns}

@@ -127,7 +127,7 @@ export default function Page({
 
   return (
     <div className="w-full dark:text-black p-4 md:p-6 min-h-screen bg-gray-50 flex flex-col">
-      <div className="text-sm breadcrumbs border-b-2 border-b-orange-600 overflow-x-auto pb-2">
+      <div className="text-sm breadcrumbs border-b-2 border-b-line overflow-x-auto pb-2">
         <ul>
           <li onClick={() => dispatch(setNavActive("Base"))}>
             <Link href={"/dashboard"}>
@@ -175,14 +175,14 @@ export default function Page({
           <Grid
             height="60"
             width="60"
-            color="#f97316"
+            color="#003087"
             ariaLabel="Loading"
             radius="12"
             wrapperStyle={{}}
             wrapperClass=""
             visible={true}
           />
-          <p className="text-base mt-4 font-medium text-orange-500">
+          <p className="text-base mt-4 font-medium text-brand">
             Atualizando categoria, aguarde...
           </p>
         </div>
@@ -200,7 +200,7 @@ export default function Page({
                 {...register("name")}
                 type="text"
                 placeholder="Digite o nome da categoria"
-                className="input input-bordered w-full rounded-lg focus:ring-2 focus:ring-orange-500"
+                className="input input-bordered w-full rounded-lg focus:ring-2 focus:ring-brand"
               />
               {errors.name && (
                 <span className="text-red-500 text-sm mt-2">
@@ -216,7 +216,7 @@ export default function Page({
                 {...register("slug")}
                 type="text"
                 placeholder="url-amigavel-da-categoria"
-                className="input input-bordered w-full rounded-lg focus:ring-2 focus:ring-orange-500"
+                className="input input-bordered w-full rounded-lg focus:ring-2 focus:ring-brand"
               />
               {errors.slug && (
                 <span className="text-red-500 text-sm mt-2">
@@ -230,7 +230,7 @@ export default function Page({
               </label>
               <textarea
                 {...register("description")}
-                className="textarea textarea-bordered h-32 rounded-lg focus:ring-2 focus:ring-orange-500"
+                className="textarea textarea-bordered h-32 rounded-lg focus:ring-2 focus:ring-brand"
                 placeholder="Digite a descrição da categoria"
               ></textarea>
               {errors.description && (
@@ -253,7 +253,7 @@ export default function Page({
               </div>
             )}
 
-            <button className="btn btn-block mt-6 bg-orange-500 hover:bg-orange-600 text-white border-none rounded-lg h-12 text-base font-medium">Atualizar</button>
+            <button className="btn btn-block mt-6 bg-brand hover:bg-brand text-white border-none rounded-lg h-12 text-base font-medium">Atualizar</button>
           </form>
         </div>
       )}

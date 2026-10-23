@@ -1,11 +1,11 @@
 import "./globals.css";
-import { Poppins } from "next/font/google";
+import { Inter } from "next/font/google";
 import { Providers } from "@/Store/Provider";
 import "react-toastify/dist/ReactToastify.css";
 
-const poppin = Poppins({
-  weight: ["100", "400"],
+const inter = Inter({
   subsets: ["latin"],
+  variable: "--font-sans",
 });
 
 export const metadata = {
@@ -20,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={poppin.className + " bg-gray-50 h-screen"}>
+    <html lang="en" data-theme="trinas" className={inter.variable}>
+      <body className="font-sans bg-canvas text-ink antialiased h-screen">
         <Providers>{children}</Providers>
       </body>
     </html>

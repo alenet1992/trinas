@@ -9,14 +9,14 @@ export default function Loading() {
             <TailSpin
                 height="50"
                 width="50"
-                color="#373a4e"
+                color="#003087"
                 ariaLabel="tail-spin-loading"
                 radius="1"
                 wrapperStyle={{}}
                 wrapperClass=""
                 visible={true}
             />
-            <p className='text-sm mt-2 font-semibold text-[#373a4e]'>Loading...</p>
+            <p className='text-sm mt-2 font-semibold text-brand'>Loading...</p>
         </div>
     )
 }

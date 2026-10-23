@@ -148,7 +148,7 @@ export default function DailyOrdersPage({
       sortable: true,
       maxWidth: "50px",
       cell: (row: Order) => (
-        <Link href={`/order/view-orders-details/${row._id}` as any} className="text-[#373a4e] hover:underline font-medium">
+        <Link href={`/order/view-orders-details/${row._id}` as any} className="text-brand hover:underline font-medium">
           {row.orderNumber}
         </Link>
       ),
@@ -168,7 +168,7 @@ export default function DailyOrdersPage({
       sortable: true,
    
       cell: (row: Order) => (
-        <span className={`px-3 py-1 rounded-full text-xs font-medium ${row.orderType === 'delivery' ? "bg-[#373a4e]/10 text-[#373a4e]" : "bg-indigo-100 text-indigo-700"}`}>
+        <span className={`px-3 py-1 rounded-full text-xs font-medium ${row.orderType === 'delivery' ? "bg-brand/10 text-brand" : "bg-indigo-100 text-indigo-700"}`}>
           {row.orderType === 'delivery' ? "Delivery" : "Takeway"}
         </span>
       ),
@@ -190,7 +190,7 @@ export default function DailyOrdersPage({
       sortable: true,
       maxWidth: "80px",
       cell: (row: Order) => (
-        <span className="font-semibold text-blue-700">
+        <span className="font-semibold text-brand-dark">
           €{row.totalPrice.toFixed(2)}
         </span>
       ),
@@ -222,7 +222,7 @@ export default function DailyOrdersPage({
         <div className="flex space-x-2">
           <button 
             onClick={() => handleViewOrderDetails(row._id)}
-            className="px-3 py-1 text-xs bg-[#373a4e]/10 text-[#373a4e] hover:bg-[#373a4e] hover:text-white rounded-full transition-all duration-200"
+            className="px-3 py-1 text-xs bg-brand/10 text-brand hover:bg-brand hover:text-white rounded-full transition-all duration-200"
           >
             Detalhes
           </button>
@@ -266,7 +266,7 @@ export default function DailyOrdersPage({
         {todayDate && (
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
             <h1 className="text-2xl font-bold text-gray-800">
-              Pedidos do Dia - <span className="text-[#373a4e]">{todayDate}</span>
+              Pedidos do Dia - <span className="text-brand">{todayDate}</span>
             </h1>
             <div className="flex flex-wrap gap-2 md:gap-0 md:space-x-3">
                {inner && (
@@ -282,7 +282,7 @@ export default function DailyOrdersPage({
                )}
               <button 
                 onClick={handleRefresh} 
-                className={`px-3 py-2 md:px-4 md:py-2 text-sm md:text-base bg-[#373a4e]/10 text-[#373a4e] hover:bg-[#373a4e] hover:text-white rounded-lg transition-all duration-200 flex items-center ${refreshing ? 'opacity-70 cursor-not-allowed' : ''}`}
+                className={`px-3 py-2 md:px-4 md:py-2 text-sm md:text-base bg-brand/10 text-brand hover:bg-brand hover:text-white rounded-lg transition-all duration-200 flex items-center ${refreshing ? 'opacity-70 cursor-not-allowed' : ''}`}
                 disabled={refreshing}
               >
                 <FiRefreshCw className={`mr-1 md:mr-2 ${refreshing ? 'animate-spin' : ''}`} />
@@ -290,7 +290,7 @@ export default function DailyOrdersPage({
               </button>
               {inner && (
               <Link href={"/order/view-orders" as any}>
-                <button className="px-3 py-2 md:px-4 md:py-2 text-sm md:text-base bg-[#373a4e] text-white rounded-lg hover:bg-[#2f3141] transition-all duration-200 flex items-center">
+                <button className="px-3 py-2 md:px-4 md:py-2 text-sm md:text-base bg-brand text-white rounded-lg hover:bg-brand-dark transition-all duration-200 flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 md:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
@@ -312,7 +312,7 @@ export default function DailyOrdersPage({
                   <button
                     onClick={() => setActiveTab('all')}
                     className={`inline-flex items-center justify-center p-3 md:p-4 border-b-2 rounded-t-lg group text-black ${activeTab === 'all' 
-                      ? 'text-blue-600 border-[#373a4e] active' 
+                      ? 'text-brand border-brand active' 
                       : 'border-transparent hover:text-gray-600 hover:border-gray-300'}`}
                   >
                     <span className="hidden md:inline">Todos</span>
@@ -343,7 +343,7 @@ export default function DailyOrdersPage({
                   <button
                     onClick={() => setActiveTab('delivery')}
                     className={`inline-flex items-center justify-center p-3 md:p-4 border-b-2 rounded-t-lg group text-black ${activeTab === 'delivery' 
-                      ? 'text-[#373a4e] border-[#373a4e] active' 
+                      ? 'text-brand border-brand active' 
                       : 'border-transparent hover:text-gray-600 hover:border-gray-300'}`}
                   >
                     <svg className="w-4 h-4 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
@@ -351,7 +351,7 @@ export default function DailyOrdersPage({
                     </svg>
                     <span className="hidden md:inline">Delivery</span>
                     <span className="inline md:hidden">Del</span>
-                    <span className="ml-2 bg-[#373a4e]/10 text-[#373a4e] text-xs font-medium px-2.5 py-0.5 rounded-full">
+                    <span className="ml-2 bg-brand/10 text-brand text-xs font-medium px-2.5 py-0.5 rounded-full">
                       {orderData.filter(order => order.orderType === 'delivery').length}
                     </span>
                   </button>
@@ -367,7 +367,7 @@ export default function DailyOrdersPage({
                   </svg>
                 </div>
                 <input
-                  className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-[#373a4e] focus:border-[#373a4e] block w-full pl-10 p-2.5 shadow-sm"
+                  className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-brand focus:border-brand block w-full pl-10 p-2.5 shadow-sm"
                   type="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -375,7 +375,7 @@ export default function DailyOrdersPage({
                 />
               </div>
               <div className="text-sm text-gray-500">
-                Total: <span className="font-medium text-blue-600">{filteredData.length}</span> pedidos
+                Total: <span className="font-medium text-brand">{filteredData.length}</span> pedidos
                 {activeTab !== 'all' && (
                   <span className="ml-1">({activeTab === 'takeaway' ? 'Takeaway' : 'Delivery'})</span>
                 )}
@@ -399,7 +399,7 @@ export default function DailyOrdersPage({
                   <p className="mt-1 text-sm text-gray-500">Não existem pedidos registrados para o dia de hoje.</p>
                   <button 
                     onClick={handleRefresh}
-                    className="mt-4 px-4 py-2 text-sm bg-[#373a4e] text-white hover:bg-[#373a4e]/90 rounded-lg transition-all duration-200 inline-flex items-center"
+                    className="mt-4 px-4 py-2 text-sm bg-brand text-white hover:bg-brand/90 rounded-lg transition-all duration-200 inline-flex items-center"
                   >
                     <FiRefreshCw className="mr-2" /> Atualizar
                   </button>

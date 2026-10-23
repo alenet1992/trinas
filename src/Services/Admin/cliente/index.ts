@@ -21,7 +21,25 @@ export const add_new_client = async (formData: any) => {
 }
 
 
-export const delete_a_client = async (id: string) => {
+export const update_a_client = async (formData: any) => {
+  try {
+    const res = await fetch(`/api/common/client/update-client`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Cookies.get('token')}`
+      },
+      body: JSON.stringify(formData),
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log('Error in updating client (service) =>', error);
+  }
+}
+
+
+export const delete_a_client =async (id: string) => {
   try {
     const res = await fetch(`/api/common/client/delete-client?id=${id}`, {
       method: 'DELETE',

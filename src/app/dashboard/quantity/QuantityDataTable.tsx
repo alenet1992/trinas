@@ -128,7 +128,7 @@ export default function ProductDataTable() {
         subHeader
         subHeaderComponent={
           <input
-            className="w-60 dark:bg-transparent py-2 px-2  outline-none  border-b-2 border-orange-600"
+            className="w-60 dark:bg-transparent py-2 px-2  outline-none  border-b-2 border-line"
             type={"search"}
             value={search}
             onChange={(e) => setSearch(e.target.value)}

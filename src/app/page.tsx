@@ -13,7 +13,6 @@ import {
 } from "@/utils/AdminSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import Loading from "./loading";
 import { setUserData } from "@/utils/UserDataSlice";
 import { RootState } from "@/Store/store";
 
@@ -61,15 +60,6 @@ export default function Home() {
     <>
       <Navbar />
       <Hero setRatio={setRatio} />
-      {loading ? (
-        <Loading />
-      ) : (
-        <>
-          {/* <TopCategories />
-          <FeaturedProduct />
-          <Footer /> */}
-        </>
-      )}
       <ToastContainer />
     </>
   );

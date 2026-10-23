@@ -10,6 +10,7 @@ import { IoIosAddCircle } from "react-icons/io";
 import { userAutenticated } from "@/Services/auth/UserAutenticated";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { register_me } from "@/Services/auth";
+import { get_all_users } from "@/Services/Admin/user";
 import { Grid } from 'react-loader-spinner';
 
 // Interface para o modelo de usuário
@@ -124,14 +125,14 @@ const AddUserDialog = (props: IAddUserDialog) => {
                   <Grid
                     height="40"
                     width="40"
-                    color="#2563eb"
+                    color="#003087"
                     ariaLabel="Loading"
                     radius="12"
                     wrapperStyle={{}}
                     wrapperClass=""
                     visible={true}
                   />
-                  <p className="text-sm mt-3 font-medium text-blue-600">
+                  <p className="text-sm mt-3 font-medium text-brand">
                     Adicionando usuário...
                   </p>
                 </div>
@@ -149,7 +150,7 @@ const AddUserDialog = (props: IAddUserDialog) => {
                         {...register("name", { required: true })}
                         type="text"
                         placeholder="Nome do usuário"
-                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-3 sm:p-2.5 transition-shadow duration-200"
+                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-brand focus:border-brand block w-full p-3 sm:p-2.5 transition-shadow duration-200"
                       />
                       {errors.name && (
                         <span className="text-red-500 text-xs mt-1.5 block">
@@ -169,7 +170,7 @@ const AddUserDialog = (props: IAddUserDialog) => {
                         })}
                         type="email"
                         placeholder="Email do usuário"
-                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-3 sm:p-2.5 transition-shadow duration-200"
+                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-brand focus:border-brand block w-full p-3 sm:p-2.5 transition-shadow duration-200"
                       />
                       {errors.email && errors.email.type === "required" && (
                         <span className="text-red-500 text-xs mt-1.5 block">
@@ -194,7 +195,7 @@ const AddUserDialog = (props: IAddUserDialog) => {
                         })}
                         type="password"
                         placeholder="Senha do usuário"
-                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-3 sm:p-2.5 transition-shadow duration-200"
+                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-brand focus:border-brand block w-full p-3 sm:p-2.5 transition-shadow duration-200"
                       />
                       {errors.password && errors.password.type === "required" && (
                         <span className="text-red-500 text-xs mt-1.5 block">
@@ -218,7 +219,7 @@ const AddUserDialog = (props: IAddUserDialog) => {
                       </button>
                       <button
                         type="submit"
-                        className="w-full sm:w-auto px-4 py-2.5 text-sm font-medium text-white bg-[#373a4e] rounded-lg hover:bg-[#373a4e]/90 focus:outline-none focus:ring-2 focus:ring-[#373a4e]/50 transition-all duration-300"
+                        className="w-full sm:w-auto px-4 py-2.5 text-sm font-medium text-white bg-brand rounded-lg hover:bg-brand/90 focus:outline-none focus:ring-2 focus:ring-brand/50 transition-all duration-300"
                       >
                         Adicionar
                       </button>
@@ -243,12 +244,11 @@ export default function UserList() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showAddUserDialog, setShowAddUserDialog] = useState(false);
   
-  // Dados de exemplo para usuários (em um cenário real, isso viria de uma API)
-  const [userData, setUserData] = useState<UserModel[]>([
-    { _id: "1", name: "Admin", email: "admin@example.com", role: "admin" },
-    { _id: "2", name: "Usuário Teste", email: "user@example.com", role: "user" },
-    { _id: "3", name: "João Silva", email: "joao@example.com", role: "user" },
-  ]);
+  const { data: usersResponse, error } = useSWR(
+    "/gettingAllUsersForAdmin",
+    get_all_users
+  );
+  const userData: UserModel[] = usersResponse?.data || [];
 
   const columns = [
     {
@@ -273,7 +273,7 @@ export default function UserList() {
           cell: (row: UserModel) => (
             <div className="flex items-center justify-start h-20 pr-4">
               <button 
-                className="min-w-[80px] py-2 mr-2 text-xs text-blue-600 hover:text-white my-2 hover:bg-[#373a4e] border border-blue-600 rounded-lg transition-all duration-300 shadow-sm hover:shadow focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                className="min-w-[80px] py-2 mr-2 text-xs text-brand hover:text-white my-2 hover:bg-brand border border-brand rounded-lg transition-all duration-300 shadow-sm hover:shadow focus:ring-2 focus:ring-brand/30 focus:outline-none"
               >
                 Editar
               </button>
@@ -289,12 +289,18 @@ export default function UserList() {
   ];
 
   useEffect(() => {
-    // Simulando carregamento de dados
-    setTimeout(() => {
-      setFilteredData(userData);
+    if (usersResponse) {
       setIsLoading(false);
-    }, 1000);
-  }, [userData]);
+      if (!usersResponse.success) toast.error(usersResponse.message);
+    }
+  }, [usersResponse]);
+
+  useEffect(() => {
+    if (error) {
+      setIsLoading(false);
+      toast.error("Erro ao carregar os utilizadores");
+    }
+  }, [error]);
 
   useEffect(() => {
     if (search === "") {
@@ -309,25 +315,15 @@ export default function UserList() {
         })
       );
     }
-  }, [search, userData]);
+  }, [search, usersResponse]);
 
   const handleHideDialog = () => {
     setShowAddUserDialog(false);
   };
   
   const handleUserAdded = () => {
-    // Em um cenário real, aqui atualizaríamos a lista de usuários
-    // mutate("/api/users");
-    
-    // Para o exemplo, vamos apenas simular a adição de um novo usuário
-    const newUser: UserModel = {
-      _id: (userData.length + 1).toString(),
-      name: "Novo Usuário",
-      email: `usuario${userData.length + 1}@example.com`,
-      role: "user"
-    };
-    
-    setUserData([...userData, newUser]);
+    // Atualizar a lista de utilizadores
+    mutate("/gettingAllUsersForAdmin");
   };
 
   return (
@@ -343,7 +339,7 @@ export default function UserList() {
             </div>
             <input
               id="simple-search"
-              className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pl-10 shadow-sm"
+              className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-brand focus:border-brand block w-full p-2.5 pl-10 shadow-sm"
               placeholder="Procurar usuário"
               type={"search"}
               value={search}
@@ -352,7 +348,7 @@ export default function UserList() {
           </div>
           <button 
             onClick={() => setShowAddUserDialog(true)}
-            className="inline-flex items-center justify-center text-white bg-[#373a4e] hover:bg-[#2f3141] focus:ring-4 focus:ring-[#373a4e]/30 font-medium rounded-full text-sm px-5 py-2.5 w-full sm:w-auto transition-all duration-300 shadow-md hover:shadow-lg"
+            className="inline-flex items-center justify-center text-white bg-brand hover:bg-brand-dark focus:ring-4 focus:ring-brand/30 font-medium rounded-full text-sm px-5 py-2.5 w-full sm:w-auto transition-all duration-300 shadow-md hover:shadow-lg"
           >
             <IoIosAddCircle className="mr-2 text-lg" /> 
             <span className="whitespace-nowrap">Adicionar usuário</span>
@@ -360,17 +356,17 @@ export default function UserList() {
         </div>
       </div>
       {isLoading ? (
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 p-6 sm:p-8 flex justify-center items-center min-h-[400px]">
+        <div className="bg-white rounded-2xl shadow-surface overflow-hidden border border-gray-100 p-6 sm:p-8 flex justify-center items-center min-h-[400px]">
           <Loading />
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 animate-fadeIn">
+        <div className="bg-white rounded-2xl shadow-surface overflow-hidden border border-gray-100 animate-fadeIn">
           <DataTable
             columns={columns as any}
             data={filteredData || []}
             key={"UserListData"}
             pagination
-            keyField="id"
+            keyField="_id"
             fixedHeaderScrollHeight="calc(100vh - 300px)"
             selectableRows
             selectableRowsHighlight

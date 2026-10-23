@@ -92,7 +92,7 @@ export default function Page({
 
   return (
     <div className="w-full h-full dark:text-black lg:h-screen bg-gray-200 py-4 px-2">
-      <div className="text-sm breadcrumbs  border-b-2 py-2 px-2 border-b-orange-600">
+      <div className="text-sm breadcrumbs  border-b-2 py-2 px-2 border-b-line">
         <ul>
           <li>
             <Link href={"/"}>
@@ -164,7 +164,7 @@ export default function Page({
                   {prodData?.productName}
                 </h1>
                 {prodData?.productFeatured && (
-                  <p className="px-3 py-2 bg-orange-600 hidden lg:flex font-semibold tracking-widest rounded text-white  items-center justify-center ">
+                  <p className="px-3 py-2 bg-brand hidden lg:flex font-semibold tracking-widest rounded text-white  items-center justify-center ">
                     <DiCodeigniter className="mx-2" />
                     Featured Product
                   </p>

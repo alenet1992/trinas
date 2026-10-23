@@ -38,7 +38,7 @@ export default function FeaturedProduct() {
   return (
     <div className="w-full text-black  flex items-center flex-col justify-start">
       <div className="flex items-center justify-center px-2 py-2 mb-2">
-        <h1 className="py-2 px-4 border-x-2 border-x-orange-500 font-semibold text-2xl ">
+        <h1 className="py-2 px-4 border-x-2 border-x-brand font-semibold text-2xl ">
           Top Products
         </h1>
       </div>

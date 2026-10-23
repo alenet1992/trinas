@@ -307,7 +307,7 @@ export default function WeeklyMenu() {
                 <div className="relative w-full px-4 max-w-full flex-grow flex-1">
                   <h3 className="font-semibold text-lg text-gray-800">Gestão da Ementa Semanal</h3>
                   <div className="flex items-center mt-2">
-                    <span className="text-sm font-medium bg-blue-50 text-blue-700 px-3 py-1 rounded-full">
+                    <span className="text-sm font-medium bg-brand-50 text-brand-dark px-3 py-1 rounded-full">
                       {getWeekText()}
                     </span>
                   </div>
@@ -345,7 +345,7 @@ export default function WeeklyMenu() {
                     
                     <Link
                       href="/dashboard"
-                      className="bg-[#373a4e] text-white active:bg-[#373a4e]/90 text-xs font-bold uppercase px-3 py-1 rounded-full outline-none focus:outline-none ease-linear transition-all duration-150 shadow-sm"
+                      className="bg-brand text-white active:bg-brand/90 text-xs font-bold uppercase px-3 py-1 rounded-full outline-none focus:outline-none ease-linear transition-all duration-150 shadow-sm"
                     >
                       Voltar ao Dashboard
                     </Link>
@@ -359,7 +359,7 @@ export default function WeeklyMenu() {
                 <TailSpin
                 height="50"
                 width="50"
-                color="#2563eb"
+                color="#003087"
                 ariaLabel="tail-spin-loading"
                 radius="1"
                 wrapperStyle={{}}
@@ -387,7 +387,7 @@ export default function WeeklyMenu() {
                             key={day}
                             onClick={() => setSelectedDay(day)}
                             className={`w-[calc(50%-0.75rem)] md:w-auto px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-200 ${selectedDay === day
-                              ? 'bg-[#373a4e] text-white shadow-md ring-2 ring-[#373a4e]/20'
+                              ? 'bg-brand text-white shadow-md ring-2 ring-brand/20'
                               : 'bg-gray-100/80 text-gray-700 hover:bg-gray-200 shadow-sm hover:shadow'
                               }`}
                           >
@@ -415,7 +415,7 @@ export default function WeeklyMenu() {
                         placeholder="Pesquisar produtos..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 shadow-sm "
+                        className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-brand focus:border-brand block w-full pl-10 p-2.5 shadow-sm "
                       />
                       {/* Ícone de pesquisa */}
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -453,7 +453,7 @@ export default function WeeklyMenu() {
                               <p>Nenhum produto encontrado para "{searchTerm}"</p>
                               <button 
                                 onClick={() => setSearchTerm("")}
-                                className="mt-2 text-blue-500 hover:text-blue-700 text-sm font-medium"
+                                className="mt-2 text-brand hover:text-brand-dark text-sm font-medium"
                               >
                                 Limpar pesquisa
                               </button>
@@ -464,18 +464,18 @@ export default function WeeklyMenu() {
                         return filteredProducts.map((product: Product) => (
                         <div
                           key={product._id}
-                          className="mb-2 p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border border-gray-100 hover:border-blue-100"
+                          className="mb-2 p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border border-gray-100 hover:border-brand-100"
                           onClick={() => addProductToDay(product)}
                         >
                           <div className="flex justify-between items-center">
                             <div>
                               <h5 className="font-medium text-gray-800">{product.name}</h5>
                               <p className="text-sm text-gray-600">{product.description}</p>
-                              <span className="text-xs px-2 py-1 bg-blue-50 rounded-full text-blue-700">
+                              <span className="text-xs px-2 py-1 bg-brand-50 rounded-full text-brand-dark">
                               {product.category.name}
                               </span>
                             </div>
-                            <button className="p-1 bg-blue-50 hover:bg-blue-100 rounded-full">
+                            <button className="p-1 bg-brand-50 hover:bg-brand-100 rounded-full">
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                               </svg>
@@ -501,7 +501,7 @@ export default function WeeklyMenu() {
                               <div>
                                 <h5 className="font-medium text-gray-800">{product.name}</h5>
                                 <p className="text-sm text-gray-600">{product.description}</p>
-                                <span className="text-xs px-2 py-1 bg-blue-50 rounded-full text-blue-700">
+                                <span className="text-xs px-2 py-1 bg-brand-50 rounded-full text-brand-dark">
                                   {product.category.name}
                                 </span>
                               </div>
@@ -529,14 +529,14 @@ export default function WeeklyMenu() {
                 {/* Visualização da ementa completa */}
                 <div className="px-4 py-6 mt-6 bg-white rounded-3xl shadow-sm border border-gray-100">
                   <h4 className="font-semibold text-gray-800 mb-4 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                     Visualização da Ementa Semanal - {getWeekText()}
                   </h4>
                   <div className="overflow-x-auto">
                     <table className="min-w-full bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm">
-                      <thead className="bg-gradient-to-r from-blue-50 to-blue-100 text-gray-800 shadow-sm">
+                      <thead className="bg-gradient-to-r from-brand-50 to-brand-100 text-gray-800 shadow-sm">
                         <tr>
                           {weekDays.map((day, index) => {
                             // Extrair apenas o nome do dia (sem o sufixo -feira)
@@ -565,7 +565,7 @@ export default function WeeklyMenu() {
                                     // Definir cores diferentes para cada categoria
                                     let categoryColor = "bg-gray-200 text-gray-700";
                                     // if (  product.category.name.toLowerCase().includes("peixe")) {
-                                    //   categoryColor = "bg-blue-100 text-blue-700";
+                                    //   categoryColor = "bg-brand-100 text-brand-dark";
                                     // } else if (  product.category.name.toLowerCase().includes("carne")) {
                                     //   categoryColor = "bg-red-100 text-red-700";
                                     // } else if (  product.category.name.toLowerCase().includes("sopa")) {
@@ -575,7 +575,7 @@ export default function WeeklyMenu() {
                                     // }
                                     
                                     return (
-                                      <li key={product._id} className="p-2 rounded-lg bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 hover:border-blue-100">
+                                      <li key={product._id} className="p-2 rounded-lg bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 hover:border-brand-100">
                                         <div className="flex justify-between items-center">
                                           <span className="font-medium text-gray-800">{product.name}</span>
                                           <span className={`text-xs px-2 py-1 rounded-full ${categoryColor}`}>
@@ -612,7 +612,7 @@ export default function WeeklyMenu() {
       <div className="fixed bottom-0 right-5 left-auto mx-auto text-center z-50 mb-4">
         <button
           onClick={saveWeeklyMenu}
-          className="bg-gradient-to-r from-blue-600 to-blue-800 text-white active:from-blue-700 active:to-blue-900 font-bold uppercase text-sm px-6 py-3 rounded-full shadow-md hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
+          className="bg-gradient-to-r from-brand to-brand-dark text-white active:from-brand-dark active:to-brand-dark font-bold uppercase text-sm px-6 py-3 rounded-full shadow-md hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
         >
           Guardar Ementa Semanal
         </button>

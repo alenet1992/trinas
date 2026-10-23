@@ -148,7 +148,7 @@ export const OrderDetailsDialog = (props: IOrderDetailsDialog) => {
                   <div key={item._id} className="bg-white shadow-sm border border-gray-100 rounded-lg flex items-center overflow-hidden">
                     <div className="flex flex-col p-3 flex-1">
                       <h5 className="font-medium text-gray-800">{item.product.productName}</h5>
-                      {/* <p className="text-sm font-semibold text-blue-700">€{item.product.productPrice.toFixed(2)}</p> */}
+                      {/* <p className="text-sm font-semibold text-brand-dark">€{item.product.productPrice.toFixed(2)}</p> */}
                       <p className="text-sm text-gray-600">
                         Quantidade: <span className="font-semibold">{item.quantityIndex === 0 ? '1/2 dose' : '1 dose'}</span>
                       </p>
@@ -166,7 +166,7 @@ export const OrderDetailsDialog = (props: IOrderDetailsDialog) => {
               <div className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
                 <div className="flex justify-between py-2 mt-2 pt-2">
                   <span className="text-gray-800 font-medium">Total:</span>
-                  <span className="font-bold text-blue-700">€{order.totalPrice.toFixed(2)}</span>
+                  <span className="font-bold text-brand-dark">€{order.totalPrice.toFixed(2)}</span>
                 </div>
               </div>
             </div>

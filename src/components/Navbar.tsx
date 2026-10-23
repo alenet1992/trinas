@@ -25,10 +25,13 @@ export default function Navbar() {
     location.reload();
   };
 
+  // Sem sessão a rota de entrada mostra o site público, com o seu próprio menu
+  if (!user) return null;
+
   return (
     <div
       className={`navbar ${
-        Scrolled ? "bg-white/95  " : "bg-transparent"
+        Scrolled ? "glass-header" : "bg-transparent"
       }  fixed text-white top-0 left-0 z-50`}
     >
       <div className="navbar-start">
@@ -37,7 +40,7 @@ export default function Navbar() {
         <div className="flex-none text-right mr">
           {user ? (
             <div className="flex items-center justify-center  min-h-full">
-              <button onClick={handleLogout} className="bg-[#373a4e] hover:bg-[#2f3141] text-white text-sm font-medium px-4 py-2 rounded-full shadow-sm hover:shadow transition-all duration-200 mx-2">
+              <button onClick={handleLogout} className="bg-brand hover:bg-brand-dark text-white text-sm font-medium px-4 py-2 rounded-full shadow-sm hover:shadow transition-all duration-200 mx-2">
                 logout
               </button>
               {/* <button
@@ -59,14 +62,7 @@ export default function Navbar() {
                 <CiDeliveryTruck className="text-white text-xl" />
               </button> */}
             </div>
-          ) : (
-            <button
-              onClick={() => router.push("/auth/login")}
-              className="bg-[#373a4e] hover:bg-[#2f3141] text-white text-sm font-medium px-4 py-2 rounded-full shadow-sm hover:shadow transition-all duration-200 mx-2"
-            >
-              Login
-            </button>
-          )}
+          ) : null}
         </div>
       </div>
     </div>

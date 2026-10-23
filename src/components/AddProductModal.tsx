@@ -144,8 +144,8 @@ export default function AddProductModal({ isOpen, onClose, onSuccess, productId,
             <Oval
             height={50}
             width={50}
-            color="#333333"
-            secondaryColor="#333333"
+            color="#003087"
+            secondaryColor="#3355AA"
             strokeWidth={2}
             strokeWidthSecondary={2}
           />
@@ -239,7 +239,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess, productId,
                           {...register(`quantity.${index}`)}
                           type="text"
                           placeholder="Escreva o preço"
-                          className="input w-full px-4 py-2 rounded-full bg-gray-50 border border-gray-200 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 shadow-sm"
+                          className="input w-full px-4 py-2 rounded-full bg-gray-50 border border-gray-200 text-gray-900 text-sm focus:ring-brand focus:border-brand transition-all duration-300 shadow-sm"
                         />
                       </td>
                     </tr>
@@ -258,7 +258,7 @@ export default function AddProductModal({ isOpen, onClose, onSuccess, productId,
               </button>
               <button
                 type="submit"
-                className="px-6 py-2.5 rounded-full bg-gradient-to-r from-gray-600 to-gray-800 text-white hover:from-gray-700 hover:to-black transition-all duration-300 shadow-md hover:shadow-lg"
+                className="px-6 py-2.5 rounded-full bg-gradient-to-r from-brand to-brand-dark text-white hover:from-brand-dark hover:to-brand-dark transition-all duration-300 shadow-md hover:shadow-lg"
               >
                 {loader ? "Salvando..." : "Salvar"}
               </button>

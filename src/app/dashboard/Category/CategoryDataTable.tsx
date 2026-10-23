@@ -125,7 +125,7 @@ export default function CategoryDataTable() {
               setSelectedCategory(row);
               setIsAddDialogOpen(true);
             }}
-            className="min-w-[90px] px-3 py-2 text-sm font-medium text-[#373a4e] hover:text-white hover:bg-[#373a4e] border border-[#373a4e] rounded-full transition-all duration-200 shadow-sm focus:ring-2 focus:ring-[#373a4e]/30 focus:outline-none"
+            className="min-w-[90px] px-3 py-2 text-sm font-medium text-brand hover:text-white hover:bg-brand border border-brand rounded-full transition-all duration-200 shadow-sm focus:ring-2 focus:ring-brand/30 focus:outline-none"
           >
             Editar
           </button>
@@ -184,12 +184,12 @@ export default function CategoryDataTable() {
               placeholder="Procurar categoria..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pl-10 shadow-sm"
+              className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-brand focus:border-brand block w-full p-2.5 pl-10 shadow-sm"
             />
           </div>
           <button 
             onClick={() => setIsAddDialogOpen(true)}
-            className="inline-flex items-center justify-center text-white bg-[#373a4e] hover:bg-[#2f3141] focus:ring-4 focus:ring-[#373a4e]/30 font-medium rounded-full text-sm px-5 py-3 sm:py-2.5 w-full sm:w-auto transition-all duration-300 shadow-md hover:shadow-lg"
+            className="inline-flex items-center justify-center text-white bg-brand hover:bg-brand-dark focus:ring-4 focus:ring-brand/30 font-medium rounded-full text-sm px-5 py-3 sm:py-2.5 w-full sm:w-auto transition-all duration-300 shadow-md hover:shadow-lg"
           >
             <IoIosAddCircle className="mr-2 text-lg" /> Adicionar
           </button>
@@ -211,7 +211,7 @@ export default function CategoryDataTable() {
                 <Grid
                   height="60"
                   width="60"
-                  color="#373a4e"
+                  color="#003087"
                   ariaLabel="grid-loading"
                   radius="12"
                   visible={true}
@@ -298,7 +298,7 @@ export default function CategoryDataTable() {
                 setSelectedCategory(null);
                 reset();
               }}
-              className="text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#373a4e] rounded-lg p-1"
+              className="text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-brand rounded-lg p-1"
             >
               <svg className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -310,7 +310,7 @@ export default function CategoryDataTable() {
               <Grid
                 height="60"
                 width="60"
-                color="#373a4e"
+                color="#003087"
                 ariaLabel="grid-loading"
                 radius="12"
                 visible={true}
@@ -334,7 +334,7 @@ export default function CategoryDataTable() {
                     type="text"
                     defaultValue={selectedCategory?.name}
                     placeholder="Digite o nome da categoria"
-                    className="bg-gray-50 border border-gray-200 text-gray-900 text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-[#373a4e] focus:border-[#373a4e] block w-full p-3 sm:p-3.5 shadow-sm"
+                    className="bg-gray-50 border border-gray-200 text-gray-900 text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-brand focus:border-brand block w-full p-3 sm:p-3.5 shadow-sm"
                   />
                   {errors.name && (
                     <span className="text-red-500 text-sm mt-2 font-medium">
@@ -351,7 +351,7 @@ export default function CategoryDataTable() {
                     {...register("description", { required: true })}
                     defaultValue={selectedCategory?.description}
                     rows={4}
-                    className="bg-gray-50 border border-gray-200 text-gray-900 text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-[#373a4e] focus:border-[#373a4e] block w-full p-3 sm:p-3.5 shadow-sm resize-none"
+                    className="bg-gray-50 border border-gray-200 text-gray-900 text-sm sm:text-base rounded-xl focus:ring-2 focus:ring-brand focus:border-brand block w-full p-3 sm:p-3.5 shadow-sm resize-none"
                     placeholder="Digite a descrição da categoria"
                   ></textarea>
                   {errors.description && (
@@ -363,7 +363,7 @@ export default function CategoryDataTable() {
 
                 <button 
                   type="submit"
-                  className="w-full bg-[#373a4e] text-white hover:bg-[#2f3141] py-3 sm:py-3.5 rounded-xl text-sm sm:text-base transition-colors duration-200 font-medium shadow-sm hover:shadow-md mt-2"
+                  className="w-full bg-brand text-white hover:bg-brand-dark py-3 sm:py-3.5 rounded-xl text-sm sm:text-base transition-colors duration-200 font-medium shadow-sm hover:shadow-md mt-2"
                 >
                   {selectedCategory?.name ? 'Atualizar Categoria' : 'Adicionar Categoria'}
                 </button>

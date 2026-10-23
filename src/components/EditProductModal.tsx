@@ -140,13 +140,13 @@ export default function EditProductModal({ isOpen, onClose, productId, onSuccess
               height="50"
               width="50"
               radius="9"
-              color="orange"
+              color="#003087"
               ariaLabel="three-dots-loading"
               wrapperStyle={{}}
               wrapperClass=""
               visible={true}
             />
-            <p className="text-sm mt-2 font-semibold text-orange-500">
+            <p className="text-sm mt-2 font-semibold text-brand">
               {loader ? 'Atualizando produto...' : 'Loading produto...'}
             </p>
           </div>

@@ -44,6 +44,7 @@ export default function ClientListPage() {
   const [userInfo, setUserInfo] = useState<ClientModel>();
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [showAddClientDialog, setShowAddClientDialog] = useState<boolean>(false);
+  const [editingClient, setEditingClient] = useState<ClientModel | null>(null);
   const [isMobile, setIsMobile] = useState<boolean>(typeof window !== 'undefined' && window.innerWidth < 768);
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(typeof window !== 'undefined' && window.innerWidth < 640);
 
@@ -82,27 +83,40 @@ export default function ClientListPage() {
       omit: isSmallScreen, // Hide on small screens
       minWidth: "150px",
     },
-    userAutenticated.isAdmin()
-      ? {
-          name: "Ações",
-          cell: (row: ClientModel) => (
-            <div className="flex items-center justify-start px-2 h-16 md:h-20">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteCliente(row?._id as string);
-                }}
-                className="w-16 md:w-20 py-1.5 md:py-2 mx-1 md:mx-2 text-xs text-red-600 hover:text-white hover:bg-red-600 border border-red-600 rounded-full transition-all duration-300 shadow-sm hover:shadow"
-              >
-                Apagar
-              </button>
-            </div>
-          ),
-          width: "100px",
-          minWidth: "100px",
-        }
-      : {},
+    {
+      name: "Ações",
+      cell: (row: ClientModel) => (
+        <div className="flex flex-col sm:flex-row items-center justify-start px-1 sm:px-2 py-1 h-auto sm:h-20">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEditCliente(row);
+            }}
+            className="w-full sm:w-20 py-1 sm:py-2 mx-1 sm:mx-2 text-xs text-brand hover:text-white my-1 sm:my-2 hover:bg-brand border border-brand rounded-full transition-all duration-300 shadow-sm hover:shadow"
+          >
+            Editar
+          </button>
+          {userAutenticated.isAdmin() && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDeleteCliente(row?._id as string);
+              }}
+              className="w-full sm:w-20 py-1 sm:py-2 mx-1 sm:mx-2 text-xs text-red-600 hover:text-white my-1 sm:my-2 hover:bg-red-600 border border-red-600 rounded-full transition-all duration-300 shadow-sm hover:shadow"
+            >
+              Apagar
+            </button>
+          )}
+        </div>
+      ),
+      minWidth: "120px",
+    },
   ];
+
+  const handleEditCliente = (client: ClientModel) => {
+    setEditingClient(client);
+    setShowAddClientDialog(true);
+  };
 
   const handleDeleteCliente = async (id: string = "") => {
     const res = await delete_a_client(id);
@@ -120,37 +134,21 @@ export default function ClientListPage() {
     } else {
       setFilteredData(
         clientData?.data?.filter((item: ClientModel) => {
-          let itemData = item?.name?.toUpperCase();
           const textData = search.toUpperCase();
-          // search on name
-          if (itemData.indexOf(textData) > -1) {
-            return itemData.indexOf(textData) > -1;
-          }
-          // search on nif
-          itemData = item?.nif?.toUpperCase();
-          if (itemData?.indexOf(textData) > -1) {
-            return itemData.indexOf(textData) > -1;
-          }
-
-          // search on contact
-          itemData = item?.contact.toString();
-          if (itemData?.indexOf(textData) > -1) {
-            return itemData.indexOf(textData) > -1;
-          }
-
-          itemData = item?.address.toLowerCase();
-          if (itemData?.indexOf(textData) > -1) {
-            return itemData.indexOf(textData) > -1;
-          }
+          // procurar por nome, nif, contacto e morada
+          return [item?.name, item?.nif, item?.contact, item?.address].some(
+            (value) => value?.toString().toUpperCase().includes(textData)
+          );
         })
       );
     }
   }, [search, clientData?.data]);
 
   useEffect(() => {
-    if (clientData?.data) {
-      setFilteredData(clientData.data);
+    if (clientData) {
+      setFilteredData(clientData.data || []);
       setIsLoading(false);
+      if (!clientData.success) toast.error(clientData.message);
     }
   }, [clientData]);
   
@@ -194,7 +192,7 @@ export default function ClientListPage() {
             </div>
             <input
               id="simple-search"
-              className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 shadow-sm"
+              className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-full focus:ring-brand focus:border-brand block w-full pl-10 p-2.5 shadow-sm"
               placeholder="Procurar cliente"
               type={"search"}
               value={search}
@@ -202,27 +200,30 @@ export default function ClientListPage() {
             />
           </div>
           <button 
-            onClick={() => setShowAddClientDialog(true)}
-            className="inline-flex items-center justify-center w-full sm:w-auto text-white bg-[#373a4e] hover:bg-[#2f3141] focus:ring-4 focus:ring-[#373a4e]/30 font-medium rounded-full text-sm px-5 py-2.5 transition-all duration-300 shadow-md hover:shadow-lg">
+            onClick={() => {
+              setEditingClient(null);
+              setShowAddClientDialog(true);
+            }}
+            className="inline-flex items-center justify-center w-full sm:w-auto text-white bg-brand hover:bg-brand-dark focus:ring-4 focus:ring-brand/30 font-medium rounded-full text-sm px-5 py-2.5 transition-all duration-300 shadow-md hover:shadow-lg">
             <IoIosAddCircle className="mr-2 text-lg" /> Adicionar cliente
           </button>
         </div>
       </div>
       {isLoading ? (
-        <div className="flex justify-center items-center h-48 md:h-64 bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 animate-fadeIn">
+        <div className="flex justify-center items-center h-48 md:h-64 bg-white rounded-2xl shadow-surface overflow-hidden border border-gray-100 animate-fadeIn">
           <div className="flex flex-col items-center">
-            <div className="animate-spin rounded-full h-10 w-10 md:h-12 md:w-12 border-t-2 border-b-2 border-blue-500 mb-2 md:mb-3"></div>
+            <div className="animate-spin rounded-full h-10 w-10 md:h-12 md:w-12 border-t-2 border-b-2 border-brand mb-2 md:mb-3"></div>
             <p className="text-sm md:text-base text-gray-500">Loading ...</p>
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 animate-fadeIn overflow-x-auto">
+        <div className="bg-white rounded-2xl shadow-surface overflow-hidden border border-gray-100 animate-fadeIn overflow-x-auto">
           <DataTable
             columns={columns as any}
             data={filteredData || []}
             key={"ThisClienttData"}
             pagination
-            keyField="id"
+            keyField="_id"
             fixedHeader
             fixedHeaderScrollHeight="100%"
             selectableRows
@@ -342,8 +343,12 @@ export default function ClientListPage() {
       ></Dialog>
       <AddClientDialog
          isVisible={showAddClientDialog}
-         handleHideDialog={() => setShowAddClientDialog(false)}
+         handleHideDialog={() => {
+           setShowAddClientDialog(false);
+           setEditingClient(null);
+         }}
          onClientAdded={handleClientAdded}
+         client={editingClient}
        />
     </div>
   );

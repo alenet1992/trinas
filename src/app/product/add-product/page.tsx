@@ -175,7 +175,7 @@ export default function AddProduct() {
           <TailSpin
             height="50"
             width="50"
-            color="#333333"
+            color="#003087"
             ariaLabel="tail-spin-loading"
             radius="1"
             wrapperStyle={{}}
@@ -270,7 +270,7 @@ export default function AddProduct() {
               onChange={handleFileChange}
             /> */}
 
-            <button className="btn btn-block mt-6 rounded-full bg-gradient-to-r from-gray-600 to-gray-800 border-none text-white hover:from-gray-700 hover:to-black shadow-md hover:shadow-lg transition-all duration-300 py-3 text-base font-medium">Criar prato</button>
+            <button className="btn btn-block mt-6 rounded-full bg-gradient-to-r from-brand to-brand-dark border-none text-white hover:from-brand-dark hover:to-brand-dark shadow-md hover:shadow-lg transition-all duration-300 py-3 text-base font-medium">Criar prato</button>
           </form>
         </div>
       )}

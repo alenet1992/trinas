@@ -66,7 +66,7 @@ export default function Login() {
         <div className="flex flex-col items-center text-center justify-center px-6 py-12 mx-auto min-h-screen">
           <div className="w-full bg-white/80 backdrop-blur-sm text-black rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 md:mt-0 sm:max-w-md xl:p-0">
             <div className="p-8 space-y-4 md:space-y-6">
-              <h1 className="text-2xl font-bold leading-tight tracking-tight text-[#373a4e] md:text-3xl">
+              <h1 className="text-2xl font-bold leading-tight tracking-tight text-brand md:text-3xl">
                 Login
               </h1>
               <form
@@ -88,7 +88,7 @@ export default function Login() {
                     type="email"
                     name="email"
                     id="email"
-                    className="bg-gray-50/50 backdrop-blur-sm border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#373a4e] focus:border-[#373a4e] block w-full p-2.5 transition-all duration-200"
+                    className="bg-gray-50/50 backdrop-blur-sm border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-2.5 transition-all duration-200"
                     placeholder="name@company.com"
                   />
                   {error.email && (
@@ -110,7 +110,7 @@ export default function Login() {
                     name="password"
                     id="password"
                     placeholder="••••••••"
-                    className="bg-gray-50/50 backdrop-blur-sm border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#373a4e] focus:border-[#373a4e] block w-full p-2.5 transition-all duration-200"
+                    className="bg-gray-50/50 backdrop-blur-sm border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-brand focus:border-brand block w-full p-2.5 transition-all duration-200"
                   />
                   {error.password && (
                     <p className="text-sm text-red-500">{error.password}</p>
@@ -124,7 +124,7 @@ export default function Login() {
                         aria-describedby="remember"
                         type="checkbox"
                         checked
-                        className="w-4 h-4 bg-white border border-gray-300 rounded focus:ring-2 focus:ring-[#373a4e]/30"
+                        className="w-4 h-4 bg-white border border-gray-300 rounded focus:ring-2 focus:ring-brand/30"
                       />
                     </div>
                     <div className="ml-3 text-sm">
@@ -135,7 +135,7 @@ export default function Login() {
                   </div>
                   {/* <Link
                     href="/auth/reset"
-                    className="text-sm font-medium text-orange-600 hover:underline "
+                    className="text-sm font-medium text-brand hover:underline "
                   >
                     Forgot password?
                   </Link> */}
@@ -143,7 +143,7 @@ export default function Login() {
                 {loading ? (
                   <button
                     type="button"
-                    className="w-full flex items-center justify-center text-white bg-[#373a4e] hover:bg-[#2f3141] focus:ring-4 focus:outline-none focus:ring-[#373a4e]/30 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-200"
+                    className="w-full flex items-center justify-center text-white bg-brand hover:bg-brand-dark focus:ring-4 focus:outline-none focus:ring-brand/30 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-200"
                   >
                     <TailSpin
                       height="20"
@@ -159,7 +159,7 @@ export default function Login() {
                 ) : (
                   <button
                     type="submit"
-                    className="w-full text-white bg-[#373a4e] hover:bg-[#2f3141] focus:ring-4 focus:outline-none focus:ring-[#373a4e]/30 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-200"
+                    className="w-full text-white bg-brand hover:bg-brand-dark focus:ring-4 focus:outline-none focus:ring-brand/30 font-medium rounded-full text-sm px-5 py-2.5 text-center transition-all duration-200"
                   >
                     Sign in
                   </button>
@@ -169,7 +169,7 @@ export default function Login() {
                   Ainda não tem uma conta?{" "}
                   <Link
                     href={"/auth/register"}
-                    className="font-medium text-orange-600 hover:underline "
+                    className="font-medium text-brand hover:underline "
                   >
                     Registar
                   </Link>
