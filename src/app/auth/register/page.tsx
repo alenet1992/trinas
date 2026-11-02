@@ -10,7 +10,7 @@ import { IoIosAddCircle } from "react-icons/io";
 import { userAutenticated } from "@/Services/auth/UserAutenticated";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { register_me } from "@/Services/auth";
-import { get_all_users } from "@/Services/Admin/user";
+import { get_all_users, update_a_user, delete_a_user } from "@/Services/Admin/user";
 import { Grid } from 'react-loader-spinner';
 
 // Interface para o modelo de usuário
@@ -26,16 +26,20 @@ interface IAddUserDialog {
   isVisible: boolean;
   handleHideDialog: () => void;
   onUserAdded?: () => void;
+  // Quando definido, o diálogo edita este utilizador em vez de criar um novo
+  user?: UserModel | null;
 }
 
 const AddUserDialog = (props: IAddUserDialog) => {
-  const { isVisible, handleHideDialog, onUserAdded } = props;
+  const { isVisible, handleHideDialog, onUserAdded, user } = props;
+  const isEdit = !!user?._id;
   const [loader, setLoader] = useState(false);
   
   type Inputs = {
     name: string;
     email: string;
     password: string;
+    role: string;
   };
 
   const {
@@ -47,15 +51,34 @@ const AddUserDialog = (props: IAddUserDialog) => {
     criteriaMode: "all",
   });
 
+  useEffect(() => {
+    if (!isVisible) return;
+    reset({
+      name: user?.name ?? "",
+      email: user?.email ?? "",
+      password: "",
+      role: user?.role ?? "user",
+    });
+  }, [isVisible, user, reset]);
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoader(true);
 
     try {
-      const res = await register_me({
-        name: data.name,
-        email: data.email,
-        password: data.password
-      });
+      const res = isEdit
+        ? await update_a_user({
+            _id: user?._id,
+            name: data.name,
+            email: data.email,
+            role: data.role,
+            // Vazia = manter a password atual
+            password: data.password || undefined,
+          })
+        : await register_me({
+            name: data.name,
+            email: data.email,
+            password: data.password
+          });
       
       if (res.success) {
         toast.success(res?.message);
@@ -71,7 +94,7 @@ const AddUserDialog = (props: IAddUserDialog) => {
         toast.error(res?.message);
       }
     } catch (error) {
-      toast.error("Erro ao adicionar usuário");
+      toast.error(isEdit ? "Erro ao atualizar usuário" : "Erro ao adicionar usuário");
     } finally {
       setLoader(false);
     }
@@ -92,7 +115,7 @@ const AddUserDialog = (props: IAddUserDialog) => {
           <div className="relative bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
             <div className="flex items-center justify-between p-3 sm:p-4 md:p-5 border-b rounded-t border-gray-100">
               <h3 className="text-lg sm:text-xl font-semibold text-gray-800">
-                Adicionar Usuário
+                {isEdit ? "Editar Usuário" : "Adicionar Usuário"}
               </h3>
               <button
                 type="button"
@@ -133,7 +156,7 @@ const AddUserDialog = (props: IAddUserDialog) => {
                     visible={true}
                   />
                   <p className="text-sm mt-3 font-medium text-brand">
-                    Adicionando usuário...
+                    {isEdit ? "A guardar alterações..." : "Adicionando usuário..."}
                   </p>
                 </div>
               ) : (
@@ -184,17 +207,37 @@ const AddUserDialog = (props: IAddUserDialog) => {
                       )}
                     </div>
 
+                    <div className="form-control w-full mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        Função
+                      </label>
+                      <select
+                        {...register("role", { required: true })}
+                        className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-brand focus:border-brand block w-full p-3 sm:p-2.5 transition-shadow duration-200"
+                        disabled={!isEdit}
+                      >
+                        <option value="user">Usuário</option>
+                        <option value="admin">Administrador</option>
+                      </select>
+                      {!isEdit && (
+                        <span className="text-gray-500 text-xs mt-1.5 block">
+                          Novos utilizadores são criados como Usuário. A função pode ser alterada depois em Editar.
+                        </span>
+                      )}
+                    </div>
+
                     <div className="form-control w-full mb-6">
                       <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                        Senha
+                        Senha{isEdit ? " (deixe em branco para manter a atual)" : ""}
                       </label>
                       <input
                         {...register("password", { 
-                          required: true,
-                          minLength: 6
+                          required: !isEdit,
+                          minLength: 8
                         })}
                         type="password"
-                        placeholder="Senha do usuário"
+                        autoComplete="new-password"
+                        placeholder={isEdit ? "Nova senha (opcional)" : "Senha do usuário"}
                         className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-brand focus:border-brand block w-full p-3 sm:p-2.5 transition-shadow duration-200"
                       />
                       {errors.password && errors.password.type === "required" && (
@@ -204,7 +247,7 @@ const AddUserDialog = (props: IAddUserDialog) => {
                       )}
                       {errors.password && errors.password.type === "minLength" && (
                         <span className="text-red-500 text-xs mt-1.5 block">
-                          A senha deve ter pelo menos 6 caracteres
+                          A senha deve ter pelo menos 8 caracteres
                         </span>
                       )}
                     </div>
@@ -221,7 +264,7 @@ const AddUserDialog = (props: IAddUserDialog) => {
                         type="submit"
                         className="w-full sm:w-auto px-4 py-2.5 text-sm font-medium text-white bg-brand rounded-lg hover:bg-brand/90 focus:outline-none focus:ring-2 focus:ring-brand/50 transition-all duration-300"
                       >
-                        Adicionar
+                        {isEdit ? "Guardar" : "Adicionar"}
                       </button>
                     </div>
                   </form>
@@ -243,6 +286,8 @@ export default function UserList() {
   const [filteredData, setFilteredData] = useState<UserModel[] | []>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showAddUserDialog, setShowAddUserDialog] = useState(false);
+  const [editingUser, setEditingUser] = useState<UserModel | null>(null);
+  const currentUserId = userAutenticated.checkUser()?._id;
   
   const { data: usersResponse, error } = useSWR(
     "/gettingAllUsersForAdmin",
@@ -273,15 +318,25 @@ export default function UserList() {
           cell: (row: UserModel) => (
             <div className="flex items-center justify-start h-20 pr-4">
               <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEditUser(row);
+                }}
                 className="min-w-[80px] py-2 mr-2 text-xs text-brand hover:text-white my-2 hover:bg-brand border border-brand rounded-lg transition-all duration-300 shadow-sm hover:shadow focus:ring-2 focus:ring-brand/30 focus:outline-none"
               >
                 Editar
               </button>
-              <button
-                className="min-w-[80px] py-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded-lg transition-all duration-300 shadow-sm hover:shadow focus:ring-2 focus:ring-red-300 focus:outline-none"
-              >
-                Apagar
-              </button>
+              {row?._id !== currentUserId && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteUser(row);
+                  }}
+                  className="min-w-[80px] py-2 text-xs text-red-600 hover:text-white my-2 hover:bg-red-600 border border-red-600 rounded-lg transition-all duration-300 shadow-sm hover:shadow focus:ring-2 focus:ring-red-300 focus:outline-none"
+                >
+                  Apagar
+                </button>
+              )}
             </div>
           ),
         }
@@ -319,6 +374,24 @@ export default function UserList() {
 
   const handleHideDialog = () => {
     setShowAddUserDialog(false);
+    setEditingUser(null);
+  };
+
+  const handleEditUser = (user: UserModel) => {
+    setEditingUser(user);
+    setShowAddUserDialog(true);
+  };
+
+  const handleDeleteUser = async (user: UserModel) => {
+    if (!user?._id) return;
+    if (!window.confirm(`Apagar o utilizador "${user.name}"? Esta ação não pode ser anulada.`)) return;
+    const res = await delete_a_user(user._id);
+    if (res?.success) {
+      toast.success(res?.message);
+      mutate("/gettingAllUsersForAdmin");
+    } else {
+      toast.error(res?.message ?? "Erro ao apagar o utilizador");
+    }
   };
   
   const handleUserAdded = () => {
@@ -347,7 +420,10 @@ export default function UserList() {
             />
           </div>
           <button 
-            onClick={() => setShowAddUserDialog(true)}
+            onClick={() => {
+              setEditingUser(null);
+              setShowAddUserDialog(true);
+            }}
             className="inline-flex items-center justify-center text-white bg-brand hover:bg-brand-dark focus:ring-4 focus:ring-brand/30 font-medium rounded-full text-sm px-5 py-2.5 w-full sm:w-auto transition-all duration-300 shadow-md hover:shadow-lg"
           >
             <IoIosAddCircle className="mr-2 text-lg" /> 
@@ -450,6 +526,7 @@ export default function UserList() {
         isVisible={showAddUserDialog} 
         handleHideDialog={handleHideDialog} 
         onUserAdded={handleUserAdded}
+        user={editingUser}
       />
       
       <ToastContainer />

@@ -62,6 +62,12 @@ export default function ClientListPage() {
       minWidth: "150px",
     },
     {
+      name: "NIF",
+      selector: (row: ClientModel) => row?.nif || "—",
+      sortable: true,
+      minWidth: "110px",
+    },
+    {
       name: "Morada",
       selector: (row: ClientModel) => row?.address,
       sortable: true,
